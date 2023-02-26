@@ -1,5 +1,9 @@
 package importer;
+import haxe.DynamicAccess;
+import haxe.ds.ObjectMap;
+import js.lib.Object;
 import thx.csv.Csv;
+import sequelize.Sequelize.DataTypes;
 
 class Table {
 
@@ -52,8 +56,25 @@ class Table {
 				}
 			}
 		}
+		
 
-		var td = project.defs.createTable(table_name, keys, data);
-		return td;
+		var obj:DynamicAccess<Dynamic> = {};
+		for (i => k in keys) {
+			if (i == 0) {
+				obj.set(k, {
+					type: DataTypes.STRING,
+					primaryKey: true,
+				});
+			} else {
+				obj.set(k, DataTypes.STRING);
+			}
+		}
+		trace(obj);
+		// trace(Type.typeof([for (k in keys) k => DataTypes.STRING]));
+		// trace(Type.typeof(new Object([for (k in keys) k => DataTypes.STRING])));
+		var table = project.sequelize.define(table_name, new Object(obj));
+		table.sync();
+		// var td = project.defs.createTable(table_name, keys, data);
+		// return td;
 	}
 }

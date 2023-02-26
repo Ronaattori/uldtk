@@ -33,8 +33,10 @@
 		"codemirror": "^5.64.0",
 		"electron": "^21.1.0",
 		"electron-updater": "^4.6.1",
+		"sequelize": "^6.29.0",
 		"simple-color-picker": "^1.0.5",
 		"sortablejs": "^1.14.0",
+		"sqlite3": "^5.1.4",
 		"tabulator-tables": "^5.4.2"
 	},
 	"devDependencies": {

@@ -1,4 +1,6 @@
 package data;
+import sequelize.Sequelize;
+import js.lib.Object;
 
 class Project {
 	public static var DEFAULT_WORKSPACE_BG = dn.legacy.Color.hexToInt("#40465B");
@@ -15,6 +17,10 @@ class Project {
 	var nextUid = 0;
 	public var defs : Definitions;
 	public var worlds : Array<World> = [];
+	public var sequelize = new Sequelize(new Object({
+		dialect: "sqlite",
+		storage: ".\\database.sqlite"
+	}));
 
 	public var jsonVersion : String;
 	public var appBuildId : Float;
