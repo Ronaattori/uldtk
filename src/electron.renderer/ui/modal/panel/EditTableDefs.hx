@@ -11,8 +11,6 @@ class EditTableDefs extends ui.modal.Panel {
 	public function new() {
 		super();
 
-		initialize(project.sequelize);
-
 		// Main page
 		linkToButton("button.editTables");
 		loadTemplate("editTableDefs");

@@ -1,5 +1,7 @@
 package page;
 
+import sequelize.Sequelize.initialize;
+
 class Editor extends Page {
 	public static var ME : Editor;
 
@@ -107,6 +109,8 @@ class Editor extends Page {
 		settings.v.showDetails = true;
 
 		selectProject(p);
+
+		initialize(p.sequelize);
 
 		// Suggest backups
 		if( project.recommendsBackup() && !project.hasFlag(IgnoreBackupSuggest) ) {
