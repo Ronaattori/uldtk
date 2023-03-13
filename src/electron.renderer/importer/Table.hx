@@ -20,42 +20,52 @@ class Table {
 		var fileContent = NT.readFileString(absPath);
 		var table_name = absPath.split("/").pop();
 		
-		var data:Array<Array<Dynamic>> = Csv.decode(fileContent);
+		var csvdata:Array<Array<Dynamic>> = Csv.decode(fileContent);
 
-		var keys:Array<String> = data[0].map(Std.string);
-		data.shift(); // Remove keys from the array
+		var keys:Array<String> = csvdata[0].map(Std.string);
+		csvdata.shift(); // Remove keys from the array
 		
-		for (i => key in keys) {
-			// Check if all of the values in this column can be converted into Int
-			var int:Bool = true;
-			for (row in data) {
-				if (Std.parseInt(row[i]) == null) {
-					int = false;
-					break;
-				}
+		// Map keys to values
+		// eg. [{id: 0, name: "example"}, {id: 1, name: "bob"}]
+		var data = [];
+		for (row in csvdata) {
+			var rowdata:DynamicAccess<Dynamic> = {}
+			for (i => col in row) {
+				rowdata.set(keys[i], col);
 			}
-			// If yes, convert
-			if (int) {
-				for (row in data) {
-					row[i] = Std.parseInt(row[i]);
-				}
-			}
-
-			// Check if all of the values in this column can be converted into Float
-			var float:Bool = true;
-			for (row in data) {
-				if (Math.isNaN(Std.parseFloat(row[i]))) {
-					float = false;
-					break;
-				}
-			}
-			// If yes, convert
-			if (float) {
-				for (row in data) {
-					row[i] = Std.parseFloat(row[i]);
-				}
-			}
+			data.push(rowdata);
 		}
+		// for (i => key in keys) {
+		// 	// Check if all of the values in this column can be converted into Int
+		// 	var int:Bool = true;
+		// 	for (row in data) {
+		// 		if (Std.parseInt(row[i]) == null) {
+		// 			int = false;
+		// 			break;
+		// 		}
+		// 	}
+		// 	// If yes, convert
+		// 	if (int) {
+		// 		for (row in data) {
+		// 			row[i] = Std.parseInt(row[i]);
+		// 		}
+		// 	}
+
+		// 	// Check if all of the values in this column can be converted into Float
+		// 	var float:Bool = true;
+		// 	for (row in data) {
+		// 		if (Math.isNaN(Std.parseFloat(row[i]))) {
+		// 			float = false;
+		// 			break;
+		// 		}
+		// 	}
+		// 	// If yes, convert
+		// 	if (float) {
+		// 		for (row in data) {
+		// 			row[i] = Std.parseFloat(row[i]);
+		// 		}
+		// 	}
+		// }
 		
 
 		var obj:DynamicAccess<Dynamic> = {};
@@ -69,12 +79,9 @@ class Table {
 				obj.set(k, DataTypes.STRING);
 			}
 		}
-		trace(obj);
-		// trace(Type.typeof([for (k in keys) k => DataTypes.STRING]));
-		// trace(Type.typeof(new Object([for (k in keys) k => DataTypes.STRING])));
 		var table = project.sequelize.define(table_name, new Object(obj));
-		table.sync();
-		// var td = project.defs.createTable(table_name, keys, data);
-		// return td;
+		table.sync().then((m) -> {
+			table.bulkCreate(data);
+		});
 	}
 }

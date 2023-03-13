@@ -20,7 +20,10 @@ class Project {
 	public var worlds : Array<World> = [];
 	public var sequelize = new Sequelize(new Object({
 		dialect: "sqlite",
-		storage: ".\\database.sqlite"
+		storage: ".\\database.sqlite",
+		define: {
+			freezeTableName: true,
+		}
 	}));
 
 	public var jsonVersion : String;

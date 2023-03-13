@@ -1,5 +1,6 @@
 package ui.modal.panel;
 import tabulator.Tabulator;
+import sequelize.Sequelize.initialize;
 
 using Lambda;
 class EditTableDefs extends ui.modal.Panel {
@@ -9,6 +10,8 @@ class EditTableDefs extends ui.modal.Panel {
 
 	public function new() {
 		super();
+
+		initialize(project.sequelize);
 
 		// Main page
 		linkToButton("button.editTables");
@@ -33,8 +36,6 @@ class EditTableDefs extends ui.modal.Panel {
 							case "csv":
 								var i = new importer.Table();
 								i.load( project.makeRelativeFilePath(absPath) );
-								// editor.ge.emit(TableDefAdded(curTable));
-								// var td = i.load( project.makeRelativeFilePath(absPath) );
 								// editor.ge.emit(TableDefAdded(td));
 							case _:
 								N.error('The file must have the ".csv" extension.');
