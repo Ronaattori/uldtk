@@ -1,10 +1,11 @@
 package ui.modal.panel;
+import js.lib.Object;
+import sequelize.Sequelize.Model;
 import tabulator.Tabulator;
-import sequelize.Sequelize.initialize;
 
 using Lambda;
 class EditTableDefs extends ui.modal.Panel {
-	var curTable : Null<data.def.TableDef>;
+	var curTable : Null<Model>;
 	var tableView = false;
 	var tabulator : Tabulator;	
 
@@ -18,10 +19,18 @@ class EditTableDefs extends ui.modal.Panel {
 		// Create a new table
 		jContent.find("button.createTable").click( function(ev) {
 			var td = project.defs.createTable("New Table", ["Key"], [["Row"]]);
-			editor.ge.emit(TableDefAdded(td));
+			trace(tableView);
+			updateTableList();
+			updateTableForm();
+			// editor.ge.emit(TableDefAdded(td));
 		});
 
 		// Import
+		jContent.find("button.import").click( ev->{
+			updateTableList();
+			updateTableForm();
+		});
+
 		jContent.find("button.import").click( ev->{
 			var ctx = new ContextMenu(ev);
 			ctx.add({
@@ -47,16 +56,16 @@ class EditTableDefs extends ui.modal.Panel {
 	}
 
 	override function onGlobalEvent(e:GlobalEvent) {
-		super.onGlobalEvent(e);
-		switch e {
-			case TableDefAdded(td), TableDefChanged(td):
-				selectTable(td);
+		// super.onGlobalEvent(e);
+		// switch e {
+		// 	case TableDefAdded(td), TableDefChanged(td):
+		// 		selectTable(td);
 
-			case TableDefRemoved(td):
-				selectTable(project.defs.tables[0]);
+		// 	case TableDefRemoved(td):
+		// 		selectTable(project.defs.tables[0]);
 
-			case _:
-		}
+		// 	case _:
+		// }
 	}
 
 	function updateTableForm() {
@@ -68,63 +77,64 @@ class EditTableDefs extends ui.modal.Panel {
 		}
 		jTabForm.show();
 		var i = Input.linkToHtmlInput(curTable.name, jTabForm.find("input[name='name']") );
-		i.linkEvent(TableDefChanged(curTable));
+		// i.linkEvent(TableDefChanged(curTable));
 
 		var jSel = jContent.find("#primaryKey");
-		for (column in curTable.columns) {
-			jSel.append('<option>'+ column +'</option>');
-		}
-		var i = Input.linkToHtmlInput(curTable.primaryKey, jTabForm.find("select[name='primaryKey']") );
-		i.linkEvent(TableDefChanged(curTable));
+		// for (column in curTable.columns) {
+		// 	jSel.append('<option>'+ column +'</option>');
+		// }
+		// var i = Input.linkToHtmlInput(curTable.primaryKey, jTabForm.find("select[name='primaryKey']") );
+		// i.linkEvent(TableDefChanged(curTable));
 		var i = Input.linkToHtmlInput(tableView, jTabForm.find("input[id='tableView']") );
-		i.linkEvent(TableDefChanged(curTable));
+		// i.linkEvent(TableDefChanged(curTable));
 	}
 
-	function selectTable (td:data.def.TableDef) {
-		curTable = td;
+	function selectTable (table) {
+		curTable = table;
 		updateTableList();
 		updateTableForm();
 
-		var table = curTable;
 		var jTabEditor = jContent.find("#tableEditor");
 		jTabEditor.empty();
 
-		if (tableView) {
-			var data = table.data;
-			var columns = table.columns.map(function(x) return {title: x, field: x, editor: true});
+		trace("selected a table");
+		table.findAll({}, new Object({raw: true})).then((res) -> {
+			if (tableView) {
+				trace("trying table");
+				// var data = table.data;
+				// var columns = table.columns.map(function(x) return {title: x, field: x, editor: true});
 
-			jContent.find("#tableEditor").append("<div id=tabulator></div>");
-			tabulator = new Tabulator("#tabulator", {
-				importFormat:"array",
-				layout:"fitData",
-				data: data,
-				columns: columns,
-				movableRows: true,
-				movableColumns: true,
-			});
-			tabulator.on("cellEdited", function(cell) {
-				// TODO Implement changing primary keys here aswell
-				var id = cell.getData().id;
-				var key_index = table.columns.indexOf("id");
-				for (row in data) {
-					if (row[key_index] == id) {
-						var key = table.columns.indexOf(cell.getField());
-						row[key] = cell.getValue();
-						break;
-					}
-				}
-			});
-		} else {
-			var tableDefsForm = new ui.TableDefsForm(curTable);
-			jTabEditor.append(tableDefsForm.jWrapper);
-		}
+				jContent.find("#tableEditor").append("<div id=tabulator></div>");
+				tabulator = new Tabulator("#tabulator", {
+					layout:"fitData",
+					columns: res,
+					movableRows: true,
+					movableColumns: true,
+				});
+				// tabulator.on("cellEdited", function(cell) {
+				// 	// TODO Implement changing primary keys here aswell
+				// 	var id = cell.getData().id;
+				// 	var key_index = table.columns.indexOf("id");
+				// 	for (row in data) {
+				// 		if (row[key_index] == id) {
+				// 			var key = table.columns.indexOf(cell.getField());
+				// 			row[key] = cell.getValue();
+				// 			break;
+				// 		}
+				// 	}
+				// });
+			} else {
+				// var tableDefsForm = new ui.TableDefsForm(curTable);
+				// jTabEditor.append(tableDefsForm.jWrapper);
+			}
+		});
 	}
 
-	function deleteTableDef(td:data.def.TableDef) {
-		new LastChance(L.t._("Table ::name:: deleted", { name:td.name }), project);
-		var old = td;
-		project.defs.removeTableDef(td);
-		editor.ge.emit( TableDefRemoved(old) );
+	function deleteTableDef(table:Model) {
+		new LastChance(L.t._("Table ::name:: deleted", { name:table.name }), project);
+		// var old = td;
+		// project.defs.removeTableDef(td);
+		// editor.ge.emit( TableDefRemoved(old) );
 	}
 
 	function updateTableList() {
@@ -137,16 +147,15 @@ class EditTableDefs extends ui.modal.Panel {
 		var jSubList = new J('<ul/>');
 		jSubList.appendTo(jLi);
 
-		for(td in project.defs.tables) {
+		for(table in project.sequelize.models) {
 			var jLi = new J("<li/>");
 			jLi.appendTo(jSubList);
-			jLi.append('<span class="table">'+td.name+'</span>');
-			jLi.data("uid",td.uid);
+			jLi.append('<span class="table">'+table.name+'</span>');
 
-			if( td==curTable )
+			if( table==curTable )
 				jLi.addClass("active");
 			jLi.click( function(_) {
-				selectTable(td);
+				selectTable(table);
 			});
 
 			ContextMenu.addTo(jLi, [
@@ -183,22 +192,22 @@ class EditTableDefs extends ui.modal.Panel {
 				// },
 				{
 					label: L._Delete(),
-					cb: deleteTableDef.bind(td),
+					cb: deleteTableDef.bind(table),
 				},
 			]);
 		}
 
 		// Make list sortable
-		JsTools.makeSortable(jSubList, function(ev) {
-			var jItem = new J(ev.item);
-			var fromIdx = project.defs.getTableIndex( jItem.data("uid") );
-			var toIdx = ev.newIndex>ev.oldIndex
-				? jItem.prev().length==0 ? 0 : project.defs.getTableIndex( jItem.prev().data("uid") )
-				: jItem.next().length==0 ? project.defs.tables.length-1 : project.defs.getTableIndex( jItem.next().data("uid") );
+		// JsTools.makeSortable(jSubList, function(ev) {
+		// 	var jItem = new J(ev.item);
+		// 	var fromIdx = project.defs.getTableIndex( jItem.data("uid") );
+		// 	var toIdx = ev.newIndex>ev.oldIndex
+		// 		? jItem.prev().length==0 ? 0 : project.defs.getTableIndex( jItem.prev().data("uid") )
+		// 		: jItem.next().length==0 ? project.defs.tables.length-1 : project.defs.getTableIndex( jItem.next().data("uid") );
 
-			var moved = project.defs.sortTableDef(fromIdx, toIdx);
-			selectTable(moved);
-			// editor.ge.emit(TilesetDefSorted);
-		});
+		// 	var moved = project.defs.sortTableDef(fromIdx, toIdx);
+		// 	selectTable(moved);
+		// 	// editor.ge.emit(TilesetDefSorted);
+		// });
 	}
 }

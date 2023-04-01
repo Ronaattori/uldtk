@@ -22,7 +22,7 @@ extern class Model {
     public function toJSON():Json;
     public function create(data:EitherType<Object, DynamicAccess<Dynamic>>):Model;
     public function bulkCreate(data:Array<EitherType<Object, DynamicAccess<Dynamic>>>):Model;
-    public function findAll():Promise<Dynamic>;
+    public function findAll(?query:EitherType<Object, DynamicAccess<Dynamic>>, ?options: EitherType<Object, DynamicAccess<Dynamic>>):Promise<Dynamic>;
     public function findByPk(value:Dynamic):Promise<Model>;
     public var name:String;
 }
