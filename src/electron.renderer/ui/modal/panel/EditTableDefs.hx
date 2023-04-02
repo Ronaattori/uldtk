@@ -1,4 +1,5 @@
 package ui.modal.panel;
+import haxe.Json;
 import haxe.DynamicAccess;
 import js.lib.Object;
 import sequelize.Sequelize.Model;
@@ -98,12 +99,12 @@ class EditTableDefs extends ui.modal.Panel {
 		var jTabEditor = jContent.find("#tableEditor");
 		jTabEditor.empty();
 
-		table.findAll(new Object({raw: true})).then((res:Array<DynamicAccess<Dynamic>>) -> {
+		table.findAll({raw: true}).then((data:Array<Json>) -> {
 			if (tableView) {
 				jContent.find("#tableEditor").append("<div id=tabulator></div>");
 				tabulator = new Tabulator("#tabulator", {
 					layout:"fitData",
-					data: res,
+					data: data,
 					autoColumns: true,
 					movableRows: true,
 					movableColumns: true,
