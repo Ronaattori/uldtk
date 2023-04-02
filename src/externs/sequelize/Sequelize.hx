@@ -5,11 +5,13 @@ import js.lib.Promise;
 import haxe.DynamicAccess;
 import haxe.extern.EitherType;
 import js.lib.Object;
+import sequelize.SequelizeAuto.SequelizeAuto;
 
 @:jsRequire("sequelize")
 extern class Sequelize {
     function new(type:EitherType<String, Object>);
     public var models:DynamicAccess<Model>;
+    public var options:DynamicAccess<Dynamic>;
 
 	public function define(name:String, definition:EitherType<Object, DynamicAccess<Dynamic>>): Model;
     public function showAllSchemas(): Sequelize;
@@ -33,38 +35,27 @@ extern class DataTypes {
     function new();
 }
 
-function initialize(sequelize:Sequelize):Void {
-    sequelize.query("SELECT * FROM sqlite_master").then((r:Array<Array<DynamicAccess<String>>>) -> {
-        // r[0] is a list of tables. r[1] is an empty object?
-        for (table in r[0]) {
-            if (table.get("type") != "table") continue;
-            var definition:DynamicAccess<Dynamic> = {};
-            var reg = ~/\((.*)\)/i;
-            reg.match(table.get("sql"));
-            var data = reg.matched(1);
-
-            var columns = data.split(", ");
-            columns.splice(columns.length-2, 2); // Remove Sequelites own "createdAt" and "updatedAt" columns
-            for (column in columns) {
-                var col:DynamicAccess<Dynamic> = {};
-
-                var n = ~/`(.*)`/i;
-                n.match(column);
-                var name = n.matched(1);
-                
-                var datatype = column.split(" ")[1];
-                switch datatype {
-                    case "VARCHAR(255)":
-                        col.set("type", DataTypes.STRING);
-                    // TODO add datatypes when I support creating anything other than string
-                    
-                }
-                if (~/PRIMARY KEY/i.match(column)) col.set("primaryKey", true);
-                if (~/NOT NULL/i.match(column)) col.set("allowNull", false);
-
-                definition.set(name, col);
-            }
-            sequelize.define(table.get("name"), definition);
+function initializeSequelize(project:data.Project, sequelize:Sequelize):Void {
+    var levelDir = project.getAbsExternalFilesDir();
+	var sequelize = new Sequelize(new Object({
+		dialect: "sqlite",
+		storage: levelDir + "/database.sqlite",
+		define: {
+			freezeTableName: true,
+		}
+	}));
+    // SequelizeAuto.run() closes the database connection, so we create a temp connection for the schema creation
+    var tmp_sequelize = new Sequelize(new Object({
+		dialect: "sqlite",
+		storage: sequelize.options.get("storage"),
+    }));
+    var auto = new SequelizeAuto(tmp_sequelize, null, null, new Object({caseFile: "l", caseModel: "p", caseProp: "c"}));
+    auto.run().then((data:DynamicAccess<Dynamic>) -> {
+        var tables:DynamicAccess<Dynamic> = data.get("tables");
+        for (tableName in tables.keys()) {
+            var table = tables[tableName];
+            sequelize.define(tableName, table);
         }
+        project.sequelize = sequelize;
     });
 };

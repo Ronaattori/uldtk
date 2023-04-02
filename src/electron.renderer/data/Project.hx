@@ -1,6 +1,5 @@
 package data;
 import sequelize.Sequelize;
-import js.lib.Object;
 
 class Project {
 	public static var DEFAULT_WORKSPACE_BG = dn.legacy.Color.hexToInt("#40465B");
@@ -18,13 +17,7 @@ class Project {
 	public var iid(default,null) : String;
 	public var defs : Definitions;
 	public var worlds : Array<World> = [];
-	public var sequelize = new Sequelize(new Object({
-		dialect: "sqlite",
-		storage: ".\\database.sqlite",
-		define: {
-			freezeTableName: true,
-		}
-	}));
+	public var sequelize : Sequelize;
 
 	public var jsonVersion : String;
 	public var appBuildId : Float;
