@@ -99,8 +99,8 @@ class EditTableDefs extends ui.modal.Panel {
 		var jTabEditor = jContent.find("#tableEditor");
 		jTabEditor.empty();
 
-		table.findAll({raw: true}).then((data:Array<Json>) -> {
-			if (tableView) {
+		if (tableView) {
+			table.findAll({raw: true}).then((data:Array<Json>) -> {
 				jContent.find("#tableEditor").append("<div id=tabulator></div>");
 				tabulator = new Tabulator("#tabulator", {
 					layout:"fitData",
@@ -109,6 +109,11 @@ class EditTableDefs extends ui.modal.Panel {
 					movableRows: true,
 					movableColumns: true,
 				});
+			});
+		} else {
+			var tableDefsForm = new ui.TableDefsForm(curTable);
+			jTabEditor.append(tableDefsForm.jWrapper);
+		}
 				// tabulator.on("cellEdited", function(cell) {
 				// 	// TODO Implement changing primary keys here aswell
 				// 	var id = cell.getData().id;
@@ -121,11 +126,6 @@ class EditTableDefs extends ui.modal.Panel {
 				// 		}
 				// 	}
 				// });
-			} else {
-				// var tableDefsForm = new ui.TableDefsForm(curTable);
-				// jTabEditor.append(tableDefsForm.jWrapper);
-			}
-		});
 	}
 
 	function deleteTableDef(table:Model) {

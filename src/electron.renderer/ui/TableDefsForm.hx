@@ -1,6 +1,7 @@
 package ui;
 
-import h3d.scene.Skin.Joint;
+import haxe.DynamicAccess;
+import sequelize.Sequelize.Model;
 
 class TableDefsForm {
 	var editor(get,never) : Editor; inline function get_editor() return Editor.ME;
@@ -8,13 +9,13 @@ class TableDefsForm {
 	public var jWrapper : js.jquery.JQuery;
 	var jList(get,never) : js.jquery.JQuery; inline function get_jList() return jWrapper.find("ul.rowList");
 	var jForm(get,never) : js.jquery.JQuery; inline function get_jForm() return jWrapper.find("dl.form");
-	var td : Null<data.def.TableDef>;
+	var table : Model;
 	var curRow : Array<Dynamic>;
 
 
-	public function new(td: Null<data.def.TableDef>) {
-		this.td = td;
-		this.curRow = td.data[0];
+	public function new(table: Model) {
+		this.table = table;
+		// this.curRow = 1;
 
 		jWrapper = new J('<div class="tableDefsForm"/>');
 		jWrapper.html( JsTools.getHtmlTemplate("tableDefsForm"));
@@ -36,25 +37,48 @@ class TableDefsForm {
 		var jSubList = new J('<ul/>');
 		jSubList.appendTo(jLi);
 
-		var pki = td.columns.indexOf(td.primaryKey);
-		for(row in td.data) {
-			var jLi = new J("<li/>");
-			jLi.appendTo(jSubList);
-			jLi.append('<span class="table">'+row[pki]+'</span>');
-			// jLi.data("uid",td.uid);
+		// var pki = td.columns.indexOf(td.primaryKey);
+		
+		var pk = table.primaryKeyAttribute;
+		table.findAll({attributes: [pk], order: [[pk, 'DESC']], raw: true}).then((data:Array<DynamicAccess<Dynamic>>) -> {
+			for (row in data) {
+				var jLi = new J("<li/>");
+				jLi.appendTo(jSubList);
+				jLi.append('<span class="table">'+row.get(pk)+'</span>');
+				// jLi.data("uid",td.uid);
 
-			if( row==curRow )
-				jLi.addClass("active");
-			jLi.click( function(_) {
-				selectRow(row);
-			});
-			ui.modal.ContextMenu.addTo(jLi, [
-				{
-					label: L._Delete(),
-					cb: () -> {},
-				},
-			]);
-		}
+				// if( row==1 )
+				// 	jLi.addClass("active");
+				// jLi.click( function(_) {
+				// 	selectRow(row);
+				// });
+				ui.modal.ContextMenu.addTo(jLi, [
+					{
+						label: L._Delete(),
+						cb: () -> {},
+					},
+				]);
+			}
+		});
+
+		// for(row in td.data) {
+		// 	var jLi = new J("<li/>");
+		// 	jLi.appendTo(jSubList);
+		// 	jLi.append('<span class="table">'+row[pki]+'</span>');
+		// 	// jLi.data("uid",td.uid);
+
+		// 	if( row==curRow )
+		// 		jLi.addClass("active");
+		// 	jLi.click( function(_) {
+		// 		selectRow(row);
+		// 	});
+		// 	ui.modal.ContextMenu.addTo(jLi, [
+		// 		{
+		// 			label: L._Delete(),
+		// 			cb: () -> {},
+		// 		},
+		// 	]);
+		// }
 
 		// Make list sortable
 		JsTools.makeSortable(jSubList, function(ev) {
@@ -77,14 +101,14 @@ class TableDefsForm {
 		}
 		jForm.show();
 		jForm.empty();
-		for (i => column in td.columns) {
-			jForm.append('<dt><label for=$column>$column</label></dt><dd></dd>');
-			var jInput = new J('<input id=$column>');
-			jInput.attr("type", "text");
+		// for (i => column in td.columns) {
+		// 	jForm.append('<dt><label for=$column>$column</label></dt><dd></dd>');
+		// 	var jInput = new J('<input id=$column>');
+		// 	jInput.attr("type", "text");
 
-			Input.linkToHtmlInput(curRow[i], jInput);
-			jInput.appendTo(jForm.find("dd").last());
-		}
+		// 	Input.linkToHtmlInput(curRow[i], jInput);
+		// 	jInput.appendTo(jForm.find("dd").last());
+		// }
 
 	}
 	public function deleteRow(row) {

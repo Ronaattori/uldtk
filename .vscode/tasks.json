@@ -19,7 +19,6 @@
 			},
 			"group": "build"
 		},
-
 		{
 			"label": "Electron Renderer debug",
 			"type": "hxml",
@@ -31,14 +30,13 @@
 				"$haxe-trace"
 			],
 			"presentation": {
-				"reveal": "never",
+				"reveal": "always",
 				"panel": "shared",
 				"clear": false,
 				"revealProblems": "onProblem"
 			},
 			"group": "build"
 		},
-
 		{
 			"label": "Electron Main release",
 			"type": "hxml",
@@ -57,7 +55,6 @@
 			},
 			"group": "build"
 		},
-
 		{
 			"label": "Electron Main debug",
 			"type": "hxml",
@@ -74,9 +71,11 @@
 				"clear": false,
 				"revealProblems": "onProblem"
 			},
-			"group": "build"
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			}
 		},
-
 		{
 			"type": "haxe",
 			"args": "active configuration",
@@ -86,10 +85,7 @@
 				"$haxe-error",
 				"$haxe-trace"
 			],
-			"group": {
-				"kind": "build",
-				"isDefault": true
-			},
+			"group": "build",
 			"presentation": {
 				"reveal": "never",
 				"panel": "shared",

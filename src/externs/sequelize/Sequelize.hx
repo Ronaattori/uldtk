@@ -27,6 +27,7 @@ extern class Model {
     public function findAll(?options:QueryOptions):Promise<Dynamic>;
     public function findByPk(value:Dynamic):Promise<Model>;
     public var name:String;
+    public var primaryKeyAttribute:String;
 }
 
 @:jsRequire("sequelize")
@@ -67,5 +68,7 @@ typedef SequelizeOptions = {
 }
 typedef QueryOptions = {
     var ?where : Dynamic;
+    var ?attributes : Dynamic;
+    var ?order : Dynamic;
     var ?raw : Bool;
 }
