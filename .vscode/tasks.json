@@ -35,7 +35,10 @@
 				"clear": false,
 				"revealProblems": "onProblem"
 			},
-			"group": "build"
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			}
 		},
 		{
 			"label": "Electron Main release",
@@ -73,7 +76,6 @@
 			},
 			"group": {
 				"kind": "build",
-				"isDefault": true
 			}
 		},
 		{

@@ -1,5 +1,6 @@
 package ui;
 
+import sequelize.Sequelize.SingleModel;
 import haxe.DynamicAccess;
 import sequelize.Sequelize.Model;
 
@@ -9,13 +10,16 @@ class TableDefsForm {
 	public var jWrapper : js.jquery.JQuery;
 	var jList(get,never) : js.jquery.JQuery; inline function get_jList() return jWrapper.find("ul.rowList");
 	var jForm(get,never) : js.jquery.JQuery; inline function get_jForm() return jWrapper.find("dl.form");
+
 	var table : Model;
-	var curRow : Array<Dynamic>;
+	var pk : String;
+	var curRow : Null<SingleModel>;
 
 
 	public function new(table: Model) {
 		this.table = table;
-		// this.curRow = 1;
+		this.pk = table.primaryKeyAttribute;
+		this.curRow = null;
 
 		jWrapper = new J('<div class="tableDefsForm"/>');
 		jWrapper.html( JsTools.getHtmlTemplate("tableDefsForm"));
@@ -30,67 +34,44 @@ class TableDefsForm {
 	}
 
 	public function updateList(){
-		jList.empty();
+		// TODO massive performance would be to not query the whole 800 row table on each click :)
+		table.findAll({}).then((data) -> {
+			jList.empty();
+			var jLi = new J('<li class="subList"/>');
+			jLi.appendTo(jList);
+			var jSubList = new J('<ul/>');
+			jSubList.appendTo(jLi);
 
-		var jLi = new J('<li class="subList"/>');
-		jLi.appendTo(jList);
-		var jSubList = new J('<ul/>');
-		jSubList.appendTo(jLi);
-
-		// var pki = td.columns.indexOf(td.primaryKey);
-		
-		var pk = table.primaryKeyAttribute;
-		table.findAll({attributes: [pk], order: [[pk, 'DESC']], raw: true}).then((data:Array<DynamicAccess<Dynamic>>) -> {
-			for (row in data) {
+			data.forEach((row:SingleModel) -> {
 				var jLi = new J("<li/>");
 				jLi.appendTo(jSubList);
-				jLi.append('<span class="table">'+row.get(pk)+'</span>');
+				jLi.append('<span class="table">'+row.get(this.pk)+'</span>');
 				// jLi.data("uid",td.uid);
 
-				// if( row==1 )
-				// 	jLi.addClass("active");
-				// jLi.click( function(_) {
-				// 	selectRow(row);
-				// });
+				if(row.equals(curRow))
+					jLi.addClass("active");
+				jLi.click( function(_) {
+					selectRow(row);
+				});
 				ui.modal.ContextMenu.addTo(jLi, [
 					{
 						label: L._Delete(),
 						cb: () -> {},
 					},
 				]);
-			}
-		});
+			});
+			// Make list sortable
+			JsTools.makeSortable(jSubList, function(ev) {
+				// var jItem = new J(ev.item);
+				// var fromIdx = project.defs.getTableIndex( jItem.data("uid") );
+				// var toIdx = ev.newIndex>ev.oldIndex
+				// 	? jItem.prev().length==0 ? 0 : project.defs.getTableIndex( jItem.prev().data("uid") )
+				// 	: jItem.next().length==0 ? project.defs.tables.length-1 : project.defs.getTableIndex( jItem.next().data("uid") );
 
-		// for(row in td.data) {
-		// 	var jLi = new J("<li/>");
-		// 	jLi.appendTo(jSubList);
-		// 	jLi.append('<span class="table">'+row[pki]+'</span>');
-		// 	// jLi.data("uid",td.uid);
-
-		// 	if( row==curRow )
-		// 		jLi.addClass("active");
-		// 	jLi.click( function(_) {
-		// 		selectRow(row);
-		// 	});
-		// 	ui.modal.ContextMenu.addTo(jLi, [
-		// 		{
-		// 			label: L._Delete(),
-		// 			cb: () -> {},
-		// 		},
-		// 	]);
-		// }
-
-		// Make list sortable
-		JsTools.makeSortable(jSubList, function(ev) {
-			// var jItem = new J(ev.item);
-			// var fromIdx = project.defs.getTableIndex( jItem.data("uid") );
-			// var toIdx = ev.newIndex>ev.oldIndex
-			// 	? jItem.prev().length==0 ? 0 : project.defs.getTableIndex( jItem.prev().data("uid") )
-			// 	: jItem.next().length==0 ? project.defs.tables.length-1 : project.defs.getTableIndex( jItem.next().data("uid") );
-
-			// var moved = project.defs.sortTableDef(fromIdx, toIdx);
-			// selectTable(moved);
-			// editor.ge.emit(TilesetDefSorted);
+				// var moved = project.defs.sortTableDef(fromIdx, toIdx);
+				// selectTable(moved);
+				// editor.ge.emit(TilesetDefSorted);
+			});
 		});
 		
 	}
@@ -101,15 +82,17 @@ class TableDefsForm {
 		}
 		jForm.show();
 		jForm.empty();
-		// for (i => column in td.columns) {
-		// 	jForm.append('<dt><label for=$column>$column</label></dt><dd></dd>');
-		// 	var jInput = new J('<input id=$column>');
-		// 	jInput.attr("type", "text");
+		var rows:DynamicAccess<Dynamic> = curRow.get();
+		for (name => value in rows) {
+			jForm.append('<dt><label for=$name>$name</label></dt><dd></dd>');
+			var jInput = new J('<input id=$name>');
+			jInput.attr("type", "text");
 
-		// 	Input.linkToHtmlInput(curRow[i], jInput);
-		// 	jInput.appendTo(jForm.find("dd").last());
-		// }
+			jInput.val(Std.string(value));
+			// Input.linkToHtmlInput(curRow[i], jInput);
 
+			jInput.appendTo(jForm.find("dd").last());
+		}
 	}
 	public function deleteRow(row) {
 		//TODO

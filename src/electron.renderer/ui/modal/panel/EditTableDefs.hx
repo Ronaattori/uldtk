@@ -100,7 +100,7 @@ class EditTableDefs extends ui.modal.Panel {
 		jTabEditor.empty();
 
 		if (tableView) {
-			table.findAll({raw: true}).then((data:Array<Json>) -> {
+			table.findAll({raw: true}).then((data) -> {
 				jContent.find("#tableEditor").append("<div id=tabulator></div>");
 				tabulator = new Tabulator("#tabulator", {
 					layout:"fitData",

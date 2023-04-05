@@ -24,10 +24,20 @@ extern class Model {
     public function toJSON():Json;
     public function create(data:EitherType<Object, DynamicAccess<Dynamic>>):Model;
     public function bulkCreate(data:Array<EitherType<Object, DynamicAccess<Dynamic>>>):Model;
-    public function findAll(?options:QueryOptions):Promise<Dynamic>;
-    public function findByPk(value:Dynamic):Promise<Model>;
+    public function findAll(?options:QueryOptions):Promise<ManyModels>;
+    public function findOne(?options:QueryOptions):Promise<SingleModel>;
+    public function findByPk(value:Dynamic):Promise<SingleModel>;
     public var name:String;
     public var primaryKeyAttribute:String;
+}
+
+extern class SingleModel {
+    public function get(?key:String):Dynamic;
+    public function equals(model:SingleModel):Bool;
+}
+
+extern class ManyModels {
+    public function forEach(callback:Dynamic):Void;
 }
 
 @:jsRequire("sequelize")
@@ -58,6 +68,7 @@ function initializeSequelize(project:data.Project, sequelize:Sequelize):Void {
             sequelize.define(tableName, table);
         }
         project.sequelize = sequelize;
+        //(js.Browser.window:Dynamic).sequelize = sequelize; // TODO remove this when debugging isnt needed
     });
 };
 
