@@ -68,7 +68,7 @@ function initializeSequelize(project:data.Project, sequelize:Sequelize):Void {
             sequelize.define(tableName, table);
         }
         project.sequelize = sequelize;
-        //(js.Browser.window:Dynamic).sequelize = sequelize; // TODO remove this when debugging isnt needed
+        (js.Browser.window:Dynamic).sequelize = sequelize; // TODO remove this when debugging isnt needed
     });
 };
 
