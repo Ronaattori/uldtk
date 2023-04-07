@@ -303,6 +303,20 @@ class Input<T> {
 			// 	}
 
 
+			case TAnonymous(t):
+				return macro {
+					new form.input.DatabaseInput(
+						$formInput,
+						function() return $variable.row.get($variable.key),
+						function(v) {
+							var obj:DynamicAccess<Dynamic> = {};
+							obj.set($variable.key, v);
+							$variable.row.set(obj);
+							$variable.row.save();
+						}
+					);
+				}
+
 			case TDynamic(t):
 				return macro {
 					new form.input.StringInput(

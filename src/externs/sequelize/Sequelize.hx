@@ -33,6 +33,8 @@ extern class Model {
 
 extern class SingleModel {
     public function get(?key:String):Dynamic;
+    public function set(values:Dynamic):Void;
+    public function save():Promise<Void>;
     public function equals(model:SingleModel):Bool;
 }
 
@@ -53,6 +55,7 @@ function initializeSequelize(project:data.Project, sequelize:Sequelize):Void {
 		storage: levelDir + "/database.sqlite",
 		define: {
 			freezeTableName: true,
+            timestamps: false
 		}
 	});
     // SequelizeAuto.run() closes the database connection, so we create a temp connection for the schema creation

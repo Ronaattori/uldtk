@@ -83,13 +83,12 @@ class TableDefsForm {
 		jForm.show();
 		jForm.empty();
 		var rows:DynamicAccess<Dynamic> = curRow.get();
-		for (name => value in rows) {
-			jForm.append('<dt><label for=$name>$name</label></dt><dd></dd>');
-			var jInput = new J('<input id=$name>');
+		for (key in rows.keys()) {
+			jForm.append('<dt><label for=$key>$key</label></dt><dd></dd>');
+			var jInput = new J('<input id=$key>');
 			jInput.attr("type", "text");
 
-			jInput.val(Std.string(value));
-			// Input.linkToHtmlInput(curRow[i], jInput);
+			Input.linkToHtmlInput({key: key, row: curRow}, jInput);
 
 			jInput.appendTo(jForm.find("dd").last());
 		}
