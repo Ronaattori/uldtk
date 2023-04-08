@@ -110,7 +110,7 @@ class Editor extends Page {
 
 		selectProject(p);
 
-		initializeSequelize(p, p.sequelize);
+		initializeSequelize(p);
 
 		// Suggest backups
 		if( project.recommendsBackup() && !project.hasFlag(IgnoreBackupSuggest) ) {

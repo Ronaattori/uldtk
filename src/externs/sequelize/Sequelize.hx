@@ -57,7 +57,7 @@ extern class DataTypes {
     function new();
 }
 
-function initializeSequelize(project:data.Project, sequelize:Sequelize):Void {
+function initializeSequelize(project:data.Project):Void {
     var levelDir = project.getAbsExternalFilesDir();
 	var sequelize = new Sequelize({
 		dialect: "sqlite",
