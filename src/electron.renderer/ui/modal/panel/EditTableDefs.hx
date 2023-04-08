@@ -82,10 +82,8 @@ class EditTableDefs extends ui.modal.Panel {
 		// i.linkEvent(TableDefChanged(curTable));
 
 		var jSel = jContent.find("#primaryKey");
-		// for (column in curTable.columns) {
-		// 	jSel.append('<option>'+ column +'</option>');
-		// }
-		// var i = Input.linkToHtmlInput(curTable.primaryKey, jTabForm.find("select[name='primaryKey']") );
+		Input.linkToDBPrimaryKey(curTable, jSel);
+
 		// i.linkEvent(TableDefChanged(curTable));
 		var i = Input.linkToHtmlInput(tableView, jTabForm.find("input[id='tableView']") );
 		// i.linkEvent(TableDefChanged(curTable));

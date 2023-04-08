@@ -303,20 +303,6 @@ class Input<T> {
 			// 	}
 
 
-			case TAnonymous(t):
-				return macro {
-					new form.input.DatabaseInput(
-						$formInput,
-						function() return $variable.row.get($variable.key),
-						function(v) {
-							var obj:DynamicAccess<Dynamic> = {};
-							obj.set($variable.key, v);
-							$variable.row.set(obj);
-							$variable.row.save();
-						}
-					);
-				}
-
 			case TDynamic(t):
 				return macro {
 					new form.input.StringInput(
@@ -370,5 +356,48 @@ class Input<T> {
 				Context.fatalError("Unsupported type "+t, variable.pos);
 		}
 		return macro {}
+	}
+
+	public static macro function linkToDBValue(variable:Expr, formInput:ExprOf<js.jquery.JQuery>) {
+		return macro {
+			new form.input.StringInput(
+				$formInput,
+				function() return $variable.row.get($variable.key),
+				function(v) {
+					var obj:DynamicAccess<Dynamic> = {};
+					obj.set($variable.key, v);
+					$variable.row.set(obj);
+					$variable.row.save();
+				}
+			);
+		}
+	}
+	public static macro function linkToDBPrimaryKey(variable:Expr, formInput:ExprOf<js.jquery.JQuery>) {
+		return macro {
+			new form.input.PrimaryKeySelect(
+				$formInput,
+				$variable,
+				function() return $variable.primaryKeyAttribute,
+				function(v) {
+					var old = $variable.primaryKeyAttribute;
+					var qi = $variable.sequelize.getQueryInterface();
+					// TODO this leaves the old key with an UNIQUE constraint. Think about if I want to change that
+					// TODO Since SQLite needs to make the temp table, editing "<tablename>"" always DROP TABLEs "<tablename>_backup". Having 2 same name tables is kinda weird, but i should add a check
+					// TODO this also leaves the old primary keys value input box in a weird non-working state
+					qi.changeColumn($variable.name, old, {primaryKey: false}).then((x) -> {
+						qi.changeColumn($variable.name, v, {primaryKey: true}).then((y) -> {
+							// Refresh relevant primary key data to the current sequelize schema
+							$variable.primaryKeyAttribute = v;
+							$variable.rawAttributes[old].primaryKey = false;
+							$variable.rawAttributes[v].primaryKey = true;
+						}, (e) -> {
+							N.error('Changing the primary key failed due to: $e');
+							qi.changeColumn($variable.name, old, {primaryKey: true});
+							qi.dropTable($variable.name + "_backup");
+						});
+					});
+				}
+			);
+		}
 	}
 }

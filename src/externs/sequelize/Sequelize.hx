@@ -15,6 +15,7 @@ extern class Sequelize {
 
 	public function define(name:String, definition:EitherType<Object, DynamicAccess<Dynamic>>): Model;
     public function showAllSchemas(): Sequelize;
+    public function getQueryInterface(): QueryInterface;
     public function query(query:String): js.lib.Promise<Dynamic>;
 }
 
@@ -29,17 +30,25 @@ extern class Model {
     public function findByPk(value:Dynamic):Promise<SingleModel>;
     public var name:String;
     public var primaryKeyAttribute:String;
+    public var rawAttributes: DynamicAccess<Dynamic>;
+    public var sequelize: Sequelize;
 }
 
 extern class SingleModel {
     public function get(?key:String):Dynamic;
     public function set(values:Dynamic):Void;
     public function save():Promise<Void>;
+    public function reload():Promise<Void>;
     public function equals(model:SingleModel):Bool;
 }
 
 extern class ManyModels {
     public function forEach(callback:Dynamic):Void;
+}
+
+extern class QueryInterface {
+    public function changeColumn(modelName:String, columnName:String, definition:ModelDefinition):Promise<Void>;
+    public function dropTable(tableName: String):Promise<Void>;
 }
 
 @:jsRequire("sequelize")
@@ -75,6 +84,12 @@ function initializeSequelize(project:data.Project, sequelize:Sequelize):Void {
     });
 };
 
+typedef ModelDefinition = {
+    var ?type : Dynamic;
+    var ?defaultValue: Dynamic;
+    var ?primaryKey : Bool;
+    var ?allowNull : Bool;
+}
 typedef SequelizeOptions = {
     var ?dialect : String;
     var ?storage: String;

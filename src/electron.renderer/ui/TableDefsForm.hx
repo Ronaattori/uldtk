@@ -87,8 +87,11 @@ class TableDefsForm {
 			jForm.append('<dt><label for=$key>$key</label></dt><dd></dd>');
 			var jInput = new J('<input id=$key>');
 			jInput.attr("type", "text");
+			// if (key == table.primaryKeyAttribute) {
+			// 	jInput.attr("disabled", "disabled");
+			// }
 
-			Input.linkToHtmlInput({key: key, row: curRow}, jInput);
+			Input.linkToDBValue({key: key, row: curRow}, jInput);
 
 			jInput.appendTo(jForm.find("dd").last());
 		}
