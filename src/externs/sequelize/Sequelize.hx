@@ -23,7 +23,7 @@ extern class Sequelize {
 extern class Model {
     public function sync():Promise<Model>;
     public function toJSON():Json;
-    public function create(data:EitherType<Object, DynamicAccess<Dynamic>>):Model;
+    public function create(?data:EitherType<Object, DynamicAccess<Dynamic>>):Promise<SingleModel>;
     public function bulkCreate(data:Array<EitherType<Object, DynamicAccess<Dynamic>>>):Model;
     public function findAll(?options:QueryOptions):Promise<ManyModels>;
     public function findOne(?options:QueryOptions):Promise<SingleModel>;

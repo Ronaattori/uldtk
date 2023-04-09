@@ -24,6 +24,12 @@ class TableDefsForm {
 		jWrapper = new J('<div class="tableDefsForm"/>');
 		jWrapper.html( JsTools.getHtmlTemplate("tableDefsForm"));
 
+		var jButton = jWrapper.find(".createRow");
+		jButton.click((x) -> {
+			trace("clicked, creating");
+			table.create().then((r) -> selectRow(r));
+		});
+
 		updateList();
 		updateForm();
 	}
@@ -41,6 +47,7 @@ class TableDefsForm {
 			jLi.appendTo(jList);
 			var jSubList = new J('<ul/>');
 			jSubList.appendTo(jLi);
+
 
 			data.forEach((row:SingleModel) -> {
 				var jLi = new J("<li/>");
