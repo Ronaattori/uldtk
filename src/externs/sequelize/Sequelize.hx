@@ -38,6 +38,7 @@ extern class SingleModel {
     public function get(?key:String):Dynamic;
     public function set(values:Dynamic):Void;
     public function save():Promise<Void>;
+    public function destroy():Promise<Void>;
     public function reload():Promise<Void>;
     public function equals(model:SingleModel):Bool;
 }

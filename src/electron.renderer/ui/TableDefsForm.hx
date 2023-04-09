@@ -63,7 +63,7 @@ class TableDefsForm {
 				ui.modal.ContextMenu.addTo(jLi, [
 					{
 						label: L._Delete(),
-						cb: () -> {},
+						cb: () -> row.destroy(),
 					},
 				]);
 			});
