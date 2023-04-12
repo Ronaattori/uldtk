@@ -372,6 +372,19 @@ class Input<T> {
 			);
 		}
 	}
+	public static macro function linkToDBConstraint(variable:Expr, key:Expr, constraint:Expr, formInput:ExprOf<js.jquery.JQuery>) {
+		return macro {
+			new form.input.BoolInput(
+				$formInput,
+				function() return $variable.rawAttributes.get(key).get("unique"),
+				function(v) {
+					var qi = $variable.sequelize.getQueryInterface();
+					qi.changeColumn($variable.constructor.getTableName(), $key, {unique: v});
+					$variable.rawAttributes.get(key).set("unique", v);
+				}
+			);
+		}
+	}
 	public static macro function linkToDBPrimaryKey(variable:Expr, formInput:ExprOf<js.jquery.JQuery>) {
 		return macro {
 			new form.input.PrimaryKeySelect(
@@ -379,6 +392,7 @@ class Input<T> {
 				$variable,
 				function() return $variable.primaryKeyAttribute,
 				function(v) {
+					trace(v);
 					var old = $variable.primaryKeyAttribute;
 					var qi = $variable.sequelize.getQueryInterface();
 					// TODO this leaves the old key with an UNIQUE constraint. Think about if I want to change that

@@ -93,15 +93,19 @@ class TableDefsForm {
 		var rows:DynamicAccess<Dynamic> = curRow.get();
 		for (key in rows.keys()) {
 			jForm.append('<dt><label for=$key>$key</label></dt><dd></dd>');
-			var jInput = new J('<input id=$key>');
-			jInput.attr("type", "text");
 			// if (key == table.primaryKeyAttribute) {
 			// 	jInput.attr("disabled", "disabled");
 			// }
+			var jButton = new J('<input type="checkbox">');
+			jButton.appendTo(jForm.find("dd").last());
+			Input.linkToDBConstraint(curRow, key, "UNIQUE", jButton);
 
+			var jInput = new J('<input id=$key>');
+			jInput.attr("type", "text");
 			Input.linkToDBValue({key: key, row: curRow}, jInput);
-
 			jInput.appendTo(jForm.find("dd").last());
+			
+
 		}
 	}
 	public function deleteRow(row) {
