@@ -19,13 +19,14 @@ extern class Sequelize {
     public function query(query:String): js.lib.Promise<Dynamic>;
 }
 
+// Type conditionals? (variable:number|string)
 @:jsRequire("sequelize")
 extern class Model {
     public function sync():Promise<Model>;
     public function toJSON():Json;
     public function create(?data:EitherType<Object, DynamicAccess<Dynamic>>):Promise<SingleModel>;
     public function bulkCreate(data:Array<EitherType<Object, DynamicAccess<Dynamic>>>):Model;
-    public function findAll(?options:QueryOptions):Promise<ManyModels>;
+    public function findAll(?options:QueryOptions):Promise<EitherType<ManyModels, DynamicAccess<Dynamic>>>;
     public function findOne(?options:QueryOptions):Promise<SingleModel>;
     public function findByPk(value:Dynamic):Promise<SingleModel>;
     public var name:String;

@@ -1,5 +1,6 @@
 package ui;
 
+import sequelize.Sequelize.ManyModels;
 import sequelize.Sequelize.SingleModel;
 import haxe.DynamicAccess;
 import sequelize.Sequelize.Model;
@@ -41,7 +42,7 @@ class TableDefsForm {
 
 	public function updateList(){
 		// TODO massive performance would be to not query the whole 800 row table on each click :)
-		table.findAll({}).then((data) -> {
+		table.findAll().then((data:ManyModels) -> {
 			jList.empty();
 			var jLi = new J('<li class="subList"/>');
 			jLi.appendTo(jList);

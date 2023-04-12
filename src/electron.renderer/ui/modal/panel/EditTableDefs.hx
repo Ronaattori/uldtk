@@ -98,32 +98,41 @@ class EditTableDefs extends ui.modal.Panel {
 		jTabEditor.empty();
 
 		if (tableView) {
-			table.findAll({raw: true}).then((data) -> {
+			table.findAll({raw: true}).then((data:DynamicAccess<Dynamic>) -> {
+				var columns = [];
+				for (k in table.rawAttributes.keys()) {
+					var col:DynamicAccess<Dynamic> = {};
+					col.set("title", k);
+					col.set("field", k);
+					// TODO Sequelize doesnt allow editing the primary key column
+					// https://github.com/sequelize/sequelize/blob/f482790b85ef2336bb97893c0eaa127d9d6bbc77/lib/instance.js#L334-L336
+					col.set("editor", k != table.primaryKeyAttribute ? "input" : null);
+					columns.push(col);
+				}
 				jContent.find("#tableEditor").append("<div id=tabulator></div>");
 				tabulator = new Tabulator("#tabulator", {
 					layout:"fitData",
 					data: data,
-					autoColumns: true,
+					columns: columns,
 					movableRows: true,
 					movableColumns: true,
+				});
+				tabulator.on("cellEdited", function(cell) {
+					var pk = table.primaryKeyAttribute;
+					var d:DynamicAccess<Dynamic> = cell.getData();
+					var pk_v = cell.getField() == pk ? cell.getOldValue() : d.get(pk);
+					table.findByPk(pk_v).then((row) -> {
+						var obj:DynamicAccess<Dynamic> = {};
+						obj.set(cell.getField(), cell.getValue());
+						row.set(obj);
+						row.save();
+					});
 				});
 			});
 		} else {
 			var tableDefsForm = new ui.TableDefsForm(curTable);
 			jTabEditor.append(tableDefsForm.jWrapper);
 		}
-				// tabulator.on("cellEdited", function(cell) {
-				// 	// TODO Implement changing primary keys here aswell
-				// 	var id = cell.getData().id;
-				// 	var key_index = table.columns.indexOf("id");
-				// 	for (row in data) {
-				// 		if (row[key_index] == id) {
-				// 			var key = table.columns.indexOf(cell.getField());
-				// 			row[key] = cell.getValue();
-				// 			break;
-				// 		}
-				// 	}
-				// });
 	}
 
 	function deleteTableDef(table:Model) {
