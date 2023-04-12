@@ -41,6 +41,9 @@ extern class SingleModel {
     public function destroy():Promise<Void>;
     public function reload():Promise<Void>;
     public function equals(model:SingleModel):Bool;
+    public var constructor: Dynamic;
+    public var rawAttributes: DynamicAccess<DynamicAccess<Dynamic>>;
+    public var sequelize: Sequelize;
 }
 
 extern class ManyModels {
@@ -50,6 +53,7 @@ extern class ManyModels {
 extern class QueryInterface {
     public function changeColumn(modelName:String, columnName:String, definition:ModelDefinition):Promise<Void>;
     public function dropTable(tableName: String):Promise<Void>;
+    public function addConstraint(tableName:String, options:SequelizeConstraint):Promise<Void>;
 }
 
 @:jsRequire("sequelize")
@@ -90,6 +94,12 @@ typedef ModelDefinition = {
     var ?defaultValue: Dynamic;
     var ?primaryKey : Bool;
     var ?allowNull : Bool;
+    var ?unique : Bool;
+}
+typedef SequelizeConstraint = {
+    var ?fields : Array<Dynamic>;
+    var ?name: String;
+    var ?type : String;
 }
 typedef SequelizeOptions = {
     var ?dialect : String;
