@@ -34,6 +34,9 @@ extern class Model {
     public function findByPk(value:Dynamic):Promise<SingleModel>;
     public var name:String;
     public var primaryKeyAttribute:String;
+    public var primaryKeyAttributes:Array<String>;
+    public var primaryKeyField:String;
+    public var primaryKeys:DynamicAccess<Dynamic>;
     public var rawAttributes: DynamicAccess<Dynamic>;
     public var sequelize: Sequelize;
 }

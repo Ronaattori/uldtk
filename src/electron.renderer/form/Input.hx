@@ -397,13 +397,17 @@ class Input<T> {
 					var qi = $variable.sequelize.getQueryInterface();
 					// TODO this leaves the old key with an UNIQUE constraint. Think about if I want to change that
 					// TODO Since SQLite needs to make the temp table, editing "<tablename>"" always DROP TABLEs "<tablename>_backup". Having 2 same name tables is kinda weird, but i should add a check
-					// TODO this also leaves the old primary keys value input box in a weird non-working state
 					qi.changeColumn($variable.name, old, {primaryKey: false}).then((x) -> {
 						qi.changeColumn($variable.name, v, {primaryKey: true}).then((y) -> {
 							// Refresh relevant primary key data to the current sequelize schema
 							$variable.primaryKeyAttribute = v;
+							$variable.primaryKeyAttributes.push(v);
+							$variable.primaryKeyAttributes.remove(old);
+							$variable.primaryKeyField = v;
 							$variable.rawAttributes[old].primaryKey = false;
 							$variable.rawAttributes[v].primaryKey = true;
+							$variable.primaryKeys.remove(old);
+							$variable.primaryKeys.set(v, $variable.rawAttributes[v]);
 						}, (e) -> {
 							qi.changeColumn($variable.name, old, {primaryKey: true});
 							qi.dropTable($variable.name + "_backup");
