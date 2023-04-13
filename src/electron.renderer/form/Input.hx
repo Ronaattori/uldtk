@@ -405,7 +405,6 @@ class Input<T> {
 							$variable.rawAttributes[old].primaryKey = false;
 							$variable.rawAttributes[v].primaryKey = true;
 						}, (e) -> {
-							N.error('Changing the primary key failed due to: $e');
 							qi.changeColumn($variable.name, old, {primaryKey: true});
 							qi.dropTable($variable.name + "_backup");
 						});

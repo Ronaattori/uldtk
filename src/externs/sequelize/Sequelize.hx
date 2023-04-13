@@ -1,5 +1,7 @@
 // Source: https://www.npmjs.com/package/sequelize
 package sequelize;
+import js.Lib;
+import ui.Notification;
 import haxe.Json;
 import js.lib.Promise;
 import haxe.DynamicAccess;
@@ -12,11 +14,12 @@ extern class Sequelize {
     function new(type:EitherType<String, SequelizeOptions>);
     public var models:DynamicAccess<Model>;
     public var options:DynamicAccess<Dynamic>;
+    public var Sequelize:Dynamic;
 
 	public function define(name:String, definition:EitherType<Object, DynamicAccess<Dynamic>>): Model;
     public function showAllSchemas(): Sequelize;
     public function getQueryInterface(): QueryInterface;
-    public function query(query:String): js.lib.Promise<Dynamic>;
+    dynamic function query(query:Dynamic): js.lib.Promise<Dynamic>;
 }
 
 // Type conditionals? (variable:number|string)
@@ -70,9 +73,18 @@ function initializeSequelize(project:data.Project):Void {
 		storage: levelDir + "/database.sqlite",
 		define: {
 			freezeTableName: true,
-            timestamps: false
+            timestamps: false,
 		}
 	});
+
+    // Hook into the sequelize query function and show errors as a notification in the LDtk UI
+    sequelize.query = function(...args) {
+        return (sequelize.Sequelize.prototype.query.apply(Lib.nativeThis, args):Promise<Dynamic>).catchError((e) -> {
+            Notification.error(e);
+            throw e;
+        });
+    }
+
     // SequelizeAuto.run() closes the database connection, so we create a temp connection for the schema creation
     var tmp_sequelize = new Sequelize({
 		dialect: "sqlite",
