@@ -93,18 +93,20 @@ class TableDefsForm {
 		var rows:DynamicAccess<Dynamic> = curRow.get();
 		for (key in rows.keys()) {
 			jForm.append('<dt><label for=$key>$key</label></dt><dd></dd>');
-			var jButton = new J('<input type="checkbox">');
-			jButton.appendTo(jForm.find("dd").last());
-			Input.linkToDBConstraint(curRow, key, "UNIQUE", jButton);
+			var jDd = jForm.find("dd").last();
 
-			var jInput = new J('<input id=$key>');
-			jInput.attr("type", "text");
+			var jInput = new J('<input id=$key type=text>');
 			Input.linkToDBValue({key: key, row: curRow}, jInput);
-			jInput.appendTo(jForm.find("dd").last());
+			jDd.append(jInput);
 			if (key == table.primaryKeyAttribute) {
 				jInput.attr("disabled", "disabled");
 			}
 			
+			jForm.append('<dt><label for=unique-$key>Unique: </label></dt><dd></dd>');
+			var jUnique = jForm.find("dd").last();
+			var jButton = new J('<input id=unique-$key type="checkbox">');
+			jUnique.append(jButton);
+			Input.linkToDBConstraint(curRow, key, "UNIQUE", jButton);
 
 		}
 	}
