@@ -14,6 +14,7 @@ extern class Tabulator {
 	overload public function on(eventName:String, cb:(component:Dynamic) -> Void):Void;
 	public function off(eventName:String):Void;
 	public function getData():Dynamic;
+	public function validate():Void;
 	public function setData(data:Dynamic):Void;
 	public function setColumns(columns:Dynamic):Void;
 	@:native("import")
@@ -40,6 +41,7 @@ extern class CellComponent {
 	public function getColumn():ColumnComponent;
 	public function setValue(value:Dynamic):Void;
 	public function getParentColumn():ColumnComponent;
+	public function validate():Void;
 }
 
 
@@ -57,6 +59,7 @@ extern class ColumnComponent {
 	public function getCells():Array<CellComponent>;
 	public function getValue():Dynamic;
 	public function getField():String;
+	public function getDefinition():Dynamic;
 }
 typedef ColumnDefinition = {
 	var ?title : String;
@@ -69,4 +72,5 @@ typedef ColumnDefinition = {
 	var ?headerFilter : Dynamic;
 	var ?headerFilterParams : Dynamic;
 	var ?cellClick : Dynamic;
+	var ?validator : Dynamic;
 }

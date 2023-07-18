@@ -162,9 +162,10 @@ class Tabulator {
 			});
 		}
 
-		// tabulator.on("tableBuilt",(e) -> {
+		tabulator.on("tableBuilt",(e) -> {
 			// tabulator.redraw(false);
-		// });
+			tabulator.validate();
+		});
 
 		return tabulator;
 	}
@@ -247,6 +248,7 @@ class Tabulator {
 
 	public function createColumnDef(c:Column) {
 		var def:ColumnDefinition = {};
+		var validators:Array<EitherType<String, (CellComponent, Dynamic, Dynamic) -> Bool>> = [];
 		def.title = c.name;
 		def.field = c.name;
 		def.hozAlign = "center";
@@ -254,8 +256,12 @@ class Tabulator {
 		switch t {
 			case TId, TString:
 				def.editor = "input";
-			case TInt, TFloat:
+			case TInt:
 				def.editor = "number";
+				validators.push("integer");
+			case TFloat:
+				def.editor = "input";
+				validators.push("float");
 			case TTilePos:
 				def.formatter = tilePosFormatter;
 			case TBool:
@@ -324,8 +330,26 @@ class Tabulator {
 			case _:
 				// TODO editors
 		}
+		if (!c.opt) validators.push("required");
+		def.validator = validators;
 		return def;
 	}
+
+	function dynamicFormatter(cell:CellComponent, formatterParams, onRendered) {
+	    return sheet.base.valToString(TDynamic, cell.getValue());
+	}
+
+	function dynamicClick(e, cell:CellComponent) {
+		var content = new J("<span>");
+		var str = Json.stringify(cell.getValue(), null, "\t");
+		var te = new TextEditor(str, cell.getField(), null, LangJson, (value) -> {
+			   // TODO Handle JSON parsing errors
+			   var val = sheet.base.parseDynamic(value);
+			   cell.setValue(val);
+	   });
+	   return content.get(0);
+	}
+
 
 	function colorFormatter(cell:CellComponent, formatterParams, onRendered) {
 		var value = cell.getValue();
@@ -352,19 +376,6 @@ class Tabulator {
 		content.append(new J(Reflect.field(images, value)));
 		content.append(cell.getValue() ?? "");
 		return content.get(0);
-	}
-
-	function dynamicFormatter(cell:CellComponent, formatterParams, onRendered) {
-		return sheet.base.valToString(TDynamic, cell.getValue());
-	}
-
-	function dynamicClick(e, cell:CellComponent) {
-		var str = Json.stringify(cell.getValue(), null, "\t");
-		var te = new TextEditor(str, cell.getField(), null, LangJson, (value) -> {
-			// TODO Handle JSON parsing errors
-			var val = sheet.base.parseDynamic(value);
-			cell.setValue(val);
-		});
 	}
 
 	function listClick(e, cell:CellComponent) {
