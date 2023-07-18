@@ -4,8 +4,8 @@ import haxe.DynamicAccess;
 
 class EditTableDefs extends ui.modal.Panel {
 	var curSheet : Null<cdb.Sheet>;
-	var tabulatorView = true;
 	var tabulator : Null<Tabulator>;	
+	var simpleView = true;
 
 	public function new() {
 		super();
@@ -106,6 +106,8 @@ class EditTableDefs extends ui.modal.Panel {
 			return;
 		}
 		jTabForm.show();
+
+		var i = Input.linkToHtmlInput(simpleView, jTabForm.find("input[id='simpleView']"));
 		// Input.linkToHtmlInput(curSheet.name, jTabForm.find("input[name='name']") );
 		// i.linkEvent(TableDefChanged(curTable));
 
@@ -137,9 +139,11 @@ class EditTableDefs extends ui.modal.Panel {
 		if (tabulator != null) tabulator.tabulator.destroy();
 		jTabEditor.empty();
 
-		if (tabulatorView) {
-			tabulator = new Tabulator("#tableEditor", curSheet);
+		if (simpleView) {
+			var tableDefsForm = new ui.TableDefsForm(curSheet);
+			jTabEditor.append(tableDefsForm.jWrapper);
 		} else {
+			tabulator = new Tabulator("#tableEditor", curSheet);
 			// var tableDefsForm = new ui.TableDefsForm(curTable);
 			// jTabEditor.append(tableDefsForm.jWrapper);
 		}

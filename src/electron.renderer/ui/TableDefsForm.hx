@@ -1,6 +1,6 @@
 package ui;
 
-import h3d.scene.Skin.Joint;
+import cdb.Data.Column;
 
 class TableDefsForm {
 	var editor(get,never) : Editor; inline function get_editor() return Editor.ME;
@@ -8,22 +8,23 @@ class TableDefsForm {
 	public var jWrapper : js.jquery.JQuery;
 	var jList(get,never) : js.jquery.JQuery; inline function get_jList() return jWrapper.find("ul.rowList");
 	var jForm(get,never) : js.jquery.JQuery; inline function get_jForm() return jWrapper.find("dl.form");
-	var td : Null<data.def.TableDef>;
-	var curRow : Array<Dynamic>;
+	var sheet : cdb.Sheet;
+	var curLine : Null<Dynamic>;
 
 
-	public function new(td: Null<data.def.TableDef>) {
-		this.td = td;
-		this.curRow = td.data[0];
+	public function new(sheet:cdb.Sheet) {
+		this.sheet = sheet;
+		this.curLine = sheet.lines[0];
 
 		jWrapper = new J('<div class="tableDefsForm"/>');
 		jWrapper.html( JsTools.getHtmlTemplate("tableDefsForm"));
+		jWrapper.width("750px");
 
 		updateList();
 		updateForm();
 	}
-	public function selectRow(row) {
-		curRow = row;
+	public function selectLine(line) {
+		curLine = line;
 		updateList();
 		updateForm();
 	}
@@ -36,17 +37,18 @@ class TableDefsForm {
 		var jSubList = new J('<ul/>');
 		jSubList.appendTo(jLi);
 
-		var pki = td.columns.indexOf(td.primaryKey);
-		for(row in td.data) {
+	// 	var pki = td.columns.indexOf(td.primaryKey);
+		var displayCol = sheet.props.displayColumn ?? sheet.idCol.name;
+		for(line in sheet.lines) {
 			var jLi = new J("<li/>");
 			jLi.appendTo(jSubList);
-			jLi.append('<span class="table">'+row[pki]+'</span>');
+			jLi.append('<span class="table">'+Reflect.field(line, displayCol)+'</span>');
 			// jLi.data("uid",td.uid);
 
-			if( row==curRow )
+			if( line==curLine )
 				jLi.addClass("active");
 			jLi.click( function(_) {
-				selectRow(row);
+				selectLine(line);
 			});
 			ui.modal.ContextMenu.addTo(jLi, [
 				{
@@ -56,7 +58,7 @@ class TableDefsForm {
 			]);
 		}
 
-		// Make list sortable
+	// 	// Make list sortable
 		JsTools.makeSortable(jSubList, function(ev) {
 			// var jItem = new J(ev.item);
 			// var fromIdx = project.defs.getTableIndex( jItem.data("uid") );
@@ -68,27 +70,44 @@ class TableDefsForm {
 			// selectTable(moved);
 			// editor.ge.emit(TilesetDefSorted);
 		});
-		
 	}
+		
 	public function updateForm(){
-		if( curRow==null ) {
+		if( curLine==null ) {
 			jForm.hide();
 			return;
 		}
 		jForm.show();
 		jForm.empty();
-		for (i => column in td.columns) {
-			jForm.append('<dt><label for=$column>$column</label></dt><dd></dd>');
-			var jInput = new J('<input id=$column>');
-			jInput.attr("type", "text");
+		for (column in sheet.columns) {
+			var name = column.name;
+			jForm.append('<dt><label for=$name>$name</label></dt><dd></dd>');
+			var jInput = getEditor(column, curLine);
+			// var jInput = new J('<input type="text" id=$name>');
+			// jInput.attr("type", "text");
 
-			Input.linkToHtmlInput(curRow[i], jInput);
 			jInput.appendTo(jForm.find("dd").last());
 		}
-
 	}
-	public function deleteRow(row) {
-		//TODO
+
+	// }
+	// public function deleteRow(row) {
+	// 	//TODO
+	// }
+	function getEditor(column:Column, line:Dynamic) {
+		switch (column.type) {
+			case TString:
+				var jInput = new J("<input type='text'>");
+				jInput.val(Reflect.field(line, column.name));
+				jInput.change(e -> {
+					Reflect.setField(line, column.name, jInput.val());
+				});
+				return jInput;
+			case _:
+				var todo = new J("<span>");
+				todo[0].innerHTML = "TODO";
+				return todo;
+		}
 	}
 
 
