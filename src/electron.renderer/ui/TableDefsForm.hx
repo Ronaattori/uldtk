@@ -90,19 +90,22 @@ class TableDefsForm {
 		}
 	}
 
+	function inputEditor(column:Column, line:Dynamic) {
+		var jInput = new J("<input type='text'>");
+		jInput.val(Reflect.field(line, column.name));
+		jInput.change(e -> {
+			Reflect.setField(line, column.name, jInput.val());
+		});
+		return jInput;
+	}
 	// }
 	// public function deleteRow(row) {
 	// 	//TODO
 	// }
 	function getEditor(column:Column, line:Dynamic) {
 		switch (column.type) {
-			case TString:
-				var jInput = new J("<input type='text'>");
-				jInput.val(Reflect.field(line, column.name));
-				jInput.change(e -> {
-					Reflect.setField(line, column.name, jInput.val());
-				});
-				return jInput;
+			case TString, TId:
+				return inputEditor(column, line);
 			case _:
 				var todo = new J("<span>");
 				todo[0].innerHTML = "TODO";
