@@ -1,5 +1,7 @@
 package ui;
 
+import haxe.Json;
+import ui.modal.dialog.TextEditor;
 import cdb.Data.Column;
 
 class TableDefsForm {
@@ -98,6 +100,23 @@ class TableDefsForm {
 		});
 		return jInput;
 	}
+	function dynamicEditor(column:Column, line:Dynamic) {
+		var jInput = new J("<input type='text'>");
+		jInput.val(Reflect.field(line, column.name));
+		jInput.click(e -> {
+			new TextEditor(
+				Json.stringify(Reflect.field(line, column.name), null, "\t"),
+				column.name,
+				null,
+				LangJson,
+				(val) -> {
+					jInput.val(val);
+					Reflect.setField(line, column.name, sheet.base.parseDynamic(val));
+				}
+			);
+		});
+		return jInput;
+	}
 	// }
 	// public function deleteRow(row) {
 	// 	//TODO
@@ -106,6 +125,8 @@ class TableDefsForm {
 		switch (column.type) {
 			case TString, TId:
 				return inputEditor(column, line);
+			case TDynamic:
+				return dynamicEditor(column, line);
 			case _:
 				var todo = new J("<span>");
 				todo[0].innerHTML = "TODO";
