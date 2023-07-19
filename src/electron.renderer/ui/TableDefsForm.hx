@@ -84,11 +84,12 @@ class TableDefsForm {
 		for (column in sheet.columns) {
 			var name = column.name;
 			jForm.append('<dt><label for=$name>$name</label></dt><dd></dd>');
-			var jInput = getEditor(column, curLine);
+			var editor = getEditor(column, curLine);
 			// var jInput = new J('<input type="text" id=$name>');
 			// jInput.attr("type", "text");
 
-			jInput.appendTo(jForm.find("dd").last());
+			var tmp = new J("<span>");
+			editor.appendTo(jForm.find("dd").last());
 		}
 	}
 
@@ -99,6 +100,29 @@ class TableDefsForm {
 			Reflect.setField(line, column.name, jInput.val());
 		});
 		return jInput;
+	}
+	function selectEditor(column:Column, line:Dynamic) {
+		var jSelect = new J("<select>");
+		var options:Array<Dynamic> = switch (column.type) {
+			case TEnum(values):
+				values;
+			case _:
+				throw 'selectEditor cannot be used with ${column.type}';
+		}
+		if (column.opt) {
+			var jOpt = new js.html.Option("-- null --", null, true);
+			jSelect.append(jOpt);
+		}
+		var value:Int = Reflect.field(line, column.name);
+		for (i => option in options) {
+			var jOpt = new js.html.Option(option, option, false, i == value);
+			jSelect.append(jOpt);
+		}
+		jSelect.change(e -> {
+			var val = jSelect.val();
+			Reflect.setField(line, column.name, options.indexOf(val));
+		});
+		return jSelect;
 	}
 	function dynamicEditor(column:Column, line:Dynamic) {
 		var jInput = new J("<input type='text'>");
@@ -127,6 +151,8 @@ class TableDefsForm {
 				return inputEditor(column, line);
 			case TDynamic:
 				return dynamicEditor(column, line);
+			case TEnum(_):
+				return selectEditor(column, line);
 			case _:
 				var todo = new J("<span>");
 				todo[0].innerHTML = "TODO";
