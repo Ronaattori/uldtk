@@ -29,16 +29,14 @@ class Tabulator {
 	public var tabulator:Null<tabulator.Tabulator>;
 
 	public var sub:Null<Tabulator>;
-	public var parentCell:Null<CellComponent>;
+	public var parent:EitherType<CellComponent, Dynamic>;
 
-	public function new(element:EitherType<String, js.html.Element>, sheet:Sheet, ?parentCell:CellComponent) {
+	public function new(element:EitherType<String, js.html.Element>, sheet:Sheet, ?parent:EitherType<CellComponent, Dynamic>) {
 		this.element = new J(element);
-		this.parentCell = parentCell;
 		this.columns = sheet.columns;
 		this.columnTypes = [for (x in columns) x.name => x.type];
-		this.lines = parentCell == null ? sheet.getLines() : parentCell.getValue();
-		if (this.lines == null)
-			this.lines = [];
+		this.lines = sheet.getLines();
+		this.parent = parent;
 		this.sheet = sheet;
 		createTabulator();
 	}
@@ -152,15 +150,6 @@ class Tabulator {
 			var toIndex = tabulator.getColumns().indexOf(column) - 1; // The -1 is because of the "rownum" column
 			moveColumn(c, fromIndex, toIndex);
 		});
-
-		if (parentCell != null) {
-			// All the formatters write to this.lines, but we don't really want that for Sub Tabulators
-			// Just clear sheet.lines and copy table data to where it needs to be
-			tabulator.on("dataChanged", (c) -> {
-				sheet.lines.splice(0, sheet.lines.length);
-				parentCell.setValue(tabulator.getData());
-			});
-		}
 
 		tabulator.on("tableBuilt",(e) -> {
 			// tabulator.redraw(false);
@@ -388,7 +377,7 @@ class Tabulator {
 
 		// Close the old subTabulator if one exists and return if we're trying to open the same one
 		if (sub != null) {
-			if (sub.parentCell == cell) {
+			if (sub.sheet.name == subSheet.name) {
 				removeSubTabulator();
 				return;
 			}

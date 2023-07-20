@@ -163,10 +163,13 @@ class TableDefsForm {
 		});
 		return jInput;
 	}
-	// }
-	// public function deleteRow(row) {
-	// 	//TODO
-	// }
+	function listEditor(column:Column, line:Dynamic) {
+		var jContainer = new J("<div>");
+		var subSheet = sheet.getSub(column);
+		var tabualtor = new misc.Tabulator(jContainer.get(0), subSheet);
+		return jContainer;
+	}
+
 	function getEditor(column:Column, line:Dynamic) {
 		switch (column.type) {
 			case TString, TId:
@@ -175,6 +178,8 @@ class TableDefsForm {
 				return dynamicEditor(column, line);
 			case TEnum(_), TRef(_):
 				return selectEditor(column, line);
+			case TList:
+				return listEditor(column, line);
 			case _:
 				var todo = new J("<span>");
 				todo[0].innerHTML = "TODO";
