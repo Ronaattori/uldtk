@@ -35,9 +35,12 @@ class Tabulator {
 		this.element = new J(element);
 		this.columns = sheet.columns;
 		this.columnTypes = [for (x in columns) x.name => x.type];
-		this.lines = sheet.getLines();
 		this.parent = parent;
 		this.sheet = sheet;
+		this.lines = parent == null ? sheet.lines : getParentLines();
+		if (this.lines == null)
+			this.lines = [];
+		trace(lines.length);
 		createTabulator();
 	}
 
@@ -159,6 +162,20 @@ class Tabulator {
 		return tabulator;
 	}
 
+	function getParentLines() {
+		// TODO NONONONO NOT LIKE THIS
+		// Please fix this this is a TEMP FIX to handle getting lines from a parent
+		// Forgive me
+		var lines:Array<Dynamic> = [];
+		try {
+			var p:CellComponent = parent;
+			lines =  p.getValue();
+		} catch (e) {
+			var p:Dynamic = parent;
+			lines = Reflect.field(p, sheet.getParent().c);
+		}
+		return lines;
+	}
 	function moveLine(line:Dynamic, fromIndex:Int, toIndex:Int) {
 		lines.splice(fromIndex, 1); // Remove the original item
 		lines.insert(toIndex, line); // Add the same data to the new position

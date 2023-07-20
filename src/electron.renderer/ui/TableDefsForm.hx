@@ -166,7 +166,7 @@ class TableDefsForm {
 	function listEditor(column:Column, line:Dynamic) {
 		var jContainer = new J("<div>");
 		var subSheet = sheet.getSub(column);
-		var tabualtor = new misc.Tabulator(jContainer.get(0), subSheet);
+		var tabualtor = new misc.Tabulator(jContainer.get(0), subSheet, line);
 		return jContainer;
 	}
 
