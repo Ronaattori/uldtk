@@ -1,10 +1,11 @@
 package ui.modal.panel;
+
 import cdb.Data.ColumnType;
 import haxe.DynamicAccess;
 
 class EditTableDefs extends ui.modal.Panel {
-	var curSheet : Null<cdb.Sheet>;
-	var tabulator : Null<Tabulator>;	
+	var curSheet:Null<cdb.Sheet>;
+	var tabulator:Null<Tabulator>;
 	var inspectionView = true;
 
 	public function new() {
@@ -15,11 +16,11 @@ class EditTableDefs extends ui.modal.Panel {
 		loadTemplate("editTableDefs");
 
 		// Create a new table
-		jContent.find("button.createTable").click( function(ev) {
-			var getName = (i) -> i == 0 ? "Sheet" : 'Sheet${i+1}';
+		jContent.find("button.createTable").click(function(ev) {
+			var getName = (i) -> i == 0 ? "Sheet" : 'Sheet${i + 1}';
 			var i = 0;
 			while (project.database.getSheet(getName(i)) != null) {
-				i ++;
+				i++;
 			}
 			project.database.createSheet(getName(i));
 			updateTableList();
@@ -28,29 +29,31 @@ class EditTableDefs extends ui.modal.Panel {
 		});
 
 		// History
-		jContent.find("button.undo").click( ev->{
-			if (tabulator == null) return;
+		jContent.find("button.undo").click(ev -> {
+			if (tabulator == null)
+				return;
 			tabulator.tabulator.undo();
 		});
-		jContent.find("button.redo").click( ev->{
-			if (tabulator == null) return;
+		jContent.find("button.redo").click(ev -> {
+			if (tabulator == null)
+				return;
 			tabulator.tabulator.redo();
 		});
 
 		// Import
 
-		jContent.find("button.import").click( ev->{
+		jContent.find("button.import").click(ev -> {
 			var ctx = new ContextMenu(ev);
 			ctx.add({
 				label: L.t._("CDB - Import a CastleDB database"),
 				sub: L.t._('WARNING!!! Will rewrite current database'),
-				cb: ()->{
+				cb: () -> {
 					dn.js.ElectronDialogs.openFile([".cdb"], project.getProjectDir(), function(absPath:String) {
-						absPath = StringTools.replace(absPath,"\\","/");
-						switch dn.FilePath.extractExtension(absPath,true) {
+						absPath = StringTools.replace(absPath, "\\", "/");
+						switch dn.FilePath.extractExtension(absPath, true) {
 							case "cdb":
 								var i = new importer.CastleDb();
-								i.load( project.makeRelativeFilePath(absPath) );
+								i.load(project.makeRelativeFilePath(absPath));
 								updateTableList();
 							case _:
 								N.error('The file must have the ".cdb" extension.');
@@ -61,10 +64,10 @@ class EditTableDefs extends ui.modal.Panel {
 			ctx.add({
 				label: L.t._("CSV - Import Sheet"),
 				sub: L.t._('Expected format:\n - One entry per line\n - Fields separated by commas'),
-				cb: ()->{
+				cb: () -> {
 					dn.js.ElectronDialogs.openFile([".csv"], project.getProjectDir(), function(absPath:String) {
-						absPath = StringTools.replace(absPath,"\\","/");
-						switch dn.FilePath.extractExtension(absPath,true) {
+						absPath = StringTools.replace(absPath, "\\", "/");
+						switch dn.FilePath.extractExtension(absPath, true) {
 							case "csv":
 								var s = misc.Tabulator.importSheet("TODO", absPath);
 								selectTable(s);
@@ -75,7 +78,8 @@ class EditTableDefs extends ui.modal.Panel {
 				},
 			});
 		});
-		if (project.database == null) return;
+		if (project.database == null)
+			return;
 
 		if (project.database.sheets.length > 0) {
 			selectTable(project.database.sheets[0]);
@@ -101,13 +105,13 @@ class EditTableDefs extends ui.modal.Panel {
 	function updateTableForm() {
 		var jTabForm = jContent.find("dl.tableForm");
 
-		if( curSheet==null ) {
+		if (curSheet == null) {
 			jTabForm.hide();
 			return;
 		}
 		jTabForm.show();
 
-		var i = Input.linkToHtmlInput(inspectionView, jTabForm.find("input[id='simpleView']"));
+		var i = Input.linkToHtmlInput(inspectionView, jTabForm.find("input[id='inspectionView']"));
 		// Input.linkToHtmlInput(curSheet.name, jTabForm.find("input[name='name']") );
 		// i.linkEvent(TableDefChanged(curTable));
 
@@ -121,7 +125,7 @@ class EditTableDefs extends ui.modal.Panel {
 		// i.linkEvent(TableDefChanged(curTable));
 	}
 
-	function selectTable (sheet:cdb.Sheet) {
+	function selectTable(sheet:cdb.Sheet) {
 		curSheet = sheet;
 		updateTableList();
 		updateTableForm();
@@ -129,14 +133,15 @@ class EditTableDefs extends ui.modal.Panel {
 		var i = jContent.find("input[name=name]");
 		i.off();
 		i.val(sheet.name);
-		i.on("blur", (e)->{
+		i.on("blur", (e) -> {
 			sheet.rename(i.val());
 			Notification.success("Table renamed");
 			updateTableList();
 		});
 
 		var jTabEditor = jContent.find("#tableEditor");
-		if (tabulator != null) tabulator.tabulator.destroy();
+		if (tabulator != null)
+			tabulator.tabulator.destroy();
 		jTabEditor.empty();
 
 		if (inspectionView) {
@@ -150,7 +155,7 @@ class EditTableDefs extends ui.modal.Panel {
 	}
 
 	function deleteSheet(sheet:cdb.Sheet) {
-		new LastChance(L.t._("Table ::name:: deleted", { name:sheet.name }), project);
+		new LastChance(L.t._("Table ::name:: deleted", {name: sheet.name}), project);
 		sheet.base.deleteSheet(sheet);
 		if (project.database.sheets.length > 0) {
 			selectTable(project.database.sheets[0]);
@@ -158,7 +163,6 @@ class EditTableDefs extends ui.modal.Panel {
 	}
 
 	function updateTableList() {
-
 		var jList = jContent.find(".tableList>ul");
 		jList.empty();
 
@@ -170,12 +174,12 @@ class EditTableDefs extends ui.modal.Panel {
 		for (sheet in project.database.sheets.filter((x) -> !x.props.hide)) {
 			var jLi = new J("<li/>");
 			jLi.appendTo(jSubList);
-			jLi.append('<span class="table">'+sheet.name+'</span>');
+			jLi.append('<span class="table">' + sheet.name + '</span>');
 			// jLi.data("uid",td.uid);
 
-			if( sheet==curSheet )
+			if (sheet == curSheet)
 				jLi.addClass("active");
-			jLi.click( function(_) {
+			jLi.click(function(_) {
 				selectTable(sheet);
 			});
 

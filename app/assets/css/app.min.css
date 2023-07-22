@@ -6660,6 +6660,7 @@ dl.form.fieldInstanceEditor div.array button.remove {
   height: 100%;
   display: grid;
   grid-template-rows: min-content auto;
+  overflow: hidden;
 }
 .window.panel.editTableDefs .content .TableList ul {
   overflow: auto;
@@ -6682,6 +6683,7 @@ dl.form.fieldInstanceEditor div.array button.remove {
 }
 .window.panel.editTableDefs .content .rightColumn div#tableEditor {
   grid-row: 2/4;
+  overflow: hidden;
 }
 .window.panel.editTableDefs .content .rightColumn .historyButtons {
   height: fit-content;
@@ -6706,7 +6708,8 @@ dl.form.fieldInstanceEditor div.array button.remove {
 .tableDefsForm ul.rowList {
   overflow: auto;
   margin: 0;
-  grid-row: 2/3;
+  grid-column: 1;
+  grid-row: 2;
 }
 .tableDefsForm ul.rowList li {
   grid-template-columns: auto min-content min-content;
@@ -6715,8 +6718,8 @@ dl.form.fieldInstanceEditor div.array button.remove {
 }
 .tableDefsForm dl.form {
   overflow: auto;
-  grid-column: 2/3;
-  grid-row: 2/3;
+  grid-column: 2;
+  grid-row: 2;
 }
 .tableDefsForm dl.form input.type {
   font-family: "Courier New", Courier, monospace;
