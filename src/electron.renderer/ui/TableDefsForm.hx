@@ -21,6 +21,17 @@ class TableDefsForm {
 		jWrapper = new J('<div class="tableDefsForm"/>');
 		jWrapper.html( JsTools.getHtmlTemplate("tableDefsForm"));
 		jWrapper.width("750px");
+		
+		jWrapper.find(".createRow").click(e -> {
+			var l = sheet.newLine();
+			selectLine(l);
+		});
+		jWrapper.find(".createColumn").click(e -> {
+			// sheet.addColumn()
+			new ui.modal.dialog.CastleColumn(sheet, (c) -> {
+				updateForm();
+			});
+		});
 
 		updateList();
 		updateForm();

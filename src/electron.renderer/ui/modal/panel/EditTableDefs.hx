@@ -37,6 +37,12 @@ class EditTableDefs extends ui.modal.Panel {
 			tabulator.tabulator.redo();
 		});
 
+		// Refresh view on view change
+		var jButton = jContent.find("input[id='inspectionView']");
+		// jButton.change(e -> {
+		// 	selectTable(curSheet);
+		// });
+
 		// Import
 
 		jContent.find("button.import").click( ev->{
@@ -107,7 +113,8 @@ class EditTableDefs extends ui.modal.Panel {
 		}
 		jTabForm.show();
 
-		var i = Input.linkToHtmlInput(inspectionView, jTabForm.find("input[id='simpleView']"));
+		var jButton = jTabForm.find("input[id='inspectionView']");
+		var i = Input.linkToHtmlInput(inspectionView, jButton);
 		// Input.linkToHtmlInput(curSheet.name, jTabForm.find("input[name='name']") );
 		// i.linkEvent(TableDefChanged(curTable));
 
