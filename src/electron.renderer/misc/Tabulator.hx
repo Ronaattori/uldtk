@@ -40,7 +40,6 @@ class Tabulator {
 		this.lines = parent == null ? sheet.lines : getParentLines();
 		if (this.lines == null)
 			this.lines = [];
-		trace(lines.length);
 		createTabulator();
 	}
 

@@ -180,6 +180,14 @@ class TableDefsForm {
 		var tabualtor = new misc.Tabulator(jContainer.get(0), subSheet, line);
 		return jContainer;
 	}
+	function checkboxEditor(column:Column, line:Dynamic) {
+		var jInput = new J("<input type='checkbox'>");
+		jInput.prop("checked", Reflect.field(line, column.name));
+		jInput.change(d -> {
+			Reflect.setField(line, column.name, jInput.prop("checked"));
+		});
+		return jInput;
+	}
 
 	function getEditor(column:Column, line:Dynamic) {
 		switch (column.type) {
@@ -191,6 +199,8 @@ class TableDefsForm {
 				return selectEditor(column, line);
 			case TList:
 				return listEditor(column, line);
+			case TBool:
+				return checkboxEditor(column, line);
 			case _:
 				var todo = new J("<span>");
 				todo[0].innerHTML = "TODO";
