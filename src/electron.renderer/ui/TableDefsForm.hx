@@ -174,6 +174,25 @@ class TableDefsForm {
 		});
 		return jInput;
 	}
+	function imageEditor(column:Column, line:Dynamic) {
+		var value =  Reflect.field(line, column.name);
+		var select = JsTools.createTilesetSelect(Editor.ME.project, null, null, false, (uid) -> {
+			var td = Editor.ME.project.defs.getTilesetDef(uid);
+			var tp = misc.Tabulator.createTilePos(td);
+			Reflect.setField(line, column.name, tp);
+		});
+		if (value == null || (value != null && value.file == null))
+			return select;
+		var td = Editor.ME.project.defs.getTilesetDefFrom(value.file);
+		if (td == null)
+			return select;
+		var jPicker = JsTools.createTilePicker(td.uid, RectOnly, td.getTileIdsFromRect(misc.Tabulator.tilePosToTilesetRect(value, td)), true, (tileIds) -> {
+			var tilesetRect = td.getTileRectFromTileIds(tileIds);
+			Reflect.setField(line, column.name, misc.Tabulator.tilesetRectToTilePos(tilesetRect, td));
+		});
+		jPicker.css("flex", "unset");
+		return jPicker;
+	}
 	function listEditor(column:Column, line:Dynamic) {
 		var jContainer = new J("<div>");
 		var subSheet = sheet.getSub(column);
@@ -193,6 +212,8 @@ class TableDefsForm {
 		switch (column.type) {
 			case TString, TId:
 				return inputEditor(column, line);
+			case TTilePos:
+				return imageEditor(column, line);
 			case TDynamic:
 				return dynamicEditor(column, line);
 			case TEnum(_), TRef(_):

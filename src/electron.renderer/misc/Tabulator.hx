@@ -466,7 +466,7 @@ class Tabulator {
 		return tilesetRect;
 	}
 
-	function tilesetRectToTilePos(tilesetRect:TilesetRect, td:TilesetDef) {
+	public static function tilesetRectToTilePos(tilesetRect:TilesetRect, td:TilesetDef) {
 		var tilePos:TilePos = {
 			file: td.relPath,
 			size: td.tileGridSize,
@@ -478,7 +478,7 @@ class Tabulator {
 		return tilePos;
 	}
 
-	function createTilePos(td:TilesetDef) {
+	public static function createTilePos(td:TilesetDef) {
 		var tilePos:TilePos = {
 			file: td.relPath,
 			size: td.tileGridSize,
