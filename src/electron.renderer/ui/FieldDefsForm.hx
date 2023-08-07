@@ -109,7 +109,7 @@ class FieldDefsForm {
 						new ui.modal.dialog.Choice(
 							L.t._("This project contains no Sheets yet. You first need to create one from the Sheet panel."),
 							[
-								{ label:L.t._("Open sheet panel"), cb:()->new ui.modal.panel.EditTableDefs() }
+								{ label:L.t._("Open sheet panel"), cb:()->new ui.modal.panel.EditSheetDefs() }
 							]
 						);
 						return;

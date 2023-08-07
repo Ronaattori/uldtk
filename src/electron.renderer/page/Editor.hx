@@ -247,13 +247,13 @@ class Editor extends Page {
 				new ui.modal.panel.EditTilesetDefs();
 		});
 
-		jMainPanel.find("button.editTables").click(function(_) {
+		jMainPanel.find("button.editSheets").click(function(_) {
 			if (isPaused())
 				return;
-			if (ui.Modal.isOpen(ui.modal.panel.EditTableDefs))
+			if (ui.Modal.isOpen(ui.modal.panel.EditSheetDefs))
 				ui.Modal.closeAll();
 			else
-				new ui.modal.panel.EditTableDefs();
+				new ui.modal.panel.EditSheetDefs();
 		});
 
 		jMainPanel.find("button.editEnums").click(function(_) {

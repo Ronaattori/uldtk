@@ -4,7 +4,7 @@ import haxe.Json;
 import ui.modal.dialog.TextEditor;
 import cdb.Data.Column;
 
-class TableDefsForm {
+class SheetDefsForm {
 	var editor(get,never) : Editor; inline function get_editor() return Editor.ME;
 	var project(get,never) : data.Project; inline function get_project() return Editor.ME.project;
 	public var jWrapper : js.jquery.JQuery;
@@ -18,8 +18,8 @@ class TableDefsForm {
 		this.sheet = sheet;
 		this.curLine = sheet.lines[0];
 
-		jWrapper = new J('<div class="tableDefsForm"/>');
-		jWrapper.html( JsTools.getHtmlTemplate("tableDefsForm"));
+		jWrapper = new J('<div class="sheetDefsForm"/>');
+		jWrapper.html( JsTools.getHtmlTemplate("sheetDefsForm"));
 		jWrapper.width("750px");
 		
 		jWrapper.find(".createRow").click(e -> {

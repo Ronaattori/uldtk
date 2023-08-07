@@ -3,7 +3,7 @@ package ui.modal.panel;
 import cdb.Data.ColumnType;
 import haxe.DynamicAccess;
 
-class EditTableDefs extends ui.modal.Panel {
+class EditSheetDefs extends ui.modal.Panel {
 	var curSheet:Null<cdb.Sheet>;
 	var tabulator:Null<Tabulator>;
 	var inspectionView = true;
@@ -12,19 +12,19 @@ class EditTableDefs extends ui.modal.Panel {
 		super();
 
 		// Main page
-		linkToButton("button.editTables");
-		loadTemplate("editTableDefs");
+		linkToButton("button.editSheets");
+		loadTemplate("editSheetDefs");
 
 		// Create a new table
-		jContent.find("button.createTable").click(function(ev) {
+		jContent.find("button.createSheet").click(function(ev) {
 			var getName = (i) -> i == 0 ? "Sheet" : 'Sheet${i + 1}';
 			var i = 0;
 			while (project.database.getSheet(getName(i)) != null) {
 				i++;
 			}
 			project.database.createSheet(getName(i));
-			updateTableList();
-			updateTableForm();
+			updateSheetList();
+			updateSheetForm();
 			// editor.ge.emit(TableDefAdded(td));
 		});
 
@@ -44,7 +44,7 @@ class EditTableDefs extends ui.modal.Panel {
 		var jButton = jContent.find("input[id='inspectionView']");
 		var i = Input.linkToHtmlInput(inspectionView, jButton);
 		jButton.change(e -> {
-			selectTable(curSheet);
+			selectSheet(curSheet);
 		});
 
 		// Import
@@ -60,7 +60,7 @@ class EditTableDefs extends ui.modal.Panel {
 							case "cdb":
 								var i = new importer.CastleDb();
 								i.load(project.makeRelativeFilePath(absPath));
-								updateTableList();
+								updateSheetList();
 							case _:
 								N.error('The file must have the ".cdb" extension.');
 						}
@@ -76,7 +76,7 @@ class EditTableDefs extends ui.modal.Panel {
 						switch dn.FilePath.extractExtension(absPath, true) {
 							case "csv":
 								var s = misc.Tabulator.importSheet("TODO", absPath);
-								selectTable(s);
+								selectSheet(s);
 							case _:
 								N.error('The file must have the ".csv" extension.');
 						}
@@ -88,28 +88,28 @@ class EditTableDefs extends ui.modal.Panel {
 			return;
 
 		if (project.database.sheets.length > 0) {
-			selectTable(project.database.sheets[0]);
+			selectSheet(project.database.sheets[0]);
 			return;
 		}
-		updateTableList();
-		updateTableForm();
+		updateSheetList();
+		updateSheetForm();
 	}
 
 	override function onGlobalEvent(e:GlobalEvent) {
 		// super.onGlobalEvent(e);
 		// switch e {
 		// 	case TableDefAdded(td), TableDefChanged(td):
-		// 		selectTable(td);
+		// 		selectSheet(td);
 
 		// 	case TableDefRemoved(td):
-		// 		selectTable(project.defs.tables[0]);
+		// 		selectSheet(project.defs.tables[0]);
 
 		// 	case _:
 		// }
 	}
 
-	function updateTableForm() {
-		var jTabForm = jContent.find("dl.tableForm");
+	function updateSheetForm() {
+		var jTabForm = jContent.find("dl.sheetForm");
 
 		if (curSheet == null) {
 			jTabForm.hide();
@@ -130,45 +130,45 @@ class EditTableDefs extends ui.modal.Panel {
 		// i.linkEvent(TableDefChanged(curTable));
 	}
 
-	function selectTable(sheet:cdb.Sheet) {
+	function selectSheet(sheet:cdb.Sheet) {
 		curSheet = sheet;
-		updateTableList();
-		updateTableForm();
+		updateSheetList();
+		updateSheetForm();
 
 		var i = jContent.find("input[name=name]");
 		i.off();
 		i.val(sheet.name);
 		i.on("blur", (e) -> {
 			sheet.rename(i.val());
-			Notification.success("Table renamed");
-			updateTableList();
+			Notification.success("Sheet renamed");
+			updateSheetList();
 		});
 
-		var jTabEditor = jContent.find("#tableEditor");
+		var jTabEditor = jContent.find("#sheetEditor");
 		if (tabulator != null)
 			tabulator.tabulator.destroy();
 		jTabEditor.empty();
 
 		if (inspectionView) {
-			var tableDefsForm = new ui.TableDefsForm(curSheet);
-			jTabEditor.append(tableDefsForm.jWrapper);
+			var sheetDefsForm = new ui.SheetDefsForm(curSheet);
+			jTabEditor.append(sheetDefsForm.jWrapper);
 		} else {
-			tabulator = new Tabulator("#tableEditor", curSheet);
+			tabulator = new Tabulator("#sheetEditor", curSheet);
 			// var tableDefsForm = new ui.TableDefsForm(curTable);
 			// jTabEditor.append(tableDefsForm.jWrapper);
 		}
 	}
 
 	function deleteSheet(sheet:cdb.Sheet) {
-		new LastChance(L.t._("Table ::name:: deleted", {name: sheet.name}), project);
+		new LastChance(L.t._("Sheet ::name:: deleted", {name: sheet.name}), project);
 		sheet.base.deleteSheet(sheet);
 		if (project.database.sheets.length > 0) {
-			selectTable(project.database.sheets[0]);
+			selectSheet(project.database.sheets[0]);
 		}
 	}
 
-	function updateTableList() {
-		var jList = jContent.find(".tableList>ul");
+	function updateSheetList() {
+		var jList = jContent.find(".sheetList>ul");
 		jList.empty();
 
 		var jLi = new J('<li class="subList"/>');
@@ -185,7 +185,7 @@ class EditTableDefs extends ui.modal.Panel {
 			if (sheet == curSheet)
 				jLi.addClass("active");
 			jLi.click(function(_) {
-				selectTable(sheet);
+				selectSheet(sheet);
 			});
 
 			ContextMenu.addTo(jLi, [
@@ -236,7 +236,7 @@ class EditTableDefs extends ui.modal.Panel {
 			// 	: jItem.next().length==0 ? project.defs.tables.length-1 : project.defs.getTableIndex( jItem.next().data("uid") );
 
 			// var moved = project.defs.sortTableDef(fromIdx, toIdx);
-			// selectTable(moved);
+			// selectSheet(moved);
 			// editor.ge.emit(TilesetDefSorted);
 		});
 	}
