@@ -1,5 +1,6 @@
 package ui;
 
+import cdb.Data.ColumnType;
 import haxe.Json;
 import ui.modal.dialog.TextEditor;
 import cdb.Data.Column;
@@ -94,7 +95,7 @@ class SheetDefsForm {
 		jForm.empty();
 		for (column in sheet.columns) {
 			var name = column.name;
-			jForm.append('<dt><label for=editor_$name>$name</label></dt><dd></dd>');
+			jForm.append('<dt><label for=editor_$name>$name</label><div class="info">${getInfo(column.type)}<div/</dt><dd></dd>');
 			var editor = getEditor(column, curLine);
 			editor.attr("id", 'editor_$name');
 			editor.appendTo(jForm.find("dd").last());
@@ -224,6 +225,40 @@ class SheetDefsForm {
 				var todo = new J("<span>");
 				todo[0].innerHTML = "TODO";
 				return todo;
+		}
+	}
+	function getInfo(type:ColumnType) {
+		return switch (type) {
+			case TId:
+				"This is an unique identifier for the current row. It allows referencing this row from other sheets or columns. Unique identifiers must be valid code identifiers [A-Za-z_][A-Za-z0_9_]*";
+			case TString:
+				"Any text can be input into this column. CastleDB currently does not allow multiline text";
+			case TBool:
+				"A checkbox can be used to specify if the column is true or false";
+			case TInt:
+				"A integer number (which does not have fractional component)";
+			case TFloat:
+				"Any number";
+			case TColor:
+				"A numerical value that represents an RGB color";
+			case TEnum(_):
+				"An exclusive choice between a number of a given custom values. For example: Yes,No,Cancel,Error";
+			case TFlags(_):
+				"Several optional choices between a list of given custom values. For example: hasHat,hasShirt,hasShoes";
+			case TRef(_):
+				"A reference to another sheet row, using its unique idenfier";
+			case TFile:
+				"A relative or absolute path to a target file or image";
+			case TImage:
+				"An image to be displayed and stored in the database";
+			case TTilePos:
+				"A sub part of a tileset image";
+			case TList:
+				"A list of structured values";
+			case TDynamic:
+				"Any JSON data";
+			case _:
+				'No info for datatype $type';
 		}
 	}
 
