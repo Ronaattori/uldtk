@@ -94,8 +94,9 @@ class SheetDefsForm {
 		jForm.empty();
 		for (column in sheet.columns) {
 			var name = column.name;
-			jForm.append('<dt><label for=$name>$name</label></dt><dd></dd>');
+			jForm.append('<dt><label for=editor_$name>$name</label></dt><dd></dd>');
 			var editor = getEditor(column, curLine);
+			editor.attr("id", 'editor_$name');
 			editor.appendTo(jForm.find("dd").last());
 		}
 		JsTools.parseComponents(jForm);
