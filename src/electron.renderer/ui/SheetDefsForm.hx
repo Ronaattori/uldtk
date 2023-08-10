@@ -96,12 +96,9 @@ class SheetDefsForm {
 			var name = column.name;
 			jForm.append('<dt><label for=$name>$name</label></dt><dd></dd>');
 			var editor = getEditor(column, curLine);
-			// var jInput = new J('<input type="text" id=$name>');
-			// jInput.attr("type", "text");
-
-			var tmp = new J("<span>");
 			editor.appendTo(jForm.find("dd").last());
 		}
+		JsTools.parseComponents(jForm);
 	}
 
 	function inputEditor(column:Column, line:Dynamic) {
@@ -114,7 +111,7 @@ class SheetDefsForm {
 	}
 
 	function selectEditor(column:Column, line:Dynamic) {
-		var jSelect = new J("<select>");
+		var jSelect = new J("<select class='advanced'>");
 		var options = switch (column.type) {
 			case TEnum(values):
 				var opts = [];
