@@ -741,7 +741,7 @@ class JsTools {
 
 		// Advanced Selects
 		jCtx.find(".advancedSelect").remove();
-		jCtx.find("select.advanced:visible").each( (idx,e)->{
+		jCtx.find("select.advanced").each( (idx,e)->{
 			var jOldSelect = new J(e);
 
 			// Create advanced select & options
