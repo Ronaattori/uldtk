@@ -52,7 +52,7 @@ class SheetDefsForm {
 		jSubList.appendTo(jLi);
 
 	// 	var pki = td.columns.indexOf(td.primaryKey);
-		var displayCol = sheet.props.displayColumn ?? sheet.idCol.name;
+		var displayCol = sheet.props.displayColumn ?? sheet.idCol?.name;
 		for(line in sheet.lines) {
 			var jLi = new J("<li/>");
 			jLi.appendTo(jSubList);
