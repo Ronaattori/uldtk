@@ -95,10 +95,28 @@ class SheetDefsForm {
 		jForm.empty();
 		for (column in sheet.columns) {
 			var name = column.name;
-			jForm.append('<dt><label for=editor_$name>$name</label><div class="info">${getInfo(column.type)}<div/</dt><dd></dd>');
+			var jDt = new J("<dt>");
+			var jLabel = new J('<label for=editor_$name><button class="gray">$name</button></label>');
+			var jInfo = new J('<div class="info">${getInfo(column.type)}</div>)');
+			var jDd = new J("<dd>");
+			jForm.append(jDt);
+			jDt.append(jLabel);
+			jDt.append(jInfo);
+			jForm.append(jDd);
+
 			var editor = getEditor(column, curLine);
 			editor.attr("id", 'editor_$name');
-			editor.appendTo(jForm.find("dd").last());
+			editor.appendTo(jDd);
+			
+			jLabel.on("contextmenu", (e) -> {
+				var ctx = new ui.modal.ContextMenu(jLabel);
+				ctx.add({
+					label: new LocaleString("Edit column"),
+					cb: () -> new ui.modal.dialog.CastleColumn(sheet, column, (c) -> {
+						// TODO refresh page
+					})
+				});
+			});
 		}
 		JsTools.parseComponents(jForm);
 	}
