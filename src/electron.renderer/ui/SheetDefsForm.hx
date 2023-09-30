@@ -13,11 +13,13 @@ class SheetDefsForm {
 	var jForm(get,never) : js.jquery.JQuery; inline function get_jForm() return jWrapper.find("dl.form");
 	var sheet : cdb.Sheet;
 	var curLine : Null<Dynamic>;
+	public var castle:CastleWrapper;
 
 
 	public function new(sheet:cdb.Sheet) {
 		this.sheet = sheet;
 		this.curLine = sheet.lines[0];
+		this.castle = new CastleWrapper(sheet);
 
 		jWrapper = new J('<div class="sheetDefsForm"/>');
 		jWrapper.html( JsTools.getHtmlTemplate("sheetDefsForm"));

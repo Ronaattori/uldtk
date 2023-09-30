@@ -1,8 +1,6 @@
 package misc;
 
-import h3d.anim.Skin.Joint;
 import haxe.Timer;
-import js.html.Option;
 import data.def.TilesetDef;
 import ldtk.Json.TilesetRect;
 import cdb.Types.TilePos;
@@ -30,6 +28,8 @@ class Tabulator {
 
 	public var sub:Null<Tabulator>;
 	public var parent:EitherType<CellComponent, Dynamic>;
+	
+	public var castle:CastleWrapper;
 
 	public function new(element:EitherType<String, js.html.Element>, sheet:Sheet, ?parent:EitherType<CellComponent, Dynamic>) {
 		this.element = new J(element);
@@ -37,6 +37,7 @@ class Tabulator {
 		this.columnTypes = [for (x in columns) x.name => x.type];
 		this.parent = parent;
 		this.sheet = sheet;
+		this.castle = new CastleWrapper(sheet);
 		this.lines = parent == null ? sheet.lines : getParentLines();
 		if (this.lines == null)
 			this.lines = [];
@@ -89,56 +90,14 @@ class Tabulator {
 				case _:
 			}
 		});
+
+		castle.callbacks.onColumnAdd = (c) -> tabulator.addColumn(createColumnDef(c));
+		castle.callbacks.onColumnDelete = (c) -> tabulator.deleteColumn(c.name);
+		castle.callbacks.onColumnUpdate = (c) -> tabulator.updateColumnDefinition(c.name, createColumnDef(c));
 		tabulator.on("headerContext", (e, columnComponent:ColumnComponent) -> {
 			var column = getColumn(columnComponent);
-			var ctx = new ContextMenu(e);
-			ctx.add({
-				label: new LocaleString("Add column"),
-				cb: () -> new ui.modal.dialog.CastleColumn(sheet, (c) -> {
-					tabulator.addColumn(createColumnDef(c));
-				})
-			});
-			// The rest are only for existing columns
-			if (column != null) {
-				ctx.add({
-					label: new LocaleString("Edit column"),
-					cb: () -> new ui.modal.dialog.CastleColumn(sheet, column, (c) -> {
-						tabulator.updateColumnDefinition(c.name, createColumnDef(c));
-					})
-				});
-				switch column.type {
-					case TString:
-						var displayCol = sheet.props.displayColumn;
-						ctx.add({
-							label: new LocaleString("Set as display name"),
-							sub: new LocaleString(displayCol == column.name ? "Enabled" : "Disabled"),
-							cb: () -> {
-								sheet.props.displayColumn = displayCol == column.name ? null : column.name;
-							}
-						});
-					case TTileLayer, TTilePos, TImage:
-						var displayIcon = sheet.props.displayIcon;
-						ctx.add({
-							label: new LocaleString("Set as display icon"),
-							sub: new LocaleString(displayIcon == column.name ? "Enabled" : "Disabled"),
-							cb: () -> {
-								sheet.props.displayIcon = displayIcon == column.name ? null : column.name;
-							}
-						});
-					case _:
-				}
-				ctx.add({
-					label: L._Delete(),
-					cb: () -> {
-						sheet.deleteColumn(column.name);
-						tabulator.deleteColumn(column.name);
-					}
-				});
-			}
-			ctx.add({
-				label: new LocaleString("Add row"),
-				cb: () -> createRow()
-			});
+			castle.createContextMenu(e, column);
+
 		});
 		tabulator.on("rowMoved", (row:RowComponent) -> {
 			var data = row.getData();
