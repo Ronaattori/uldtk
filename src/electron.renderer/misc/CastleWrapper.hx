@@ -10,7 +10,8 @@ typedef CastleCallbacks = {
     var ?onColumnAdd: Column -> Void;
     var ?onColumnDelete: Column -> Void;
     var ?onColumnUpdate: Column -> Void;
-    var ?onLineAdd: Dynamic -> Void;
+    var ?onLineAdd: (Dynamic, Int) -> Void;
+    var ?onLineDelete: Int -> Void;
     var ?onDisplayIconUpdate: String -> Void;
     var ?onDisplayColumnUpdate: String -> Void;
 }
@@ -36,10 +37,7 @@ class CastleWrapper {
         });
         ctx.add({
             label: new LocaleString("Add line"),
-            cb: () -> {
-                var line = sheet.newLine();
-                if (this.callbacks.onLineAdd != null) this.callbacks.onLineAdd(line);
-            }
+            cb: () -> addLine()
         });
 
         // The rest are only for existing columns
@@ -85,4 +83,16 @@ class CastleWrapper {
         });
         return ctx;
     };
+
+	// Add a row before or after specified RowComponent
+    public function addLine(?index:Int) {
+        var line = sheet.newLine(index);
+        if (this.callbacks.onLineAdd != null) this.callbacks.onLineAdd(line, index);
+        return line;
+	}
+
+    public function deleteLine(index:Int) {
+        sheet.deleteLine(index);
+        if (this.callbacks.onLineDelete != null) this.callbacks.onLineDelete(index);
+    }
 }

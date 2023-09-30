@@ -59,6 +59,13 @@ class Tabulator {
 				maxWidth: 300,
 			},
 		});
+		// Set callbacks to update Tabulator on changes
+		castle.callbacks.onColumnAdd = (c) -> tabulator.addColumn(createColumnDef(c));
+		castle.callbacks.onColumnDelete = (c) -> tabulator.deleteColumn(c.name);
+		castle.callbacks.onColumnUpdate = (c) -> tabulator.updateColumnDefinition(c.name, createColumnDef(c));
+		castle.callbacks.onLineAdd = (line, i) -> tabulator.addRow(line, false, getRowComponent(i));
+		castle.callbacks.onLineDelete = (i) -> getRowComponent(i).delete();
+
 		(js.Browser.window : Dynamic).tabulator = tabulator; // TODO remove this when debugging isnt needed
 		tabulator.on("cellContext", (e, cell:CellComponent) -> {
 			var ctx = new ContextMenu(e);
@@ -66,18 +73,15 @@ class Tabulator {
 			var column = getColumn(cell.getColumn());
 			ctx.add({
 				label: new LocaleString("Add row before"),
-				cb: createRow.bind(row, true)
+				cb: () -> castle.addLine(row.getPosition() - 2)
 			});
 			ctx.add({
 				label: new LocaleString("Add row after"),
-				cb: createRow.bind(row, false)
+				cb: () -> castle.addLine(row.getPosition() - 1)
 			});
 			ctx.add({
 				label: new LocaleString("Delete row"),
-				cb: () -> {
-					sheet.deleteLine(row.getPosition() - 1);
-					row.delete();
-				}
+				cb: () -> castle.deleteLine(row.getPosition() - 1)
 			});
 			switch column.type {
 				case TTileLayer, TTilePos, TImage:
@@ -91,9 +95,6 @@ class Tabulator {
 			}
 		});
 
-		castle.callbacks.onColumnAdd = (c) -> tabulator.addColumn(createColumnDef(c));
-		castle.callbacks.onColumnDelete = (c) -> tabulator.deleteColumn(c.name);
-		castle.callbacks.onColumnUpdate = (c) -> tabulator.updateColumnDefinition(c.name, createColumnDef(c));
 		tabulator.on("headerContext", (e, columnComponent:ColumnComponent) -> {
 			var column = getColumn(columnComponent);
 			castle.createContextMenu(e, column);
@@ -118,6 +119,11 @@ class Tabulator {
 		});
 
 		return tabulator;
+	}
+
+	function getRowComponent(index:Int) {
+		var row = tabulator.element.querySelectorAll(".tabulator-row")[index];
+		return tabulator.getRow(row);
 	}
 
 	function getParentLines() {
@@ -198,17 +204,6 @@ class Tabulator {
 		}, 200);
 	}
 
-	// Add a row before or after specified RowComponent
-	function createRow(?row:RowComponent, before = false) {
-		if (row == null) {
-			var line = sheet.newLine();
-			tabulator.addRow(line, before).then(r -> animateComponent(r, "top"));
-		} else {
-			var castleIndex = before ? row.getPosition() - 1 : row.getPosition();
-			var line = sheet.newLine(castleIndex);
-			tabulator.addRow(line, before, row).then(r -> animateComponent(r, "top"));
-		}
-	}
 
 	public function createColumnDef(c:Column) {
 		var def:ColumnDefinition = {};

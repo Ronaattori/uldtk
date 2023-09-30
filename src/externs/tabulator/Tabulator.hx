@@ -1,5 +1,6 @@
 // Source: https://www.npmjs.com/package/tabulator-tables
 package tabulator;
+import js.html.Node;
 import js.jquery.Promise;
 import js.jquery.Event;
 import js.html.Element;
@@ -20,7 +21,9 @@ extern class Tabulator {
 	@:native("import")
 	public function _import(importFormat:Dynamic, accept:String):Promise;
 	public function getColumns():Array<ColumnComponent>;
-	public function addRow(data:Dynamic, addToTop:Bool, ?row:RowComponent):Promise;
+	public function addRow(data:Dynamic, addToTop:Bool, ?row:EitherType<RowComponent, Int>):Promise;
+	public function deleteRow(component:EitherType<RowComponent, Int>):Promise;
+	public function getRow(id:EitherType<String, Node>):RowComponent;
 	public function addColumn(definition:ColumnDefinition):Promise;
 	public function redraw(full:Bool):Void;
 	public function destroy():Void;
