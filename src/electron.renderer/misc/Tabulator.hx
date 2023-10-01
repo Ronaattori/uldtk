@@ -149,15 +149,6 @@ class Tabulator {
 		return null;
 	}
 
-	function animateComponent(component:Dynamic, direction:String) {
-		var el = component.getElement();
-		el.classList.add('grow-$direction');
-		Timer.delay(() -> {
-			el.classList.remove('grow-$direction');
-		}, 200);
-	}
-
-
 	public function createColumnDef(c:Column) {
 		var def:ColumnDefinition = {};
 		var validators:Array<EitherType<String, (CellComponent, Dynamic, Dynamic) -> Bool>> = [];
