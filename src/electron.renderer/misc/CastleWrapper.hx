@@ -95,4 +95,8 @@ class CastleWrapper {
         sheet.deleteLine(index);
         if (this.callbacks.onLineDelete != null) this.callbacks.onLineDelete(index);
     }
+    public function moveLine(line:Dynamic, fromIndex:Int, toIndex:Int) {
+		sheet.lines.splice(fromIndex, 1); // Remove the original item
+		sheet.lines.insert(toIndex, line); // Add the same data to the new position
+	}
 }

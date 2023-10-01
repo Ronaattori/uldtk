@@ -104,7 +104,7 @@ class Tabulator {
 			var data = row.getData();
 			var fromIndex = lines.indexOf(data);
 			var toIndex = row.getPosition() - 1; // getPosition index starts at 1
-			moveLine(data, fromIndex, toIndex);
+			castle.moveLine(data, fromIndex, toIndex);
 		});
 		tabulator.on("columnMoved", (column:ColumnComponent) -> {
 			var c = getColumn(column);
@@ -140,11 +140,6 @@ class Tabulator {
 		}
 		return lines;
 	}
-	function moveLine(line:Dynamic, fromIndex:Int, toIndex:Int) {
-		lines.splice(fromIndex, 1); // Remove the original item
-		lines.insert(toIndex, line); // Add the same data to the new position
-	}
-
 	function moveColumn(c:Column, fromIndex:Int, toIndex:Int) {
 		sheet.columns.splice(fromIndex, 1); // Remove the original item
 		sheet.columns.insert(toIndex, c); // Add the same data to the new position
