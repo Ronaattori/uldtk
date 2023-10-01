@@ -75,7 +75,7 @@ class EditSheetDefs extends ui.modal.Panel {
 						absPath = StringTools.replace(absPath, "\\", "/");
 						switch dn.FilePath.extractExtension(absPath, true) {
 							case "csv":
-								var s = misc.Tabulator.importSheet("TODO", absPath);
+								var s = misc.CastleWrapper.importSheet("TODO", absPath);
 								selectSheet(s);
 							case _:
 								N.error('The file must have the ".csv" extension.');

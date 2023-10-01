@@ -1,5 +1,7 @@
 package misc;
 
+import haxe.DynamicAccess;
+import thx.csv.Csv;
 import cdb.Sheet;
 import js.jquery.Event;
 import ui.modal.ContextMenu;
@@ -102,6 +104,43 @@ class CastleWrapper {
 	public function moveColumn(c:Column, fromIndex:Int, toIndex:Int) {
 		sheet.columns.splice(fromIndex, 1); // Remove the original item
 		sheet.columns.insert(toIndex, c); // Add the same data to the new position
+	}
+
+	public static function importSheet(type:String, absPath:String) {
+		var fileContent = NT.readFileString(absPath);
+		var table_name = absPath.split("/").pop();
+		var data:Array<Array<Dynamic>> = Csv.decode(fileContent);
+		var keys:Array<String> = data[0].map(Std.string);
+		data.shift(); // Remove keys from the array
+
+		var columns = [];
+		for (key in keys) {
+			var col:Column = {
+				name: key,
+				type: TString,
+				typeStr: null
+			}
+			// columns.push(createColumnDef(col));
+			columns.push(col);
+		}
+		var rows = [];
+		for (row in data) {
+			var obj:DynamicAccess<String> = {};
+			for (i => val in row) {
+				if (i > keys.length)
+					continue; // TODO Is this the desired behaviour to handle extra values on rows?
+				obj.set(keys[i], val);
+			}
+			rows.push(obj);
+		}
+		var s = Editor.ME.project.database.createSheet(table_name);
+		for (c in columns) {
+			s.addColumn(c);
+		}
+		for (l in rows) {
+			s.lines.push(l);
+		}
+		return s;
 	}
 
 }
