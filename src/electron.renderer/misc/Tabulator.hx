@@ -63,7 +63,7 @@ class Tabulator {
 		castle.callbacks.onColumnAdd = (c) -> tabulator.addColumn(createColumnDef(c));
 		castle.callbacks.onColumnDelete = (c) -> tabulator.deleteColumn(c.name);
 		castle.callbacks.onColumnUpdate = (c) -> tabulator.updateColumnDefinition(c.name, createColumnDef(c));
-		castle.callbacks.onLineAdd = (line, lineIndex) -> tabulator.addRow(line, false, getRowComponent(lineIndex));
+		castle.callbacks.onLineAdd = (line, lineIndex) -> tabulator.addRow(line, lineIndex < 0, getRowComponent(Std.int(Math.max(0, lineIndex))));
 		castle.callbacks.onLineDelete = (lineIndex) -> getRowComponent(lineIndex).delete();
 
 		(js.Browser.window : Dynamic).tabulator = tabulator; // TODO remove this when debugging isnt needed
