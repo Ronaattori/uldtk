@@ -110,7 +110,7 @@ class Tabulator {
 			var c = getColumn(column);
 			var fromIndex = sheet.columns.indexOf(c);
 			var toIndex = tabulator.getColumns().indexOf(column) - 1; // The -1 is because of the "rownum" column
-			moveColumn(c, fromIndex, toIndex);
+			castle.moveColumn(c, fromIndex, toIndex);
 		});
 
 		tabulator.on("tableBuilt",(e) -> {
@@ -140,11 +140,6 @@ class Tabulator {
 		}
 		return lines;
 	}
-	function moveColumn(c:Column, fromIndex:Int, toIndex:Int) {
-		sheet.columns.splice(fromIndex, 1); // Remove the original item
-		sheet.columns.insert(toIndex, c); // Add the same data to the new position
-	}
-
 	public static function importSheet(type:String, absPath:String) {
 		var fileContent = NT.readFileString(absPath);
 		var table_name = absPath.split("/").pop();

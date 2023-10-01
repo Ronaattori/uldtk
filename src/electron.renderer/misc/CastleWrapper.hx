@@ -99,4 +99,9 @@ class CastleWrapper {
 		sheet.lines.splice(fromIndex, 1); // Remove the original item
 		sheet.lines.insert(toIndex, line); // Add the same data to the new position
 	}
+	public function moveColumn(c:Column, fromIndex:Int, toIndex:Int) {
+		sheet.columns.splice(fromIndex, 1); // Remove the original item
+		sheet.columns.insert(toIndex, c); // Add the same data to the new position
+	}
+
 }
