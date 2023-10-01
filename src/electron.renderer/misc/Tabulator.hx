@@ -63,8 +63,8 @@ class Tabulator {
 		castle.callbacks.onColumnAdd = (c) -> tabulator.addColumn(createColumnDef(c));
 		castle.callbacks.onColumnDelete = (c) -> tabulator.deleteColumn(c.name);
 		castle.callbacks.onColumnUpdate = (c) -> tabulator.updateColumnDefinition(c.name, createColumnDef(c));
-		castle.callbacks.onLineAdd = (line, i) -> tabulator.addRow(line, false, getRowComponent(i));
-		castle.callbacks.onLineDelete = (i) -> getRowComponent(i).delete();
+		castle.callbacks.onLineAdd = (line, lineIndex) -> tabulator.addRow(line, false, getRowComponent(lineIndex));
+		castle.callbacks.onLineDelete = (lineIndex) -> getRowComponent(lineIndex).delete();
 
 		(js.Browser.window : Dynamic).tabulator = tabulator; // TODO remove this when debugging isnt needed
 		tabulator.on("cellContext", (e, cell:CellComponent) -> {
@@ -97,7 +97,7 @@ class Tabulator {
 
 		tabulator.on("headerContext", (e, columnComponent:ColumnComponent) -> {
 			var column = getColumn(columnComponent);
-			castle.createContextMenu(e, column);
+			castle.createHeaderContextMenu(e, column);
 
 		});
 		tabulator.on("rowMoved", (row:RowComponent) -> {

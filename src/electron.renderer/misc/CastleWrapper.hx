@@ -26,7 +26,7 @@ class CastleWrapper {
         this.callbacks = {};
     }
 
-	public function createContextMenu(?jNear:js.jquery.JQuery, ?openEvent:js.jquery.Event, column:Column) {
+	public function createHeaderContextMenu(?jNear:js.jquery.JQuery, ?openEvent:js.jquery.Event, column:Column) {
         var jEventTarget = jNear!=null ? jNear : new J(openEvent.target);
         var ctx = new ContextMenu(jEventTarget);
         ctx.add({
