@@ -244,15 +244,9 @@ class Tabulator {
 
 	function dynamicClick(e, cell:CellComponent) {
 		var content = new J("<span>");
-		var str = Json.stringify(cell.getValue(), null, "\t");
-		var te = new TextEditor(str, cell.getField(), null, LangJson, (value) -> {
-			   // TODO Handle JSON parsing errors
-			   var val = sheet.base.parseDynamic(value);
-			   cell.setValue(val);
-	   });
+	   castle.openDynamicEditor(cell.getValue(), cell.getField(), (val) -> cell.setValue(val));
 	   return content.get(0);
 	}
-
 
 	function colorFormatter(cell:CellComponent, formatterParams, onRendered) {
 		var value = cell.getValue();

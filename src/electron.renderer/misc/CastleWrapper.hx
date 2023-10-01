@@ -1,5 +1,7 @@
 package misc;
 
+import ui.modal.dialog.TextEditor;
+import haxe.Json;
 import haxe.DynamicAccess;
 import thx.csv.Csv;
 import cdb.Sheet;
@@ -142,5 +144,14 @@ class CastleWrapper {
 		}
 		return s;
 	}
+    public function openDynamicEditor(content:String, name:String, onChange: String -> Void) {
+		var str = Json.stringify(content, null, "\t");
+		var te = new TextEditor(str, name, null, LangJson, (value) -> {
+			   // TODO Handle JSON parsing errors
+			   var val = sheet.base.parseDynamic(value);
+               onChange(val);
+	   });
+
+    }
 
 }
