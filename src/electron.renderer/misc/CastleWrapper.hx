@@ -1,5 +1,8 @@
 package misc;
 
+import data.def.TilesetDef;
+import ldtk.Json.TilesetRect;
+import cdb.Types.TilePos;
 import ui.modal.dialog.TextEditor;
 import haxe.Json;
 import haxe.DynamicAccess;
@@ -96,10 +99,12 @@ class CastleWrapper {
 	}
 
     public function deleteLine(index:Int) {
+        // TODO maybe use the sheet. builtin functions
         sheet.deleteLine(index);
         if (this.callbacks.onLineDelete != null) this.callbacks.onLineDelete(index);
     }
     public function moveLine(line:Dynamic, fromIndex:Int, toIndex:Int) {
+        // TODO maybe use the sheet. builtin functions
 		sheet.lines.splice(fromIndex, 1); // Remove the original item
 		sheet.lines.insert(toIndex, line); // Add the same data to the new position
 	}
@@ -157,6 +162,61 @@ class CastleWrapper {
             subtree: true
         });
     }
+    function findLineById(id: Dynamic, ?otherSheet: Sheet){
+        var s = otherSheet == null ? sheet : otherSheet;
+        var idCol = s.idCol.name;
+        return s.lines.filter((line) -> Reflect.field(line, idCol) == id)[0];
+    }
+	public function tilePosToHtmlImg(tilePos:TilePos) {
+        var td = getTilesetDef(tilePos);
+		var img = td.createTileHtmlImageFromRect(tilePosToTilesetRect(tilePos, td));
+		return img;
+	}
+
+	// LDTK uses pixels for the grid and Castle how many'th tile it is
+    // TilesetRect == LDtk thing
+    // TilePos == Castle thing
+	public static function tilePosToTilesetRect(tilePos:TilePos, td:TilesetDef):TilesetRect {
+		var hei = tilePos.height != null ? tilePos.height : 1;
+		var wid = tilePos.width != null ? tilePos.width : 1;
+		var tilesetRect:TilesetRect = {
+			tilesetUid: td.uid,
+			h: hei * td.tileGridSize,
+			w: wid * td.tileGridSize,
+			y: tilePos.y * td.tileGridSize,
+			x: tilePos.x * td.tileGridSize,
+		};
+		return tilesetRect;
+	}
+
+	public static function tilesetRectToTilePos(tilesetRect:TilesetRect, td:TilesetDef) {
+		var tilePos:TilePos = {
+			file: td.relPath,
+			size: td.tileGridSize,
+			height: Std.int(tilesetRect.h / td.tileGridSize),
+			width: Std.int(tilesetRect.w / td.tileGridSize),
+			y: Std.int(tilesetRect.y / td.tileGridSize),
+			x: Std.int(tilesetRect.x / td.tileGridSize),
+		}
+		return tilePos;
+	}
+    public function getTilesetDef(tilePos: TilePos) {
+		if (tilePos.file == null)
+			return null;
+		return Editor.ME.project.defs.getTilesetDefFrom(tilePos.file);
+    }
+
+	public static function createTilePos(td:TilesetDef) {
+		var tilePos:TilePos = {
+			file: td.relPath,
+			size: td.tileGridSize,
+			height: null,
+			width: null,
+			y: 0,
+			x: 0,
+		};
+		return tilePos;
+	}
 
     public function openDynamicEditor(content:String, name:String, onChange: String -> Void) {
 		var str = Json.stringify(content, null, "\t");
@@ -165,7 +225,6 @@ class CastleWrapper {
 			   var val = sheet.base.parseDynamic(value);
                onChange(val);
 	   });
-
     }
     public function createColorEditor(?currentColor:Int, onChange: Null<Int> -> Void) {
 		var jColor = new J("<input type='color'/>");
@@ -176,5 +235,57 @@ class CastleWrapper {
         waitForElementReady(jColor, (parent) -> misc.JsTools.parseComponents(parent));
 		return jColor;
     }
+    public function createSelectEditor(curValue: String, column: cdb.Column, onChange: Dynamic -> Void) {
+        var select = new J("<select class='advanced'>");
+		var options:Array<{label:String, value:Dynamic, ?image:TilePos}> = switch (column.type) {
+			case TEnum(values):
+				var opts = [];
+				for (i => value in values) {
+					opts.push({
+						label: value,
+						value: i
+					});
+				}
+				opts;
+			case TRef(sheetName):
+				var opts = [];
+				var refSheet = sheet.base.getSheet(sheetName);
+                var idCol = refSheet.idCol.name;
+                var iconCol = refSheet.props.displayIcon;
+				var displayCol = refSheet.props.displayColumn ?? idCol;
+				for (line in refSheet.getLines()) {
+					opts.push({
+						label: Reflect.field(line, displayCol),
+						value: Reflect.field(line, idCol),
+                        image: Reflect.field(line, iconCol),
+					});
+				}
+				opts;
+			case _:
+				throw 'createSelectEditor cannot be used with ${column.type}';
+		}
+		if (column.opt) {
+			select.append(new js.html.Option("-- null --", null, true));
+		}
+        for (i => option in options) {
+            var jOpt = new js.html.Option(option.label, Std.string(i), false, option.value == curValue);
+            select.append(jOpt);
+            
+            if (option.image != null) {
+                var tp = option.image;
+                var td = getTilesetDef(tp);
+                var tilesetRect = tilePosToTilesetRect(tp, td);
+                jOpt.setAttribute("tile", haxe.Json.stringify(tilesetRect));
 
+            }
+        }
+		select.change(e -> {
+			var i = Std.parseInt(select.val());
+			var value = i != null ? options[i].value : null;
+            onChange(value);
+
+        });
+        waitForElementReady(select, (parent) -> misc.JsTools.parseComponents(parent));
+        return select;
+    }
 }

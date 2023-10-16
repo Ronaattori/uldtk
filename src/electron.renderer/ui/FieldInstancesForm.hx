@@ -665,7 +665,7 @@ class FieldInstancesForm {
 						var tp:cdb.Types.TilePos = Reflect.field(line, sheet.props.displayIcon);
 						if (tp != null && tp.file != null) {
 							var td = Editor.ME.project.defs.getTilesetDefFrom(tp.file);
-							jOpt.setAttribute("tile", haxe.Json.stringify(misc.Tabulator.tilePosToTilesetRect(tp, td)));
+							jOpt.setAttribute("tile", haxe.Json.stringify(CastleWrapper.tilePosToTilesetRect(tp, td)));
 						}
 					}
 					jSelect.append(jOpt);

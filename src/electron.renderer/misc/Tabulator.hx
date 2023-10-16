@@ -181,41 +181,44 @@ class Tabulator {
 			case TColor:
 				def.formatter = colorFormatter;
 			case TRef(sheetName):
-				var refSheet = sheet.base.getSheet(sheetName);
-				var idCol = refSheet.idCol.name;
-				var nameCol = refSheet.props.displayColumn ?? idCol;
-				var iconCol = refSheet.props.displayIcon;
-
-				var values = [];
-				var images = {};
-				for (line in refSheet.lines) {
-					var id = Reflect.field(line, idCol);
-					var image = iconCol != null ? tilePosToHtmlImg(Reflect.field(line, iconCol))[0].outerHTML : null;
-					Reflect.setField(images, id, image);
-					values.push({
-						label: Reflect.field(line, nameCol),
-						value: id,
-						line: line,
-						image: image
-					});
-				}
 				def.formatter = refFormatter;
-				def.formatterParams = {images: images}
-				def.editor = "list";
-				def.editorParams = {
-					values: values,
-					itemFormatter: (label, value, item, element) -> {
-						var content = new J("<span>");
-						if (item.image != null) {
-							content.append(new J(item.image));
-						}
-						content.append(label);
-						return content[0].outerHTML;
-					},
-					autocomplete: true,
-					listOnEmpty: true,
-					allowEmpty: c.opt
-				}
+				def.formatterParams = {column: c}
+				// def.editor = "refEditor";
+				// var refSheet = sheet.base.getSheet(sheetName);
+				// var idCol = refSheet.idCol.name;
+				// var nameCol = refSheet.props.displayColumn ?? idCol;
+				// var iconCol = refSheet.props.displayIcon;
+
+				// var values = [];
+				// var images = {};
+				// for (line in refSheet.lines) {
+				// 	var id = Reflect.field(line, idCol);
+				// 	var image = iconCol != null ? tilePosToHtmlImg(Reflect.field(line, iconCol))[0].outerHTML : null;
+				// 	Reflect.setField(images, id, image);
+				// 	values.push({
+				// 		label: Reflect.field(line, nameCol),
+				// 		value: id,
+				// 		line: line,
+				// 		image: image
+				// 	});
+				// }
+				// def.formatter = refFormatter;
+				// def.formatterParams = {images: images}
+				// def.editor = "list";
+				// def.editorParams = {
+				// 	values: values,
+				// 	itemFormatter: (label, value, item, element) -> {
+				// 		var content = new J("<span>");
+				// 		if (item.image != null) {
+				// 			content.append(new J(item.image));
+				// 		}
+				// 		content.append(label);
+				// 		return content[0].outerHTML;
+				// 	},
+				// 	autocomplete: true,
+				// 	listOnEmpty: true,
+				// 	allowEmpty: c.opt
+				// }
 
 			case TEnum(options):
 				def.editor = "list";
@@ -260,11 +263,8 @@ class Tabulator {
 	}
 
 	function refFormatter(cell:CellComponent, formatterParams, onRendered) {
-		var content = new J("<span>");
-		var value = cell.getValue();
-		var images = formatterParams.images;
-		content.append(new J(Reflect.field(images, value)));
-		content.append(cell.getValue() ?? "");
+		var column: Column = formatterParams.column;
+		var content = castle.createSelectEditor(cell.getValue(), column, (ref) -> cell.setValue(ref));
 		return content.get(0);
 	}
 
@@ -320,7 +320,7 @@ class Tabulator {
 		var values:TilePos = cell.getValue();
 		var select = JsTools.createTilesetSelect(Editor.ME.project, null, null, false, (uid) -> {
 			var td = Editor.ME.project.defs.getTilesetDef(uid);
-			var tp = createTilePos(td);
+			var tp = CastleWrapper.createTilePos(td);
 			cell.setValue(tp);
 		});
 		select.appendTo(tilesetSelect);
@@ -329,58 +329,12 @@ class Tabulator {
 		var td = Editor.ME.project.defs.getTilesetDefFrom(values.file);
 		if (td == null)
 			return tilesetSelect.get(0);
-		var jPicker = JsTools.createTilePicker(td.uid, RectOnly, td.getTileIdsFromRect(tilePosToTilesetRect(values, td)), true, (tileIds) -> {
+		var jPicker = JsTools.createTilePicker(td.uid, RectOnly, td.getTileIdsFromRect(CastleWrapper.tilePosToTilesetRect(values, td)), true, (tileIds) -> {
 			var tilesetRect = td.getTileRectFromTileIds(tileIds);
-			cell.setValue(tilesetRectToTilePos(tilesetRect, td));
+			cell.setValue(CastleWrapper.tilesetRectToTilePos(tilesetRect, td));
 		});
 		jPicker.appendTo(tileRectPicker);
 		return tileRectPicker.get(0);
 	}
 
-	// LDTK uses pixels for the grid and Castle how many'th tile it is
-	public static function tilePosToTilesetRect(tilePos:TilePos, td:TilesetDef):TilesetRect {
-		var hei = tilePos.height != null ? tilePos.height : 1;
-		var wid = tilePos.width != null ? tilePos.width : 1;
-		var tilesetRect:TilesetRect = {
-			tilesetUid: td.uid,
-			h: hei * td.tileGridSize,
-			w: wid * td.tileGridSize,
-			y: tilePos.y * td.tileGridSize,
-			x: tilePos.x * td.tileGridSize,
-		};
-		return tilesetRect;
-	}
-
-	public static function tilesetRectToTilePos(tilesetRect:TilesetRect, td:TilesetDef) {
-		var tilePos:TilePos = {
-			file: td.relPath,
-			size: td.tileGridSize,
-			height: Std.int(tilesetRect.h / td.tileGridSize),
-			width: Std.int(tilesetRect.w / td.tileGridSize),
-			y: Std.int(tilesetRect.y / td.tileGridSize),
-			x: Std.int(tilesetRect.x / td.tileGridSize),
-		}
-		return tilePos;
-	}
-
-	public static function createTilePos(td:TilesetDef) {
-		var tilePos:TilePos = {
-			file: td.relPath,
-			size: td.tileGridSize,
-			height: null,
-			width: null,
-			y: 0,
-			x: 0,
-		};
-		return tilePos;
-	}
-	function tilePosToHtmlImg(tilePos:TilePos) {
-		if (tilePos.file == null)
-			return null;
-		var td = Editor.ME.project.defs.getTilesetDefFrom(tilePos.file);
-		if (td == null)
-			return null;
-		var img = td.createTileHtmlImageFromRect(tilePosToTilesetRect(tilePos, td));
-		return img;
-	}
 }

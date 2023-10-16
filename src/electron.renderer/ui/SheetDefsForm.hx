@@ -132,50 +132,6 @@ class SheetDefsForm {
 		return jInput;
 	}
 
-	function selectEditor(column:Column, line:Dynamic) {
-		var jSelect = new J("<select class='advanced'>");
-		var options = switch (column.type) {
-			case TEnum(values):
-				var opts = [];
-				for (i => value in values) {
-					opts.push({
-						label: value,
-						value: i
-					});
-				}
-				opts;
-			case TRef(sheetName):
-				var opts = [];
-				var refSheet = sheet.base.getSheet(sheetName);
-				var nameCol = refSheet.props.displayColumn ?? refSheet.idCol.name;
-				for (line in refSheet.lines) {
-					opts.push({
-						label: Reflect.field(line, nameCol),
-						value: Reflect.field(line, refSheet.idCol.name)
-					});
-				}
-				opts;
-			case _:
-				throw 'selectEditor cannot be used with ${column.type}';
-
-		}
-		if (column.opt) {
-			var jOpt = new js.html.Option("-- null --", null, true);
-			jSelect.append(jOpt);
-		}
-		var cur = Reflect.field(line, column.name);
-		for (i => option in options) {
-			var jOpt = new js.html.Option(option.label, Std.string(i), false, option.value == cur);
-			jSelect.append(jOpt);
-		}
-		jSelect.change(e -> {
-			var i = Std.parseInt(jSelect.val());
-			var value = i != null ? options[i].value : null;
-			Reflect.setField(line, column.name, value);
-		});
-		return jSelect;
-	}
-
 	function dynamicEditor(column:Column, line:Dynamic) {
 		var jInput = new J("<input type='text'>");
 		jInput.val(Reflect.field(line, column.name));
@@ -197,7 +153,7 @@ class SheetDefsForm {
 		var value =  Reflect.field(line, column.name);
 		var select = JsTools.createTilesetSelect(Editor.ME.project, null, null, false, (uid) -> {
 			var td = Editor.ME.project.defs.getTilesetDef(uid);
-			var tp = misc.Tabulator.createTilePos(td);
+			var tp = CastleWrapper.createTilePos(td);
 			Reflect.setField(line, column.name, tp);
 		});
 		if (value == null || (value != null && value.file == null))
@@ -205,9 +161,9 @@ class SheetDefsForm {
 		var td = Editor.ME.project.defs.getTilesetDefFrom(value.file);
 		if (td == null)
 			return select;
-		var jPicker = JsTools.createTilePicker(td.uid, RectOnly, td.getTileIdsFromRect(misc.Tabulator.tilePosToTilesetRect(value, td)), true, (tileIds) -> {
+		var jPicker = JsTools.createTilePicker(td.uid, RectOnly, td.getTileIdsFromRect(CastleWrapper.tilePosToTilesetRect(value, td)), true, (tileIds) -> {
 			var tilesetRect = td.getTileRectFromTileIds(tileIds);
-			Reflect.setField(line, column.name, misc.Tabulator.tilesetRectToTilePos(tilesetRect, td));
+			Reflect.setField(line, column.name, CastleWrapper.tilesetRectToTilePos(tilesetRect, td));
 		});
 		jPicker.css("flex", "unset");
 		return jPicker;
@@ -228,6 +184,7 @@ class SheetDefsForm {
 	}
 
 	function getEditor(column:Column, line:Dynamic) {
+		var thisCol = column.name;
 		switch (column.type) {
 			case TString, TId:
 				return inputEditor(column, line);
@@ -236,7 +193,9 @@ class SheetDefsForm {
 			case TDynamic:
 				return dynamicEditor(column, line);
 			case TEnum(_), TRef(_):
-				return selectEditor(column, line);
+				return castle.createSelectEditor(Reflect.field(line, thisCol), column, (val) -> {
+					Reflect.setField(line, thisCol, val);
+				});
 			case TList:
 				return listEditor(column, line);
 			case TBool:
@@ -281,6 +240,5 @@ class SheetDefsForm {
 				'No info for datatype $type';
 		}
 	}
-
 
 }
