@@ -246,15 +246,11 @@ class Tabulator {
 	}
 
 	function dynamicClick(e, cell:CellComponent) {
-		var content = new J("<span>");
 	   castle.openDynamicEditor(cell.getValue(), cell.getField(), (val) -> cell.setValue(val));
-	   return content.get(0);
 	}
 
 	function colorFormatter(cell:CellComponent, formatterParams, onRendered) {
-		var editor = castle.createColorEditor(Std.parseInt(cell.getValue()), (val) -> {
-			cell.setValue(val);
-		});
+		var editor = castle.createColorEditor(Std.parseInt(cell.getValue()), (val) -> cell.setValue(val));
 		return editor.get(0);
 	}
 

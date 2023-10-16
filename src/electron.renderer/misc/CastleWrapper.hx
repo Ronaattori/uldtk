@@ -32,7 +32,84 @@ class CastleWrapper {
 		this.sheet = sheet;
         this.callbacks = {};
     }
+    //
+    // Utility functions
+    //
+    function waitForElementReady(element:JQuery, onReady: JQuery -> Void) {
+        var mutationObserver = new js.html.MutationObserver((mutations, observer) -> { 
+            var node = cast (element.get(0), js.html.Node);
+            if (js.Browser.document.contains(node)) {
+                onReady(new J(node.parentElement));
+                observer.disconnect();
+            }
+        });
+        mutationObserver.observe(js.Browser.document, {
+            childList: true,
+            subtree: true
+        });
+    }
+    function findLineById(id: Dynamic, ?otherSheet: Sheet){
+        var s = otherSheet == null ? sheet : otherSheet;
+        var idCol = s.idCol.name;
+        return s.lines.filter((line) -> Reflect.field(line, idCol) == id)[0];
+    }
+	public function tilePosToHtmlImg(tilePos:TilePos) {
+        var td = getTilesetDef(tilePos);
+		var img = td.createTileHtmlImageFromRect(tilePosToTilesetRect(tilePos, td));
+		return img;
+	}
 
+	// LDTK uses pixels for the grid and Castle how many'th tile it is
+    // TilesetRect == LDtk thing
+    // TilePos == Castle thing
+	public static function tilePosToTilesetRect(tilePos:TilePos, td:TilesetDef):TilesetRect {
+		var hei = tilePos.height != null ? tilePos.height : 1;
+		var wid = tilePos.width != null ? tilePos.width : 1;
+		var tilesetRect:TilesetRect = {
+			tilesetUid: td.uid,
+			h: hei * td.tileGridSize,
+			w: wid * td.tileGridSize,
+			y: tilePos.y * td.tileGridSize,
+			x: tilePos.x * td.tileGridSize,
+		};
+		return tilesetRect;
+	}
+
+	public static function tilesetRectToTilePos(tilesetRect:TilesetRect, td:TilesetDef) {
+		var tilePos:TilePos = {
+			file: td.relPath,
+			size: td.tileGridSize,
+			height: Std.int(tilesetRect.h / td.tileGridSize),
+			width: Std.int(tilesetRect.w / td.tileGridSize),
+			y: Std.int(tilesetRect.y / td.tileGridSize),
+			x: Std.int(tilesetRect.x / td.tileGridSize),
+		}
+		return tilePos;
+	}
+    public function getTilesetDef(tilePos: TilePos) {
+		if (tilePos.file == null)
+			return null;
+		return Editor.ME.project.defs.getTilesetDefFrom(tilePos.file);
+    }
+
+	public static function createTilePos(td:TilesetDef) {
+		var tilePos:TilePos = {
+			file: td.relPath,
+			size: td.tileGridSize,
+			height: null,
+			width: null,
+			y: 0,
+			x: 0,
+		};
+		return tilePos;
+	}
+    
+
+
+
+    //
+    // Stuff to interact with the database
+    //
 	public function createHeaderContextMenu(?jNear:js.jquery.JQuery, ?openEvent:js.jquery.Event, column:Column) {
         var jEventTarget = jNear!=null ? jNear : new J(openEvent.target);
         var ctx = new ContextMenu(jEventTarget);
@@ -148,74 +225,6 @@ class CastleWrapper {
 			s.lines.push(l);
 		}
 		return s;
-	}
-    function waitForElementReady(element:JQuery, onReady: JQuery -> Void) {
-        var mutationObserver = new js.html.MutationObserver((mutations, observer) -> { 
-            var node = cast (element.get(0), js.html.Node);
-            if (js.Browser.document.contains(node)) {
-                onReady(new J(node.parentElement));
-                observer.disconnect();
-            }
-        });
-        mutationObserver.observe(js.Browser.document, {
-            childList: true,
-            subtree: true
-        });
-    }
-    function findLineById(id: Dynamic, ?otherSheet: Sheet){
-        var s = otherSheet == null ? sheet : otherSheet;
-        var idCol = s.idCol.name;
-        return s.lines.filter((line) -> Reflect.field(line, idCol) == id)[0];
-    }
-	public function tilePosToHtmlImg(tilePos:TilePos) {
-        var td = getTilesetDef(tilePos);
-		var img = td.createTileHtmlImageFromRect(tilePosToTilesetRect(tilePos, td));
-		return img;
-	}
-
-	// LDTK uses pixels for the grid and Castle how many'th tile it is
-    // TilesetRect == LDtk thing
-    // TilePos == Castle thing
-	public static function tilePosToTilesetRect(tilePos:TilePos, td:TilesetDef):TilesetRect {
-		var hei = tilePos.height != null ? tilePos.height : 1;
-		var wid = tilePos.width != null ? tilePos.width : 1;
-		var tilesetRect:TilesetRect = {
-			tilesetUid: td.uid,
-			h: hei * td.tileGridSize,
-			w: wid * td.tileGridSize,
-			y: tilePos.y * td.tileGridSize,
-			x: tilePos.x * td.tileGridSize,
-		};
-		return tilesetRect;
-	}
-
-	public static function tilesetRectToTilePos(tilesetRect:TilesetRect, td:TilesetDef) {
-		var tilePos:TilePos = {
-			file: td.relPath,
-			size: td.tileGridSize,
-			height: Std.int(tilesetRect.h / td.tileGridSize),
-			width: Std.int(tilesetRect.w / td.tileGridSize),
-			y: Std.int(tilesetRect.y / td.tileGridSize),
-			x: Std.int(tilesetRect.x / td.tileGridSize),
-		}
-		return tilePos;
-	}
-    public function getTilesetDef(tilePos: TilePos) {
-		if (tilePos.file == null)
-			return null;
-		return Editor.ME.project.defs.getTilesetDefFrom(tilePos.file);
-    }
-
-	public static function createTilePos(td:TilesetDef) {
-		var tilePos:TilePos = {
-			file: td.relPath,
-			size: td.tileGridSize,
-			height: null,
-			width: null,
-			y: 0,
-			x: 0,
-		};
-		return tilePos;
 	}
 
     public function openDynamicEditor(content:String, name:String, onChange: String -> Void) {
