@@ -838,7 +838,7 @@ ul.niceList li:not(.title, .subList).subList ul > li {
   overflow: hidden;
 }
 ul.niceList li:not(.title, .subList):not(.active):hover {
-  outline: 1px solid rgba(255, 255, 255, 0.65);
+  outline: 2px solid rgba(255, 255, 255, 0.65);
   outline-offset: -2px;
 }
 ul.niceList li:not(.title, .subList) button.context {
@@ -1123,6 +1123,10 @@ ul.log li.opChecksumUpdated {
   background-image: url("../icons/delete.svg");
 }
 
+.icon.deleteIcon {
+  background-image: url("../icons/deleteIcon.svg");
+}
+
 .icon.embed {
   background-image: url("../icons/embed.svg");
 }
@@ -1231,6 +1235,10 @@ ul.log li.opChecksumUpdated {
   background-image: url("../icons/history.svg");
 }
 
+.icon.pickIcon {
+  background-image: url("../icons/pickIcon.svg");
+}
+
 .icon.inactive {
   background-image: url("../icons/inactive.png");
 }
@@ -1263,6 +1271,14 @@ ul.log li.opChecksumUpdated {
   background-image: url("../icons/locate.svg");
 }
 
+.icon.link {
+  background-image: url("../icons/link.svg");
+}
+
+.icon.lock {
+  background-image: url("../icons/lock.svg");
+}
+
 .icon.love {
   background-image: url("../icons/love.svg");
 }
@@ -1281,6 +1297,14 @@ ul.log li.opChecksumUpdated {
 
 .icon.open {
   background-image: url("../icons/open.svg");
+}
+
+.icon.optional {
+  background-image: url("../icons/optional.svg");
+}
+
+.icon.outOfBounds {
+  background-image: url("../icons/outOfBounds.svg");
 }
 
 .icon.partial {
@@ -1375,6 +1399,14 @@ ul.log li.opChecksumUpdated {
   background-image: url("../icons/tutorial.svg");
 }
 
+.icon.unlink {
+  background-image: url("../icons/unlink.svg");
+}
+
+.icon.unlock {
+  background-image: url("../icons/unlock.svg");
+}
+
 .icon.update {
   background-image: url("../icons/update.svg");
 }
@@ -1391,16 +1423,52 @@ ul.log li.opChecksumUpdated {
   background-image: url("../icons/web.svg");
 }
 
+.icon.wizard {
+  background-image: url("../icons/wizard.svg");
+}
+
 .icon.world {
   background-image: url("../icons/world.svg");
 }
 
-.icon.right {
-  background-image: url("../icons/arrow_right.svg");
+.icon.zen {
+  background-image: url("../icons/zen.svg");
 }
 
 .icon.up {
-  background-image: url("../icons/arrow_up.svg");
+  background-image: url("../icons/up.svg");
+}
+
+.icon.down {
+  background-image: url("../icons/down.svg");
+}
+
+.icon.left {
+  background-image: url("../icons/left.svg");
+}
+
+.icon.right {
+  background-image: url("../icons/right.svg");
+}
+
+.icon.mouseLeft {
+  background-image: url("../icons/mouseLeft.png");
+  image-rendering: pixelated;
+}
+
+.icon.mouseRight {
+  background-image: url("../icons/mouseRight.png");
+  image-rendering: pixelated;
+}
+
+.icon.mouseWheel {
+  background-image: url("../icons/mouseWheel.png");
+  image-rendering: pixelated;
+}
+
+.icon.mouseMiddle {
+  background-image: url("../icons/mouseMiddle.png");
+  image-rendering: pixelated;
 }
 
 .icon.loading {
@@ -1561,15 +1629,25 @@ div.entityRef + .entityRef {
 }
 
 .icon.entityPreview {
-  display: grid;
-  justify-items: center;
-  align-items: center;
   width: auto;
   height: auto;
   overflow: hidden;
-  padding: 2px;
-  background-color: #2e333f;
-  border-radius: 3px;
+  object-fit: cover;
+  outline-offset: -1px;
+}
+.icon.entityPreview canvas {
+  width: 100%;
+  height: 100%;
+  image-rendering: auto;
+}
+.icon.entityPreview.hasBg {
+  padding: 1px;
+  box-sizing: border-box;
+}
+.icon.entityPreview img {
+  width: 100%;
+  height: 100%;
+  image-rendering: pixelated;
 }
 
 .pivotEditor {
@@ -1922,6 +2000,43 @@ dl.form > dd input[type=color].null:hover {
 dl.form > dd input[type=color]:hover {
   outline: 1px solid #ffcc00;
 }
+dl.form > dd .colorButton {
+  display: grid;
+  grid-template-columns: auto min-content;
+  height: 32px;
+  min-width: 64px;
+  flex: 0 1 64px;
+  cursor: pointer;
+  box-sizing: border-box;
+  border: 4px solid #1e2229;
+  outline: 1px solid #737f9d;
+  outline-offset: -2px;
+}
+dl.form > dd .colorButton .curColor {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+dl.form > dd .colorButton .curColor .icon {
+  opacity: 0.5;
+}
+dl.form > dd .colorButton .curColor:not(.null) .icon {
+  display: none;
+}
+dl.form > dd .colorButton .curColor.null {
+  background-color: #2e333f;
+  background-image: url("../img/stripes.png");
+}
+dl.form > dd .colorButton .reset {
+  padding: 0;
+  margin: 0;
+}
+dl.form > dd .colorButton .reset .icon {
+  height: 85%;
+}
+dl.form > dd .colorButton:hover {
+  outline: 1px solid #ffcc00;
+}
 dl.form > dd > span {
   margin: 3px;
   flex: 0 0 8px;
@@ -2108,6 +2223,18 @@ select.required:not(:focus) {
 .window.dialog.selectPicker .wrapper .content .values.grid.grid-6 {
   grid-template-columns: repeat(6, 1fr);
 }
+.window.dialog.selectPicker .wrapper .content .values.grid.grid-7 {
+  grid-template-columns: repeat(7, 1fr);
+}
+.window.dialog.selectPicker .wrapper .content .values.grid.grid-8 {
+  grid-template-columns: repeat(8, 1fr);
+}
+.window.dialog.selectPicker .wrapper .content .values.grid.grid-9 {
+  grid-template-columns: repeat(9, 1fr);
+}
+.window.dialog.selectPicker .wrapper .content .values.grid.grid-10 {
+  grid-template-columns: repeat(10, 1fr);
+}
 .window.dialog.selectPicker .wrapper .content .values.grid.hasImg .value {
   display: grid;
   grid-template-columns: auto;
@@ -2125,6 +2252,15 @@ select.required:not(:focus) {
   width: 48px;
   height: 48px;
 }
+.window.dialog.selectPicker .wrapper .content .values.grid.hasImg .value.default {
+  gap: 4px;
+  grid-template-rows: auto;
+  grid-template-columns: min-content min-content;
+}
+.window.dialog.selectPicker .wrapper .content .values.grid.hasImg .value.default img {
+  width: 24px;
+  height: auto;
+}
 .window.dialog.selectPicker .wrapper .content .values.hasImg .value {
   grid-template-columns: min-content auto;
 }
@@ -2137,6 +2273,16 @@ select.required:not(:focus) {
   align-items: center;
   cursor: pointer;
   white-space: nowrap;
+}
+.window.dialog.selectPicker .wrapper .content .values .value.default {
+  gap: 4px;
+  grid-column: 1/-1;
+  justify-content: center;
+  font-style: italic;
+  font-size: 9pt;
+}
+.window.dialog.selectPicker .wrapper .content .values .value.default:not(.selected) {
+  opacity: 0.7;
 }
 .window.dialog.selectPicker .wrapper .content .values .value + .value {
   border-top: 1px solid #737f9d;
@@ -2378,7 +2524,7 @@ textarea:focus {
 }
 .namePatternEditor .pattern .block {
   flex: 0 1 0px;
-  padding: 3px;
+  padding: 3px 2px;
   min-height: 1ch;
   font-size: 9pt;
   white-space: nowrap;
@@ -2406,7 +2552,8 @@ textarea:focus {
   border-color: white;
 }
 .namePatternEditor .pattern .block.empty {
-  min-width: 0.4ch;
+  padding: 0;
+  min-width: 0.2ch;
 }
 .namePatternEditor .pattern .block.empty:hover {
   min-width: 1ch;
@@ -2444,7 +2591,7 @@ textarea:focus {
   flex: 0 1 0px;
   white-space: nowrap;
 }
-.namePatternEditor .pattern.sorting .fixed {
+.namePatternEditor .pattern.sorting .block:not(.draggable) {
   display: none;
 }
 .namePatternEditor .stocks .stock {
@@ -2841,11 +2988,6 @@ textarea:focus {
   width: calc(100vw - 300px);
   left: 300px;
 }
-.compactPanel .window.panel .mask {
-  width: calc(100vw - 80px);
-  left: 80px;
-}
-
 .window.panel button.close {
   width: auto;
   height: auto;
@@ -2864,10 +3006,6 @@ textarea:focus {
 .window.panel button.close:hover {
   background-color: white;
 }
-.compactPanel .window.panel > button.close {
-  top: 65px;
-}
-
 .window.panel > .wrapper {
   top: 0px;
   left: 0px;
@@ -3025,42 +3163,43 @@ textarea:focus {
   height: 100%;
 }
 
-.window.buy .mask {
-  background-color: rgba(0, 0, 0, 0.8);
+.window.support .mask {
+  background-color: rgba(84, 93, 115, 0.8);
 }
-.window.buy .wrapper {
+.window.support .wrapper {
   border-radius: 8px;
   box-shadow: 0px 0px 48px black;
+  background-color: #1e2229;
 }
-.window.buy .wrapper .content {
+.window.support .wrapper .content {
   width: 700px;
 }
-.window.buy .wrapper .content h2 {
+.window.support .wrapper .content h2 {
   background-color: black;
   border: 0px;
 }
-.window.buy .wrapper .content header {
+.window.support .wrapper .content header {
   display: grid;
   justify-items: center;
   align-items: center;
   margin: -20px;
   margin-bottom: 16px;
-  padding: 8px;
-  background-color: #1e2229;
-  background-image: url(../img/githubBanner.png);
+  padding: 32px 64px;
+  background-color: black;
+}
+.window.support .wrapper .content header .bgWrapper {
+  width: 100%;
+  background-image: url(../img/deepnight.png);
   background-position: center;
-  background-size: cover;
+  background-size: contain;
+  background-repeat: no-repeat;
   min-height: 300px;
 }
-.window.buy .wrapper .content header .icon {
-  width: 100px;
-  height: 100px;
-}
-.window.buy .wrapper .content p {
+.window.support .wrapper .content p {
   margin-top: 16px;
   margin-bottom: 16px;
 }
-.window.buy .wrapper .content .title {
+.window.support .wrapper .content .title {
   margin-top: 32px;
   margin-bottom: 32px;
   color: #ffcc00;
@@ -3068,10 +3207,10 @@ textarea:focus {
   font-weight: bold;
   text-align: center;
 }
-.window.buy .wrapper .content .title p {
+.window.support .wrapper .content .title p {
   margin: 0;
 }
-.window.buy .wrapper .content .buttons {
+.window.support .wrapper .content .buttons {
   margin-top: 32px;
   height: 3.5em;
 }
@@ -3113,13 +3252,16 @@ textarea:focus {
 .window.changelog > .wrapper .content header .version {
   display: grid;
   align-items: center;
+  grid-template-columns: min-content min-content;
   padding: 16px;
-  font-weight: bold;
   font-size: 50pt;
   line-height: 55pt;
   color: #1e2229;
   background-color: #ffcc00;
   white-space: nowrap;
+}
+.window.changelog > .wrapper .content header .version em {
+  font-style: normal;
 }
 .window.changelog > .wrapper .content header .version.long {
   font-size: 35pt;
@@ -3153,6 +3295,7 @@ textarea:focus {
   width: 200px;
   height: 200px;
   pointer-events: none;
+  z-index: 1;
 }
 .window.changelog > .wrapper .content .newUpdate span {
   display: block;
@@ -3293,6 +3436,28 @@ textarea:focus {
   border: none;
   padding-bottom: 0;
   margin-bottom: 0;
+}
+.window.changelog > .wrapper .content .markdownHtml .imgWrapper {
+  position: relative;
+  overflow: hidden;
+  border-radius: 4px;
+  border: 1px solid #1e2229;
+  outline: 1px solid #545d73;
+}
+.window.changelog > .wrapper .content .markdownHtml .imgWrapper img {
+  transition: transform 1s;
+}
+.window.changelog > .wrapper .content .markdownHtml .imgWrapper img:hover {
+  transform: scale(1.05);
+}
+.window.changelog > .wrapper .content .markdownHtml .imgWrapper .shadow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  box-shadow: 0px -8px 32px rgba(0, 0, 0, 0.6) inset;
+  pointer-events: none;
 }
 
 .window.progress {
@@ -3843,7 +4008,9 @@ textarea:focus {
 }
 .window.dialog.colorPicker > .wrapper .content .input {
   display: grid;
-  grid-template-columns: auto min-content min-content;
+  grid-template-columns: auto;
+  grid-auto-flow: column;
+  grid-auto-columns: min-content;
   position: relative;
 }
 .window.dialog.colorPicker > .wrapper .content .input span {
@@ -4025,14 +4192,17 @@ textarea:focus {
   z-index: 97;
 }
 
-ul.sortable:not(.customHandle) li:not(.fixed) {
+ul.sortable:not(.customHandle):not(.onlyDraggables) > li, ul.sortable:not(.customHandle).onlyDraggables > li.draggable {
   background-image: url("../icons/dragAlpha.svg");
   background-repeat: no-repeat;
   background-position: left center;
   padding-left: 32px !important;
 }
-ul.sortable:not(.customHandle) li:not(.fixed).dragging {
+ul.sortable:not(.customHandle):not(.onlyDraggables) > li.dragging, ul.sortable:not(.customHandle).onlyDraggables > li.draggable.dragging {
   cursor: ns-resize;
+}
+ul.sortable:not(.customHandle).onlyDraggables > li:not(.draggable) {
+  padding-left: 32px !important;
 }
 
 body.panning #worldDepths,
@@ -4516,7 +4686,8 @@ body.noGlCtx #page.editor canvas {
   padding: 2px 4px;
 }
 #page.editor #mainPanel #mainPaletteWrapper {
-  overflow: auto;
+  overflow-x: hidden;
+  overflow-y: auto;
   position: relative;
 }
 #page.editor #mainPanel #mainPaletteWrapper:empty {
@@ -4531,7 +4702,7 @@ body.noGlCtx #page.editor canvas {
   height: 100%;
   box-sizing: border-box;
 }
-#page.editor ul#editingOptions {
+#page.editor #editingOptions {
   position: absolute;
   z-index: 1;
   top: 46px;
@@ -4545,53 +4716,89 @@ body.noGlCtx #page.editor canvas {
   border-top-left-radius: 0px;
   border-bottom-left-radius: 0px;
 }
-#page.editor ul#editingOptions li {
+#page.editor #editingOptions .title {
+  font-family: Roboto;
+  padding: 2px 0;
+  font-size: 9pt;
+  text-align: center;
+}
+#page.editor #editingOptions .title.editing {
+  color: #cfdd40;
+}
+#page.editor #editingOptions .title.visuals {
+  color: #6594ff;
+}
+#page.editor #editingOptions ul + .title {
+  margin-top: 8px;
+}
+#page.editor #editingOptions ul li {
   align-items: center;
   border: 1px solid #545d73;
   border-radius: 3px;
   padding: 4px;
   cursor: pointer;
 }
-#page.editor ul#editingOptions li.separator {
+#page.editor #editingOptions ul li + li {
+  margin-top: 1px;
+}
+#page.editor #editingOptions ul li.separator {
   padding: 0;
   cursor: default;
   border: none;
   height: 16px;
 }
-#page.editor ul#editingOptions li .icon {
+#page.editor #editingOptions ul li .icon {
   width: 24px;
   height: 24px;
 }
-#page.editor ul#editingOptions li.active {
-  border-color: #cfdd40;
-  background-color: #3c6148;
-  box-shadow: 0px 0px 4px #79dd8a, 0px 0px 16px #cfdd40 inset;
-}
-#page.editor ul#editingOptions li.active .off {
+#page.editor #editingOptions ul li.active .off {
   display: none;
 }
-#page.editor ul#editingOptions li:hover {
-  border-color: white;
-}
-#page.editor ul#editingOptions li:not(.active) .on {
-  display: none;
-}
-#page.editor ul#editingOptions li:not(.active) .icon {
+#page.editor #editingOptions ul li:not(.active) {
   opacity: 0.66;
 }
-#page.editor ul#editingOptions li:not(.active).warnOff {
-  border-color: #ffcc00;
-  background-color: #791105;
-  box-shadow: 0px 0px 16px #e34d00, 0px 0px 16px #e34d00 inset;
+#page.editor #editingOptions ul li:not(.active) .on {
+  display: none;
 }
-#page.editor ul#editingOptions li.unsupported {
+#page.editor #editingOptions ul li:not(.active) .icon {
+  opacity: 0.35;
+}
+#page.editor #editingOptions ul li:hover {
+  border-color: white;
+}
+#page.editor #editingOptions ul li.unsupported {
   cursor: not-allowed;
   border-color: transparent;
   background-image: url("../img/stripes.png");
   box-shadow: none;
 }
-#page.editor ul#editingOptions li.unsupported .icon {
+#page.editor #editingOptions ul li.unsupported .icon {
   opacity: 0.2;
+}
+#page.editor #editingOptions ul.editing li.active {
+  border-color: #cfdd40;
+  background-color: #3c6148;
+  box-shadow: 0px 0px 4px #79dd8a, 0px 0px 16px #cfdd40 inset;
+}
+#page.editor #editingOptions ul.editing li:not(.active) {
+  border-color: #5eab6b;
+  background-color: #273f2f;
+}
+#page.editor #editingOptions ul.editing li:not(.active) .icon {
+  filter: brightness(1) sepia(1) hue-rotate(0.15rad) saturate(10);
+}
+#page.editor #editingOptions ul.visuals li.active {
+  border-color: #8dd3ff;
+  background-color: #6594ff;
+  box-shadow: 0px 0px 4px #6594ff, 0px 0px 16px #8dd3ff inset;
+}
+#page.editor #editingOptions ul.visuals li:not(.active) {
+  border-color: #6594ff;
+  background-color: #1e366f;
+}
+#page.editor #editingOptions ul.visuals li:not(.active) .icon {
+  opacity: 0.6;
+  filter: brightness(0.7) sepia(1) hue-rotate(3.5rad) saturate(30);
 }
 #page.editor #worldList {
   position: absolute;
@@ -4722,97 +4929,40 @@ body.noGlCtx #page.editor canvas {
 #page.editor #worldDepths > ul li:not(.active):hover .label {
   color: #c1cfeb;
 }
-#page.editor:not(.compactPanel) .onlyCompact {
+#page.editor:not(.zenMode) #zenModeRevealer {
   display: none;
 }
-#page.editor.compactPanel .notCompact {
-  display: none !important;
+#page.editor.zenMode #permanentNotifications {
+  width: 100vw;
+  left: 0;
+  z-index: 0;
 }
-#page.editor.compactPanel .onlyCompact {
+#page.editor.zenMode:not(.revealed) #zenModeRevealer {
   display: block;
-}
-#page.editor.compactPanel #mainPanel {
-  width: 80px;
-  grid-template-rows: min-content 200px min-content auto;
-}
-#page.editor.compactPanel #mainPanel #mainBar .buttons {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: repeat(4, min-content);
-  border-radius: 0;
-}
-#page.editor.compactPanel #mainPanel #mainBar .buttons button {
+  position: absolute;
+  top: 0;
+  left: 0;
   z-index: 1;
-  margin: 0px;
-  box-shadow: none !important;
+  width: 16px;
+  height: 100vh;
+  background-image: url("../img/stripes.png");
+  background-color: rgba(255, 255, 255, 0.1);
+  border-right: 1px solid white;
+  cursor: e-resize;
 }
-#page.editor.compactPanel #mainPanel #mainBar .buttons button.showHelp {
-  grid-column: 1/4;
-  grid-row: 4/5;
-  z-index: 0;
-  padding-top: 2px;
-  padding-bottom: 2px;
-}
-#page.editor.compactPanel #mainPanel #mainBar .buttons button.settings {
-  grid-column: 3/4;
-  grid-row: 3/4;
-  z-index: 0;
-}
-#page.editor.compactPanel #mainPanel #mainBar .buttons button.editProject {
-  grid-column: 3/4;
-  grid-row: 2/3;
-  z-index: 0;
-}
-#page.editor.compactPanel #mainPanel #mainBar .buttons button.close {
-  grid-column: 3/4;
-  grid-row: 1/2;
-  z-index: 0;
-}
-#page.editor.compactPanel #mainPanel #mainBar .buttons .icon {
-  width: 1.3em;
-  height: 1.3em;
-}
-#page.editor.compactPanel #mainPanel .optionsWrapper {
-  display: block;
-}
-#page.editor.compactPanel #mainPanel #guide {
+#page.editor.zenMode:not(.revealed) #mainPanel,
+#page.editor.zenMode:not(.revealed) #editingOptions {
   display: none;
 }
-#page.editor.compactPanel #mainPanel ul#layers li {
-  grid-template-columns: min-content auto min-content;
+#page.editor.zenMode:not(.revealed) .panelMask {
+  display: none;
 }
-#page.editor.compactPanel #mainPanel ul#layers li .name {
-  padding: 5px 0px;
-  font-family: Roboto;
-  font-size: 10pt;
-  font-weight: bold;
+#page.editor.zenMode:not(.revealed) .panel.worldPanel {
+  display: none;
 }
-#page.editor.compactPanel #mainPanel ul.niceList li {
-  padding: 4px 2px !important;
-  gap: 4px;
-}
-#page.editor.compactPanel #mainPanel ul.niceList li.collapser {
-  background-image: none;
-}
-#page.editor.compactPanel #mainPanel h2#levelName {
-  font-size: 1.1em;
-}
-#page.editor.compactPanel #mainPaletteWrapper .niceList li,
-#page.editor.compactPanel #mainPaletteWrapper .intGridValues li {
-  font-size: 9.5pt;
-  border-left-width: 1px;
-}
-#page.editor.compactPanel #permanentNotifications {
-  left: 80px;
-  width: calc(100vw - 80px);
-}
-#page.editor.compactPanel ul#editingOptions {
-  left: 80px;
-  top: 74px;
-}
-#page.editor.compactPanel ul#editingOptions .icon {
-  width: 18px;
-  height: 18px;
+#page.editor.zenMode.revealed.worldMode #mainPanel,
+#page.editor.zenMode.revealed.worldMode #editingOptions {
+  display: none;
 }
 
 #page.updating {
@@ -4956,11 +5106,36 @@ body.noGlCtx #page.editor canvas {
   background-position: bottom center;
 }
 #page.home > .wrapper header .version {
-  font-size: 150pt;
-  color: #545d73;
-  opacity: 0.3;
+  display: grid;
+  padding-left: 16px;
+  padding-right: 16px;
+  grid-auto-flow: column;
+  grid-auto-columns: min-content;
   text-align: center;
   margin-top: 8px;
+  white-space: nowrap;
+  color: #1e2229;
+  font-size: 128px;
+  font-family: Roboto;
+  letter-spacing: -0.06em;
+  background-color: #ffcc00;
+  border-radius: 4px;
+}
+#page.home > .wrapper header .version * {
+  display: inline-block;
+}
+#page.home > .wrapper header .version strong {
+  color: #1e2229;
+  font-weight: bold;
+  text-shadow: 0px 0px 32px rgba(255, 204, 0, 0.3);
+}
+#page.home > .wrapper header .version em {
+  display: none;
+}
+#page.home > .wrapper header .version.patchRelease em {
+  display: block;
+  padding-left: 10px;
+  font-style: normal;
 }
 #page.home > .wrapper header .appLogo {
   min-height: 160px;
@@ -5546,11 +5721,71 @@ body.fullscreen #page.home .buttons .exit {
   background-color: #1e2229;
   image-rendering: pixelated;
 }
-.palette.entities {
+.palette.entities, .palette.intGrid {
   grid-template-rows: min-content auto fit-content(24px);
 }
-.palette.intGrid {
-  grid-template-rows: min-content auto fit-content(24px);
+.palette.entities .bar, .palette.intGrid .bar {
+  display: grid;
+  gap: 4px;
+  grid-template-columns: auto min-content;
+}
+.palette.entities .bar button, .palette.intGrid .bar button {
+  padding: 2px 6px;
+}
+.palette.entities ul.niceList:not(.col-1) .subList ul, .palette.intGrid ul.niceList:not(.col-1) .subList ul {
+  display: grid;
+}
+.palette.entities ul.niceList:not(.col-1) .subList ul li, .palette.intGrid ul.niceList:not(.col-1) .subList ul li {
+  display: grid;
+  grid-template: none;
+  grid-template-rows: auto min-content;
+  justify-items: center;
+  padding: 2px;
+  font-size: 8pt;
+  line-height: 1.2em;
+  border: none;
+}
+.palette.entities ul.niceList:not(.col-1) .subList ul li .name, .palette.intGrid ul.niceList:not(.col-1) .subList ul li .name {
+  overflow: hidden;
+}
+.palette.entities ul.niceList.col-2 .sublist ul, .palette.intGrid ul.niceList.col-2 .sublist ul {
+  grid-template-columns: repeat(2, 1fr);
+}
+.palette.entities ul.niceList.col-3 .sublist ul, .palette.intGrid ul.niceList.col-3 .sublist ul {
+  grid-template-columns: repeat(3, 1fr);
+}
+.palette.entities ul.niceList.col-4 .sublist ul, .palette.intGrid ul.niceList.col-4 .sublist ul {
+  grid-template-columns: repeat(4, 1fr);
+}
+.palette.entities ul.niceList.col-5 .sublist ul, .palette.intGrid ul.niceList.col-5 .sublist ul {
+  grid-template-columns: repeat(5, 1fr);
+}
+.palette.intGrid ul.niceList:not(.col-1) .subList ul li .intGridValue {
+  width: 100%;
+  min-height: 64px;
+  border: none;
+}
+.palette.intGrid ul.niceList:not(.col-1) .subList ul li .intGridValue img {
+  object-fit: contain;
+}
+.palette.intGrid ul.niceList.col-2 .sublist ul li .intGridValue {
+  min-height: 128px;
+}
+.palette.intGrid ul.niceList.col-3 .sublist ul li .intGridValue {
+  min-height: 96px;
+}
+.palette.intGrid ul.niceList.col-5 .sublist ul li .intGridValue {
+  min-height: 28px;
+}
+.palette.entities ul.niceList:not(.col-1) .subList ul li .entityPreview {
+  margin: 0;
+  zoom: 2;
+}
+.palette.entities ul.niceList.col-2 .subList ul li .entityPreview {
+  zoom: 4;
+}
+.palette.entities ul.niceList.col-3 .subList ul li .entityPreview {
+  zoom: 3;
 }
 .palette.invalid {
   background: url("../img/stripes.png");
@@ -5661,7 +5896,7 @@ body.fullscreen #page.home .buttons .exit {
   left: 0;
   width: 100% !important;
   height: 100% !important;
-  object-fit: cover;
+  object-fit: contain;
   object-position: center;
 }
 
@@ -6890,27 +7125,104 @@ dl.form.fieldInstanceEditor div.array button.remove {
   white-space: nowrap;
   margin-left: 2px;
 }
-.window.panel.editLayerDefs .content ul.intGridValues li {
+.window.panel.editLayerDefs .content dd.intGridValues {
+  padding: 10px;
+  background-color: #1e2229;
+  border-radius: 3px;
+}
+.window.panel.editLayerDefs .content dd.intGridValues .buttons {
+  flex: 1 0 100%;
+  display: grid;
+  grid-template-columns: auto 25%;
+  gap: 2px;
+  border-radius: 2px;
+}
+.window.panel.editLayerDefs .content dd.intGridValues ul.intGridValuesGroups {
+  flex: 1 0 100%;
+}
+.window.panel.editLayerDefs .content dd.intGridValues ul.intGridValuesGroups li {
   position: relative;
 }
-.window.panel.editLayerDefs .content ul.intGridValues li + li {
-  margin-top: 8px;
+.window.panel.editLayerDefs .content dd.intGridValues ul.intGridValuesGroups li + li {
+  margin-top: 4px;
 }
-.window.panel.editLayerDefs .content ul.intGridValues li.value {
+.window.panel.editLayerDefs .content dd.intGridValues ul.intGridValuesGroups > li {
+  padding: 8px 2px;
+  border-left: 3px solid #737f9d;
+  border-radius: 2px;
+  background-color: #2e333f;
+  background-position: 4px 16px;
+}
+.window.panel.editLayerDefs .content dd.intGridValues ul.intGridValuesGroups > li:not(.none):hover {
+  border-color: white;
+}
+.window.panel.editLayerDefs .content dd.intGridValues ul.intGridValuesGroups > li.none {
+  border-left: none;
+  padding-left: 8px;
+}
+.window.panel.editLayerDefs .content dd.intGridValues ul.intGridValuesGroups > li.none .header button {
+  display: none;
+}
+.window.panel.editLayerDefs .content dd.intGridValues ul.intGridValuesGroups .header {
+  display: grid;
+  padding: 2px;
+  padding-top: 0;
+  align-items: center;
+  grid-template-columns: min-content auto;
+  grid-auto-flow: column;
+  grid-auto-columns: min-content;
+}
+.window.panel.editLayerDefs .content dd.intGridValues ul.intGridValuesGroups .header .name {
+  padding: 4px;
+  margin-right: 8px;
+}
+.window.panel.editLayerDefs .content dd.intGridValues ul.intGridValuesGroups .header .name.editable {
+  color: white;
+  font-weight: bold;
+  cursor: text;
+}
+.window.panel.editLayerDefs .content dd.intGridValues ul.intGridValuesGroups .header .name.editable:hover {
+  color: #ffff44;
+  outline: 1px dashed #737f9d;
+}
+.window.panel.editLayerDefs .content dd.intGridValues ul.intGridValuesGroups .header .name:not(.editable) {
+  color: #737f9d;
+  font-style: italic;
+}
+.window.panel.editLayerDefs .content dd.intGridValues ul.intGridValuesGroups .header .groupIcon {
+  width: 1.5em;
+  height: 1.5em;
+}
+.window.panel.editLayerDefs .content dd.intGridValues ul.intGridValuesGroups ul.intGridValuesGroup:empty {
+  margin: 0;
+  margin-right: 16px;
+  min-height: 20px;
+  border: none;
+  background-image: url("../img/stripes.png");
+}
+.window.panel.editLayerDefs .content dd.intGridValues ul.intGridValuesGroups ul.intGridValuesGroup.none .groupHeader {
+  font-style: italic;
+  color: #c1cfeb;
+}
+.window.panel.editLayerDefs .content dd.intGridValues ul.intGridValuesGroups ul.intGridValuesGroup li:hover {
+  background-color: #545d73;
+  outline: 1px solid #737f9d;
+}
+.window.panel.editLayerDefs .content dd.intGridValues ul.intGridValuesGroups li.value {
   display: grid;
   align-items: center;
-  grid-template-columns: min-content 2em 32px auto 64px min-content;
+  grid-template-columns: min-content 32px 64px 32px auto min-content;
   gap: 4px;
 }
-.window.panel.editLayerDefs .content ul.intGridValues li.value input[type=color] {
+.window.panel.editLayerDefs .content dd.intGridValues ul.intGridValuesGroups li.value input[type=color] {
   width: 100%;
   height: 100%;
 }
-.window.panel.editLayerDefs .content ul.intGridValues li.value input.name {
+.window.panel.editLayerDefs .content dd.intGridValues ul.intGridValuesGroups li.value input.name {
   text-align: center;
   font-style: italic;
 }
-.window.panel.editLayerDefs .content ul.intGridValues li.value span.id {
+.window.panel.editLayerDefs .content dd.intGridValues ul.intGridValuesGroups li.value span.id {
   display: grid;
   min-width: 1.5em;
   min-height: 1.5em;
@@ -6921,25 +7233,17 @@ dl.form.fieldInstanceEditor div.array button.remove {
   border: 1px solid white;
   border-radius: 3px;
 }
-.window.panel.editLayerDefs .content ul.intGridValues li.value span.tile {
+.window.panel.editLayerDefs .content dd.intGridValues ul.intGridValuesGroups li.value span.tile {
   align-self: stretch;
 }
-.window.panel.editLayerDefs .content ul.intGridValues li.value span.tile:empty {
+.window.panel.editLayerDefs .content dd.intGridValues ul.intGridValuesGroups li.value span.tile:empty {
   background-image: url("../img/stripes.png");
   background-repeat: repeat;
 }
-.window.panel.editLayerDefs .content ul.intGridValues li.value button.remove {
+.window.panel.editLayerDefs .content dd.intGridValues ul.intGridValuesGroups li.value button.remove {
   align-self: stretch;
   padding: 0;
   width: 28px;
-}
-.window.panel.editLayerDefs .content ul.intGridValues li.add button {
-  padding: 0px;
-  text-align: center;
-  font-weight: bold;
-  font-size: 200%;
-  text-decoration: none;
-  color: white;
 }
 .window.panel.editLayerDefs .content dl.form .IntGrid,
 .window.panel.editLayerDefs .content dl.form .IntGridAutoLayer,
@@ -7390,20 +7694,27 @@ body.sorting ul.collapsedSortTarget {
   grid-auto-columns: min-content;
   align-items: stretch;
   width: 100%;
-  height: 32px;
+  height: 34px;
   background-color: #545d73;
 }
 .window.panel.editAllAutoLayerRules .content ul.ruleGroups > li header div.name {
   display: grid;
-  grid-template-columns: 20px auto;
+  grid-template-columns: 20px min-content auto;
   align-content: center;
-  gap: 4px;
+  align-items: center;
+  gap: 6px;
   width: 100%;
   height: 100%;
   font-weight: bold;
   overflow-x: hidden;
   white-space: nowrap;
   cursor: pointer;
+}
+.window.panel.editAllAutoLayerRules .content ul.ruleGroups > li header div.name .customIcon {
+  margin-top: 1px;
+  margin-bottom: 1px;
+  box-shadow: 0px 0px 4px black;
+  background-color: rgba(0, 0, 0, 0.4);
 }
 .window.panel.editAllAutoLayerRules .content ul.ruleGroups > li header div.name .text {
   overflow: hidden;
@@ -7436,14 +7747,14 @@ body.sorting ul.collapsedSortTarget {
   font-weight: bold;
   font-size: 12pt;
 }
-.window.panel.editAllAutoLayerRules .content ul.ruleGroups > li header button:hover.active {
-  background-color: #737f9d !important;
+.window.panel.editAllAutoLayerRules .content ul.ruleGroups > li header button.groupActive:hover {
+  background-color: rgba(255, 255, 255, 0.34) !important;
 }
 .window.panel.editAllAutoLayerRules .content ul.ruleGroups > li header button.off {
   opacity: 0.3;
   background-color: #e34d00;
 }
-.window.panel.editAllAutoLayerRules .content ul.ruleGroups > li header button.active .icon {
+.window.panel.editAllAutoLayerRules .content ul.ruleGroups > li header button.groupActive .icon {
   width: 100%;
 }
 .window.panel.editAllAutoLayerRules .content ul.ruleGroups > li header .context {
@@ -7451,7 +7762,7 @@ body.sorting ul.collapsedSortTarget {
   border-width: 0;
 }
 .window.panel.editAllAutoLayerRules .content ul.ruleGroups > li:not(.optional) header .name:hover {
-  background-color: #737f9d;
+  background-color: rgba(255, 255, 255, 0.2) !important;
 }
 .window.panel.editAllAutoLayerRules .content ul.ruleGroups > li.optional header .name:hover {
   background-color: #219df9;
@@ -7696,6 +8007,9 @@ body.sorting ul.collapsedSortTarget {
 .autoPatternGrid.size-7 {
   grid-template-columns: repeat(7, auto);
 }
+.autoPatternGrid.size-9 {
+  grid-template-columns: repeat(9, auto);
+}
 .autoPatternGrid.preview {
   gap: 1px;
   border: 1px solid #545d73;
@@ -7712,6 +8026,9 @@ body.sorting ul.collapsedSortTarget {
 .autoPatternGrid.preview.size-7 .cell {
   zoom: 0.2;
 }
+.autoPatternGrid.preview.size-9 .cell {
+  zoom: 0.15;
+}
 .autoPatternGrid.preview .cell {
   opacity: 0.5;
 }
@@ -7726,7 +8043,8 @@ body.sorting ul.collapsedSortTarget {
 .autoPatternGrid.preview .cell.center canvas {
   box-sizing: border-box;
   padding: 2px;
-  background-color: black;
+  background-color: gray;
+  background-image: url("../img/stripes.png");
   border: 1px solid white;
   border-radius: 3px;
   box-shadow: 0px 2px 4px black;
@@ -7745,6 +8063,11 @@ body.sorting ul.collapsedSortTarget {
   margin-top: -50%;
 }
 .autoPatternGrid.preview.size-7 .cell.center canvas {
+  zoom: 3;
+  margin-left: -75%;
+  margin-top: -75%;
+}
+.autoPatternGrid.preview.size-9 .cell.center canvas {
   zoom: 3;
   margin-left: -75%;
   margin-top: -75%;
@@ -7800,6 +8123,14 @@ body.sorting ul.collapsedSortTarget {
   outline: 2px solid #e34d00;
   outline-offset: -4px;
 }
+.autoPatternGrid .cell.group {
+  background-image: url("../icons/folderClose.svg");
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: 65%;
+  outline: 1px solid white;
+  outline-offset: -2px;
+}
 .autoPatternGrid .cell .cellIcon {
   width: 32px;
   height: 32px;
@@ -7813,7 +8144,7 @@ body.sorting ul.collapsedSortTarget {
 }
 .autoPatternGrid .cell .cellIcon.cross {
   background-image: url("../icons/cross.png");
-  background-size: 50%;
+  background-size: 65%;
 }
 .autoPatternGrid .cell .cellIcon.nothing {
   background-image: url("../icons/prohibited.svg");
@@ -7870,7 +8201,7 @@ body.sorting ul.collapsedSortTarget {
 }
 
 .window.dialog.ruleRandomOffsets .wrapper {
-  width: 450px;
+  width: 500px;
 }
 .window.dialog.ruleRandomOffsets .wrapper dl.form dt {
   min-width: 0;
@@ -7886,6 +8217,15 @@ body.sorting ul.collapsedSortTarget {
 }
 .window.dialog.ruleRandomOffsets .wrapper dl.form input[type=text] {
   flex: 1 1 40px;
+}
+.window.dialog.ruleRandomOffsets .wrapper dl.form button.link {
+  padding: 2px;
+}
+.window.dialog.ruleRandomOffsets .wrapper dl.form button.link .unlink {
+  opacity: 0.35;
+}
+.window.dialog.ruleRandomOffsets .wrapper dl.form button.link:hover {
+  background-color: #545d73;
 }
 .window.dialog.ruleRandomOffsets .wrapper dl.form button.reset {
   flex: 0;
@@ -8023,7 +8363,7 @@ body.sorting ul.collapsedSortTarget {
 .window.dialog.ruleEditor > .wrapper .content .outOfBounds,
 .window.dialog.ruleEditor > .wrapper .content .tileSettings,
 .window.dialog.ruleEditor > .wrapper .content .pattern .editor,
-.window.dialog.ruleEditor > .wrapper .content .pattern .values {
+.window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette {
   width: 100%;
   height: 100%;
   padding: 16px;
@@ -8041,7 +8381,7 @@ body.sorting ul.collapsedSortTarget {
 .window.dialog.ruleEditor > .wrapper .content .explain {
   display: grid;
   align-items: center;
-  max-width: 408px;
+  width: 580px;
   min-height: calc(4em + 32px);
   font-size: 10pt;
   text-align: left;
@@ -8096,6 +8436,8 @@ body.sorting ul.collapsedSortTarget {
   cursor: pointer;
   width: 24px !important;
   height: 24px !important;
+  background-color: gray;
+  background-image: url("../img/stripes.png");
 }
 .window.dialog.ruleEditor > .wrapper .content .tileSettings .picker canvas:hover {
   border-color: white;
@@ -8126,111 +8468,152 @@ body.sorting ul.collapsedSortTarget {
   justify-items: center;
   align-items: center;
 }
-.window.dialog.ruleEditor > .wrapper .content .pattern .values {
+.window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette {
   position: relative;
   max-height: 400px;
   overflow-y: auto;
   padding-right: 32px;
 }
-.window.dialog.ruleEditor > .wrapper .content .pattern .values button.displayMode {
+.window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette button.displayMode {
   position: absolute;
   top: 0;
   right: 0;
   width: auto;
   padding: 3px 1px;
 }
-.window.dialog.ruleEditor > .wrapper .content .pattern .values ul {
+.window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups li.title {
+  padding: 3px 4px;
+  border-top-left-radius: 2px;
+  border-top-right-radius: 2px;
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups li.title:not(.active) {
+  color: #737f9d;
+}
+.window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups li.title:not(.active) .icon {
+  opacity: 0.4;
+}
+.window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups li.title .icon {
+  margin-right: 3px;
+}
+.window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups li.title:not(.active):hover + li.subList {
+  outline: 1px dashed white;
+}
+.window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups li.title.active {
+  color: white;
+  font-weight: bold;
+}
+.window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups li.title.active + li.subList {
+  outline: 2px solid white;
+  background-color: #2e333f;
+  outline-offset: -2px;
+}
+.window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups li.title.active + li.subList li.value {
+  filter: none;
+}
+.window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups.col-1 li.value {
   display: grid;
+  grid-template-columns: 32px auto;
 }
-.window.dialog.ruleEditor > .wrapper .content .pattern .values ul.col-2, .window.dialog.ruleEditor > .wrapper .content .pattern .values ul.col-3, .window.dialog.ruleEditor > .wrapper .content .pattern .values ul.col-4, .window.dialog.ruleEditor > .wrapper .content .pattern .values ul.col-5 {
-  gap: 2px;
+.window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups.col-1 li.value .name {
+  padding: 8px;
 }
-.window.dialog.ruleEditor > .wrapper .content .pattern .values ul.col-2 li, .window.dialog.ruleEditor > .wrapper .content .pattern .values ul.col-3 li, .window.dialog.ruleEditor > .wrapper .content .pattern .values ul.col-4 li, .window.dialog.ruleEditor > .wrapper .content .pattern .values ul.col-5 li {
+.window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups.col-1 li.value + li {
+  margin-top: 1px;
+}
+.window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups.col-2 ul.groupValues > li, .window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups.col-3 ul.groupValues > li, .window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups.col-4 ul.groupValues > li, .window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups.col-5 ul.groupValues > li {
   padding: 0;
   grid-template-columns: auto;
   justify-items: center;
   overflow: hidden;
   border: none;
 }
-.window.dialog.ruleEditor > .wrapper .content .pattern .values ul.col-2 li .intGridValue, .window.dialog.ruleEditor > .wrapper .content .pattern .values ul.col-3 li .intGridValue, .window.dialog.ruleEditor > .wrapper .content .pattern .values ul.col-4 li .intGridValue, .window.dialog.ruleEditor > .wrapper .content .pattern .values ul.col-5 li .intGridValue {
+.window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups.col-2 ul.groupValues > li .intGridValue, .window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups.col-3 ul.groupValues > li .intGridValue, .window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups.col-4 ul.groupValues > li .intGridValue, .window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups.col-5 ul.groupValues > li .intGridValue {
   width: 100%;
   border: none;
 }
-.window.dialog.ruleEditor > .wrapper .content .pattern .values ul.col-2 li .name, .window.dialog.ruleEditor > .wrapper .content .pattern .values ul.col-3 li .name, .window.dialog.ruleEditor > .wrapper .content .pattern .values ul.col-4 li .name, .window.dialog.ruleEditor > .wrapper .content .pattern .values ul.col-5 li .name {
+.window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups.col-2 ul.groupValues > li .name, .window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups.col-3 ul.groupValues > li .name, .window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups.col-4 ul.groupValues > li .name, .window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups.col-5 ul.groupValues > li .name {
+  display: block;
   padding: 3px 0;
+  font-size: 8.5pt;
   font-weight: normal;
+  text-align: center;
   overflow: hidden;
 }
-.window.dialog.ruleEditor > .wrapper .content .pattern .values ul.col-2 li.any, .window.dialog.ruleEditor > .wrapper .content .pattern .values ul.col-3 li.any, .window.dialog.ruleEditor > .wrapper .content .pattern .values ul.col-4 li.any, .window.dialog.ruleEditor > .wrapper .content .pattern .values ul.col-5 li.any {
+.window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups.col-2 ul.groupValues > li.any, .window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups.col-3 ul.groupValues > li.any, .window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups.col-4 ul.groupValues > li.any, .window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups.col-5 ul.groupValues > li.any {
   align-items: center;
 }
-.window.dialog.ruleEditor > .wrapper .content .pattern .values ul.col-2 li.any .value, .window.dialog.ruleEditor > .wrapper .content .pattern .values ul.col-3 li.any .value, .window.dialog.ruleEditor > .wrapper .content .pattern .values ul.col-4 li.any .value, .window.dialog.ruleEditor > .wrapper .content .pattern .values ul.col-5 li.any .value {
+.window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups.col-2 ul.groupValues > li.any .value, .window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups.col-3 ul.groupValues > li.any .value, .window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups.col-4 ul.groupValues > li.any .value, .window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups.col-5 ul.groupValues > li.any .value {
   display: none;
 }
-.window.dialog.ruleEditor > .wrapper .content .pattern .values ul.col-2 {
+.window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups.col-2 ul.groupValues {
+  display: grid;
   grid-template-columns: repeat(2, 1fr);
 }
-.window.dialog.ruleEditor > .wrapper .content .pattern .values ul.col-2 li .intGridValue {
-  height: 70px;
+.window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups.col-2 ul.groupValues li .intGridValue {
+  height: 80px;
 }
-.window.dialog.ruleEditor > .wrapper .content .pattern .values ul.col-3 {
+.window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups.col-3 ul.groupValues {
+  display: grid;
   grid-template-columns: repeat(3, 1fr);
 }
-.window.dialog.ruleEditor > .wrapper .content .pattern .values ul.col-3 li .intGridValue {
+.window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups.col-3 ul.groupValues li .intGridValue {
   height: 60px;
 }
-.window.dialog.ruleEditor > .wrapper .content .pattern .values ul.col-4 {
+.window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups.col-4 ul.groupValues {
+  display: grid;
   grid-template-columns: repeat(4, 1fr);
 }
-.window.dialog.ruleEditor > .wrapper .content .pattern .values ul.col-4 li .intGridValue {
+.window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups.col-4 ul.groupValues li .intGridValue {
   height: 50px;
 }
-.window.dialog.ruleEditor > .wrapper .content .pattern .values ul.col-5 {
+.window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups.col-5 ul.groupValues {
+  display: grid;
   grid-template-columns: repeat(5, 1fr);
 }
-.window.dialog.ruleEditor > .wrapper .content .pattern .values ul.col-5 li .intGridValue {
+.window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups.col-5 ul.groupValues li .intGridValue {
   height: 50px;
 }
-.window.dialog.ruleEditor > .wrapper .content .pattern .values ul li {
-  display: grid;
-  grid-template-columns: 32px auto;
-  font-weight: bold;
-  cursor: pointer;
-  border-radius: 3px;
-  border-top: 1px solid rgba(255, 255, 255, 0.3);
-}
-.window.dialog.ruleEditor > .wrapper .content .pattern .values ul li + li {
-  margin-top: 1px;
-}
-.window.dialog.ruleEditor > .wrapper .content .pattern .values ul li .value {
-  padding: 8px 4px;
-  font-size: 11pt;
-  text-align: center;
-  color: white;
-  background-color: rgba(0, 0, 0, 0.1);
-}
-.window.dialog.ruleEditor > .wrapper .content .pattern .values ul li .name {
+.window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups li.subList {
+  margin-bottom: 8px;
   padding: 8px;
-  font-size: 9pt;
 }
-.window.dialog.ruleEditor > .wrapper .content .pattern .values ul li:hover {
+.window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups li.subList > ul {
+  gap: 2px;
+}
+.window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups li.subList li.value {
+  cursor: pointer;
+}
+.window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups li.subList li.value:hover {
   outline: 1px dashed white;
 }
-.window.dialog.ruleEditor > .wrapper .content .pattern .values ul li.active {
+.window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups li.subList li.value.active {
   outline: 2px solid white;
+  outline-offset: -1px;
 }
-.window.dialog.ruleEditor > .wrapper .content .pattern .values ul li.active .value {
+.window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups li.subList li.value.active .value {
   color: #1e2229;
   background-color: white;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.4);
 }
-.window.dialog.ruleEditor > .wrapper .content .pattern .values ul li:not(.active) {
+.window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups li.subList li.value:not(.active) {
   filter: brightness(0.5);
 }
-.window.dialog.ruleEditor > .wrapper .content .pattern .values ul li.any {
+.window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups li.any {
+  padding: 8px;
   font-style: italic;
   background-image: url("../img/any.png");
   border-color: #1e2229;
+  cursor: pointer;
+}
+.window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups li.any:not(.active):hover {
+  outline: 1px dashed white;
+}
+.window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups li.any.active {
+  outline: 2px solid white;
+  outline-offset: -2px;
 }
 .window.dialog.ruleEditor > .wrapper .content .help {
   margin-top: 8px;

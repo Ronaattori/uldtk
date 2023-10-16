@@ -1,7 +1,7 @@
 package ui.modal.dialog;
 
 class SelectPicker extends ui.modal.Dialog {
-	static var MAX_COLUMNS = 6;
+	static var MAX_COLUMNS = 10;
 
 	var jSelect : js.jquery.JQuery;
 	var jSearch : js.jquery.JQuery;
@@ -54,6 +54,9 @@ class SelectPicker extends ui.modal.Dialog {
 
 			if( !jOpt.is("[value") || jOpt.attr("value").length==0 )
 				jValue.addClass("null");
+
+			if( jOpt.hasClass("default") )
+				jValue.addClass("default");
 
 			jValue.click( _->{
 				onPick( jOpt.attr("value") );

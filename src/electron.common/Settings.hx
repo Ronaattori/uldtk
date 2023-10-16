@@ -6,9 +6,8 @@ import EditorTypes;
 typedef AppSettings = {
 	var lastKnownVersion: Null<String>;
 
-	var compactMode : Bool;
+	var zenMode : Bool;
 	var grid : Bool;
-	var singleLayerMode : Bool;
 	var emptySpaceSelection : Bool;
 	var tileStacking : Bool;
 	var tileEnumOverlays : Bool;
@@ -22,6 +21,9 @@ typedef AppSettings = {
 
 	var openLastProject : Bool;
 	var lastProject : Null<{ filePath:String, levelUid:Int }>;
+
+	var singleLayerMode : Bool;
+	var singleLayerModeIntensity : Float;
 
 	var appUiScale : Float;
 	var editorUiScale : Float;
@@ -42,6 +44,8 @@ enum abstract UiState(String) {
 	var ShowProjectColors;
 	var HideSamplesOnHome;
 	var RuleValuesColumns;
+	var IntGridPaletteColumns;
+	var EntityPaletteColumns;
 }
 
 /* Notes: Settings related enums are stored in this file instead of EditorTypes to avoid Main compilation to reach unwanted classes, by importing EditorTypes. */
@@ -81,9 +85,9 @@ class Settings {
 			recentDirs: null,
 			recentDirColors: [],
 
-			compactMode: false,
+			zenMode: false,
 			grid: true,
-			singleLayerMode: false,
+
 			emptySpaceSelection: true,
 			tileStacking: true,
 			tileEnumOverlays : false,
@@ -94,6 +98,9 @@ class Settings {
 			colorBlind: false,
 			blurMask: true,
 			navigationKeys: null,
+
+			singleLayerMode: false,
+			singleLayerModeIntensity: 0.75,
 
 			openLastProject: false,
 			lastProject: null,

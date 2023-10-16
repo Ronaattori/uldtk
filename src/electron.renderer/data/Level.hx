@@ -85,14 +85,38 @@ class Level {
 		List nearby levels as JSON
 	**/
 	public function getNeighboursJson() : Array<ldtk.Json.NeighbourLevel> {
-		var neighbours : Array<ldtk.Json.NeighbourLevel> = switch _world.worldLayout {
+		var neighbours : Array<ldtk.Json.NeighbourLevel> = [];
+
+		// Overlaps in world layers
+		neighbours = neighbours.concat( switch _world.worldLayout {
+			case Free, GridVania:
+				var nears = _world.levels.filter( (ol)->
+					ol!=this
+					&& M.iabs(worldDepth-ol.worldDepth)<=1
+					&& dn.Lib.rectangleOverlaps(worldX,worldY,pxWid,pxHei, ol.worldX,ol.worldY,ol.pxWid,ol.pxHei)
+				);
+				nears.map( (l)->{
+					var dir = l.worldDepth==worldDepth ? "o" : l.worldDepth>worldDepth? ">" : "<";
+					var nl : ldtk.Json.NeighbourLevel = {
+						levelIid: l.iid,
+						dir: dir,
+					}
+					return nl;
+				});
+
+			case LinearHorizontal, LinearVertical:
+				[];
+		} );
+
+		// Touching neighbours
+		neighbours = neighbours.concat( switch _world.worldLayout {
 			case Free, GridVania:
 				var nears = _world.levels.filter( (ol)->
 					ol!=this && getBoundsDist(ol)==0
 					&& ol.worldDepth==worldDepth
 					&& !( ( ol.worldX>=worldX+pxWid || ol.worldX+ol.pxWid<=worldX )
-						&& ( ol.worldY>=worldY+pxHei || ol.worldY+ol.pxHei<=worldY )
-					)
+						&& ( ol.worldY>=worldY+pxHei || ol.worldY+ol.pxHei<=worldY ) )
+					&& !dn.Lib.rectangleOverlaps(worldX,worldY,pxWid,pxHei, ol.worldX,ol.worldY,ol.pxWid,ol.pxHei)
 				);
 				nears.map( (l)->{
 					var dir = l.worldX>=worldX+pxWid ? "e"
@@ -108,14 +132,15 @@ class Level {
 
 			case LinearHorizontal, LinearVertical:
 				[];
-		}
+		});
 
 		return neighbours;
 	}
 
 
-	public function toJson(forTimeline=false) : ldtk.Json.LevelJson {
-		if( !forTimeline && hasJsonCache() ) {
+
+	public function toJson(ignoreCache=false) : ldtk.Json.LevelJson {
+		if( !ignoreCache && hasJsonCache() ) {
 			var o = getCacheJsonObject();
 			if( !_project.externalLevels )
 				Reflect.deleteField(o, dn.data.JsonPretty.HEADER_VALUE_NAME);
@@ -176,11 +201,11 @@ class Level {
 				all;
 			},
 			layerInstances: layerInstances.map( li->li.toJson() ),
-			__neighbours: forTimeline ? [] : getNeighboursJson(),
+			__neighbours: ignoreCache ? [] : getNeighboursJson(),
 		}
 
 		// Cache this json
-		if( !forTimeline )
+		if( !ignoreCache )
 			setJsonCache(json, false);
 
 		return json;
@@ -711,7 +736,7 @@ class Level {
 	}
 
 
-	public function getSmartColor(bright:Bool) {
+	public function getSmartColor(bright:Bool) : dn.Col {
 		inline function _adjust(c:Int) {
 			return bright ? dn.legacy.Color.toWhite(c, 0.45) : c;
 		}

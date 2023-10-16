@@ -122,8 +122,8 @@ class AutoLayerRuleDef {
 		return 'Rule#$uid(${size}x$size)';
 	}
 
-	public function toJson() : ldtk.Json.AutoRuleDef {
-		tidy();
+	public function toJson(ld:LayerDef) : ldtk.Json.AutoRuleDef {
+		tidy(ld);
 
 		return {
 			uid: uid,
@@ -263,7 +263,13 @@ class AutoLayerRuleDef {
 		for(px in 0...size)
 		for(py in 0...size) {
 			v = dn.M.iabs( pattern[px+py*size] );
-			if( v!=0 && v!=Const.AUTO_LAYER_ANYTHING && !ld.hasIntGridValue(v) )
+			if( v==0 )
+				continue;
+
+			if( v<=999 && !ld.hasIntGridValue(v) )
+				return true;
+
+			if( v>999 && v!=Const.AUTO_LAYER_ANYTHING && ld.getIntGridGroup( ld.resolveIntGridGroupUidFromRuleValue(v), false )==null )
 				return true;
 		}
 
@@ -281,8 +287,8 @@ class AutoLayerRuleDef {
 			return false;
 
 		// Rule check
-		// var isOutOfBounds = false;
 		var value : Null<Int> = 0;
+		var valueInf : Null<data.DataTypes.IntGridValueDefEditor> = null;
 		var radius = Std.int( size/2 );
 		for(px in 0...size)
 		for(py in 0...size) {
@@ -290,15 +296,12 @@ class AutoLayerRuleDef {
 			if( pattern[coordId]==0 )
 				continue;
 
-			// isOutOfBounds = !source.isValid( cx+dirX*(px-radius), cy+dirY*(py-radius) );
 			value = source.isValid( cx+dirX*(px-radius), cy+dirY*(py-radius) )
 				? source.getIntGrid( cx+dirX*(px-radius), cy+dirY*(py-radius) )
 				: outOfBoundsValue;
 
 			if( value==null )
 				return false;
-			// if( !source.isValid(cx+dirX*(px-radius), cy+dirY*(py-radius)) )
-			// 	return false;
 
 			if( dn.M.iabs( pattern[coordId] ) == Const.AUTO_LAYER_ANYTHING ) {
 				// "Anything" checks
@@ -306,6 +309,15 @@ class AutoLayerRuleDef {
 					return false;
 
 				if( pattern[coordId]<0 && value!=0 )
+					return false;
+			}
+			else if( dn.M.iabs( pattern[coordId] ) > 999 ) {
+				// Group checks
+				valueInf = source.def.getIntGridValueDef(value);
+				if( pattern[coordId]>0 && ( valueInf==null || valueInf.groupUid != Std.int(pattern[coordId]/1000)-1 ) )
+					return false;
+
+				if( pattern[coordId]<0 && ( valueInf!=null && valueInf.groupUid == Std.int(-pattern[coordId]/1000)-1 ) )
 					return false;
 			}
 			else {
@@ -320,7 +332,7 @@ class AutoLayerRuleDef {
 		return true;
 	}
 
-	public function tidy() {
+	public function tidy(ld:LayerDef) {
 		var anyFix = false;
 
 		if( flipX && isSymetricX() ) {
@@ -353,21 +365,27 @@ class AutoLayerRuleDef {
 			anyFix = true;
 		}
 
+		var sourceLd = ld.autoSourceLd!=null ? ld.autoSourceLd : ld;
+		if( outOfBoundsValue!=null && !sourceLd.hasIntGridValue(outOfBoundsValue) ) {
+			App.LOG.add("tidy", 'Fixed lost outOfBoundsValue: $outOfBoundsValue');
+			outOfBoundsValue = null;
+		}
+
 		if( trim() )
 			anyFix = true;
 
 		return anyFix;
 	}
 
-	public function getRandomTileForCoord(seed:Int, cx:Int,cy:Int) : Int {
-		return tileIds[ dn.M.randSeedCoords( uid+seed, cx,cy, tileIds.length ) ];
+	public function getRandomTileForCoord(seed:Int, cx:Int,cy:Int, flips:Int) : Int {
+		return tileIds[ dn.M.randSeedCoords( uid+seed+flips, cx,cy, tileIds.length ) ];
 	}
 
 	public function getXOffsetForCoord(seed:Int, cx:Int,cy:Int, flips:Int) : Int {
 		return ( M.hasBit(flips,0)?-1:1 ) * ( tileXOffset + (
 			tileRandomXMin==0 && tileRandomXMax==0
 				? 0
-				: dn.M.randSeedCoords( uid+seed, cx,cy, (tileRandomXMax-tileRandomXMin+1) ) + tileRandomXMin
+				: dn.M.randSeedCoords( uid+seed+flips, cx,cy, (tileRandomXMax-tileRandomXMin+1) ) + tileRandomXMin
 		));
 	}
 

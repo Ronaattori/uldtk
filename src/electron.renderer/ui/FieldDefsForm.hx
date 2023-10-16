@@ -327,7 +327,7 @@ class FieldDefsForm {
 		}
 
 		// Make fields list sortable
-		JsTools.makeSortable(jList, false, function(ev) {
+		JsTools.makeSortable(jList, function(ev) {
 			var from = ev.oldIndex;
 			var to = ev.newIndex;
 
@@ -343,7 +343,7 @@ class FieldDefsForm {
 			selectField(moved);
 			editor.ge.emit( FieldDefSorted );
 			onAnyChange();
-		});
+		}, { disableAnim:true });
 
 		JsTools.parseComponents(jList);
 	}
@@ -370,6 +370,14 @@ class FieldDefsForm {
 		updateList();
 		updateForm();
 		onAnyChange();
+	}
+
+
+	function getSmartColor() : dn.Col {
+		return switch parentType {
+			case FP_Entity(ed): ed.color;
+			case FP_Level(level): level.getSmartColor(true);
+		}
 	}
 
 
@@ -562,6 +570,18 @@ class FieldDefsForm {
 			case LevelTile, EntityTile: false;
 			case Hidden, Points, PointStar, PointPath, PointPathLoop, RadiusPx, RadiusGrid, RefLinkBetweenPivots, RefLinkBetweenCenters: false;
 		});
+
+		// Display color
+		var jColor = jForm.find("#editorDisplayColor");
+		JsTools.createColorButton(jColor, curField.editorDisplayColor, getSmartColor(), true, (c)->{
+			curField.editorDisplayColor = c;
+			onFieldChange();
+		});
+		switch curField.editorDisplayMode {
+			case ValueOnly, NameAndValue, ArrayCountWithLabel, ArrayCountNoLabel,
+				Points, PointStar, PointPath, PointPathLoop, RadiusPx, RadiusGrid, RefLinkBetweenPivots, RefLinkBetweenCenters: jColor.show();
+			case Hidden, LevelTile, EntityTile: jColor.hide();
+		}
 
 		// Show in World mode (Level field only)
 		var i = Input.linkToHtmlInput( curField.editorShowInWorld, jForm.find("input[name=editorShowInWorld]") );

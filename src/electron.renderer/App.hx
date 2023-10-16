@@ -58,6 +58,8 @@ class App extends dn.Process {
 
 	public var pendingUpdate:Null<{ver:String, github:Bool}>;
 
+	public var keyBindings : Array<KeyBinding> = [];
+
 	public function new() {
 		super();
 
@@ -74,13 +76,13 @@ class App extends dn.Process {
 		#if debug
 		// LOG.printOnAdd = true;
 		#end
-		LOG.add("BOOT", "App started");
-		LOG.add("BOOT", "Version: " + Const.getAppVersion() + " (build " + Const.getAppBuildId() + ")");
-		LOG.add("BOOT", "ExePath: " + JsTools.getExeDir());
-		LOG.add("BOOT", "Assets: " + JsTools.getAssetsDir());
-		LOG.add("BOOT", "ExtraFiles: " + JsTools.getExtraFilesDir());
-		LOG.add("BOOT", "CWD: " + Sys.getCwd());
-		LOG.add("BOOT", "Display: " + ET.getScreenWidth() + "x" + ET.getScreenHeight());
+		LOG.add("BOOT","App started");
+		LOG.add("BOOT","Version: "+Const.getAppVersionStr()+" (build "+Const.getAppBuildId()+")");
+		LOG.add("BOOT","ExePath: "+JsTools.getExeDir());
+		LOG.add("BOOT","Assets: "+JsTools.getAssetsDir());
+		LOG.add("BOOT","ExtraFiles: "+JsTools.getExtraFilesDir());
+		LOG.add("BOOT","CWD: "+Sys.getCwd());
+		LOG.add("BOOT","Display: "+ET.getScreenWidth()+"x"+ET.getScreenHeight());
 
 		// App arguments
 		args = ET.getArgs();
@@ -200,6 +202,80 @@ class App extends dn.Process {
 		IpcRenderer.invoke("appReady");
 		updateBodyClasses();
 		LOG.flushOnAdd = false;
+		initKeyBindings();
+	}
+
+
+	function initKeyBindings() {
+		keyBindings = [];
+
+		// Parse AppCommands meta
+		var meta = haxe.rtti.Meta.getFields(AppCommand);
+		var keyNameReg = ~/(ctrl|shift|alt| |-|\+|\[wasd\]|\[zqsd\]|\[arrows\]|\[win\]|\[linux\]|\[mac\]|\[debug\])/gi;
+		for(k in AppCommand.getConstructors()) {
+			var cmd = AppCommand.createByName(k);
+			var cmdMeta : Dynamic = Reflect.field(meta, k);
+			var rawCombos : String = try cmdMeta.k[0] catch(_) null;
+			if( rawCombos==null )
+				continue;
+
+			rawCombos = rawCombos.toLowerCase();
+			for(rawCombo in rawCombos.split(",")) {
+
+				var rawKey = keyNameReg.replace(rawCombo, "");
+				var keyCode = switch rawKey {
+					case "escape": K.ESCAPE;
+					case "tab": K.TAB;
+					case "pagedown": K.PGDOWN;
+					case "pageup": K.PGUP;
+					case "up": K.UP;
+					case "down": K.DOWN;
+					case "left": K.LEFT;
+					case "right": K.RIGHT;
+					case "²": K.QWERTY_TILDE;
+					case "`": K.QWERTY_QUOTE;
+
+					case _:
+						var fnReg = ~/f([0-9]|1[0-2])$/gi;
+						if( rawKey.length==1 && rawKey>="a" && rawKey<="z" )
+							K.A + ( rawKey.charCodeAt(0) - "a".code )
+						else if( rawKey.length==1 && rawKey>="0" && rawKey<="9" )
+							K.NUMBER_0 + ( rawKey.charCodeAt(0) - "0".code )
+						else if( fnReg.match(rawKey) )
+							K.F1 + Std.parseInt( fnReg.matched(1) ) - 1;
+						else
+							throw "Unknown key "+rawKey;
+				}
+
+				var navKeys : Null<Settings.NavigationKeys> =
+					rawCombo.indexOf("[wasd]")>=0 ? Settings.NavigationKeys.Wasd
+					: rawCombo.indexOf("[zqsd]")>=0 ? Settings.NavigationKeys.Zqsd
+					: rawCombo.indexOf("[arrows]")>=0 ? Settings.NavigationKeys.Arrows
+					: null;
+
+
+				var os : Null<String> =
+					rawCombo.indexOf("[win]")>=0 ? "win"
+					: rawCombo.indexOf("[linux]")>=0 ? "linux"
+					: rawCombo.indexOf("[mac]")>=0 ? "mac"
+					: null;
+
+
+				keyBindings.push({
+					keyCode: keyCode,
+					jsKey: rawKey,
+					ctrl: rawCombo.indexOf("ctrl")>=0,
+					shift: rawCombo.indexOf("shift")>=0,
+					alt: rawCombo.indexOf("alt")>=0,
+					navKeys: navKeys,
+					os: os,
+					debug: rawCombo.indexOf("[debug]")>=0,
+					allowInInputs: Reflect.hasField(cmdMeta, "input"),
+					command: cmd,
+				});
+			}
+
+		}
 	}
 
 	function initAutoUpdater() {
@@ -280,9 +356,10 @@ class App extends dn.Process {
 			if (latest == null) {
 				LOG.error("Failed to fetch latest version from GitHub");
 				miniNotif("Couldn't retrieve latest version number from GitHub!", false);
-			} else if (Version.greater(latest.full, Const.getAppVersion(true), false)) {
-				LOG.add("update", "Update available: " + latest);
-				pendingUpdate = {ver: latest.full, github: false}
+			}
+			else if( Version.greater(latest.full, Const.getAppVersionStr(true), false ) ) {
+				LOG.add("update", "Update available: "+latest);
+				pendingUpdate = { ver:latest.full, github:false }
 
 				showUpdateButton(latest.full, "world", "Update available", false, () -> {
 					electron.Shell.openExternal(Const.DOWNLOAD_URL);
@@ -567,8 +644,9 @@ class App extends dn.Process {
 			curPageProcess.onAppResize();
 	}
 
-	public inline function requestCpu(full = true) {
-		requestedCpuEndTime = haxe.Timer.stamp() + 2;
+
+	public inline function requestCpu(full=true) {
+		requestedCpuEndTime = haxe.Timer.stamp()+2;
 	}
 
 	function loadSettings() {
@@ -732,9 +810,9 @@ class App extends dn.Process {
 		curPageProcess.onAppResize();
 
 		// Notify app update
-		if (checkAndNotifyUpdate && settings.v.lastKnownVersion != Const.getAppVersion()) {
+		if( checkAndNotifyUpdate && settings.v.lastKnownVersion!=Const.getAppVersionStr() ) {
 			var prev = settings.v.lastKnownVersion;
-			settings.v.lastKnownVersion = Const.getAppVersion();
+			settings.v.lastKnownVersion = Const.getAppVersionStr();
 			App.ME.settings.save();
 
 			new ui.modal.dialog.Changelog(true);
@@ -797,8 +875,8 @@ class App extends dn.Process {
 	}
 
 	public function setWindowTitle(?str:String) {
-		var base = Const.APP_NAME + " " + Const.getAppVersion();
-		if (str == null)
+		var base = Const.APP_NAME+" "+Const.getAppVersionStr();
+		if( str==null )
 			str = base;
 		else
 			str = str + "    --    " + base;
@@ -844,10 +922,10 @@ class App extends dn.Process {
 			hxd.System.fpsLimit = -1;
 		else if (!focused) // App is blurred
 			hxd.System.fpsLimit = 2;
-		else if (haxe.Timer.stamp() > requestedCpuEndTime + 4) // last request is long time ago (idling?)
-			hxd.System.fpsLimit = 10;
+		else if( haxe.Timer.stamp()>requestedCpuEndTime+4 ) // last request is long time ago (idling?)
+			hxd.System.fpsLimit = Std.int(Const.FPS*0.2);
 		else
-			hxd.System.fpsLimit = 30;
+			hxd.System.fpsLimit = Std.int(Const.FPS*0.5);
 
 		// Process profiling
 		if (dn.Process.PROFILING && !cd.hasSetS("profiler", 2)) {
@@ -862,10 +940,11 @@ class App extends dn.Process {
 			clearDebug();
 			debug("-- Misc ----------------------------------------");
 			debugPre('Electron: ${Const.getElectronVersion()}');
-			debugPre('FPS=${hxd.System.fpsLimit <= 0 ? "100" : Std.string(M.round(100 * hxd.System.fpsLimit / 60))}%');
-			debugPre("electronZoom=" + M.pretty(ET.getZoom(), 2));
-			if (Editor.ME != null) {
-				debugPre("mouse=" + Editor.ME.getMouse());
+			debugPre('FPS=${hxd.System.fpsLimit<=0 ? "100":Std.string(M.round(100*hxd.System.fpsLimit/60))}%');
+			debugPre('ElectronThrottling=${dn.js.ElectronTools.isThrottlingEnabled()}');
+			debugPre("electronZoom="+M.pretty(ET.getZoom(),2));
+			if( Editor.ME!=null ) {
+				debugPre("mouse="+Editor.ME.getMouse());
 				var cam = Editor.ME.camera;
 				debugPre("zoom="
 					+ M.pretty(cam.adjustedZoom, 2)
