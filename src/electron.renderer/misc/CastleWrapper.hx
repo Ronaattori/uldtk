@@ -227,14 +227,21 @@ class CastleWrapper {
 		return s;
 	}
 
-    public function openDynamicEditor(content:String, name:String, onChange: String -> Void) {
-		var str = Json.stringify(content, null, "\t");
-		var te = new TextEditor(str, name, null, LangJson, (value) -> {
-			   // TODO Handle JSON parsing errors
-			   var val = sheet.base.parseDynamic(value);
-               onChange(val);
-	   });
+    public function createDynamicEditor(curValue: String, ?title:String, onChange: Dynamic -> Void) {
+		var jInput = new J("<input type='text'>");
+        jInput.val(sheet.base.valToString(TDynamic, curValue));
+		var json = Json.stringify(curValue, null, "\t");
+        jInput.click((e) -> {
+            var te = new TextEditor(json, title ?? "Dynamic Editor", null, LangJson, (value) -> {
+                   // TODO Handle JSON parsing errors
+                   var val = sheet.base.parseDynamic(value);
+                    jInput.val(sheet.base.valToString(TDynamic, val));
+                   onChange(val);
+           });
+        });
+        return jInput;
     }
+
     public function createColorEditor(?currentColor:Int, onChange: Null<Int> -> Void) {
 		var jColor = new J("<input type='color'/>");
 		jColor.val(C.intToHex(currentColor));

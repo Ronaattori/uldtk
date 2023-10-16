@@ -175,7 +175,6 @@ class Tabulator {
 				def.cellClick = listClick;
 			case TDynamic:
 				def.formatter = dynamicFormatter;
-				def.cellClick = dynamicClick;
 			case TTileLayer:
 				def.formatter = tileLayerFormatter;
 			case TColor:
@@ -242,11 +241,8 @@ class Tabulator {
 	}
 
 	function dynamicFormatter(cell:CellComponent, formatterParams, onRendered) {
-	    return sheet.base.valToString(TDynamic, cell.getValue());
-	}
-
-	function dynamicClick(e, cell:CellComponent) {
-	   castle.openDynamicEditor(cell.getValue(), cell.getField(), (val) -> cell.setValue(val));
+		var content = castle.createDynamicEditor(cell.getValue(), cell.getField(), (val) -> cell.setValue(val));
+		return content.get(0);
 	}
 
 	function colorFormatter(cell:CellComponent, formatterParams, onRendered) {

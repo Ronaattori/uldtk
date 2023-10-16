@@ -132,23 +132,6 @@ class SheetDefsForm {
 		return jInput;
 	}
 
-	function dynamicEditor(column:Column, line:Dynamic) {
-		var jInput = new J("<input type='text'>");
-		jInput.val(Reflect.field(line, column.name));
-		jInput.click(e -> {
-			new TextEditor(
-				Json.stringify(Reflect.field(line, column.name), null, "\t"),
-				column.name,
-				null,
-				LangJson,
-				(val) -> {
-					jInput.val(val);
-					Reflect.setField(line, column.name, sheet.base.parseDynamic(val));
-				}
-			);
-		});
-		return jInput;
-	}
 	function imageEditor(column:Column, line:Dynamic) {
 		var value =  Reflect.field(line, column.name);
 		var select = JsTools.createTilesetSelect(Editor.ME.project, null, null, false, (uid) -> {
@@ -185,15 +168,18 @@ class SheetDefsForm {
 
 	function getEditor(column:Column, line:Dynamic) {
 		var thisCol = column.name;
+		var value = Reflect.field(line, thisCol);
 		switch (column.type) {
 			case TString, TId:
 				return inputEditor(column, line);
 			case TTilePos:
 				return imageEditor(column, line);
 			case TDynamic:
-				return dynamicEditor(column, line);
+				return castle.createDynamicEditor(value, column.name, (val) -> {
+					Reflect.setField(line, thisCol, val);
+				});
 			case TEnum(_), TRef(_):
-				return castle.createSelectEditor(Reflect.field(line, thisCol), column, (val) -> {
+				return castle.createSelectEditor(value, column, (val) -> {
 					Reflect.setField(line, thisCol, val);
 					updateForm();
 				});
