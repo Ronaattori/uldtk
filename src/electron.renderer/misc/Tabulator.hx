@@ -249,17 +249,10 @@ class Tabulator {
 	}
 
 	function colorFormatter(cell:CellComponent, formatterParams, onRendered) {
-		var value = cell.getValue();
-		var jColor = new J("<input type='color'/>");
-		jColor.val(C.intToHex(value));
-		jColor.change( ev->{
-			cell.setValue(C.hexToInt(jColor.val()));
+		var editor = castle.createColorEditor(Std.parseInt(cell.getValue()), (val) -> {
+			cell.setValue(val);
 		});
-
-		onRendered(() -> {
-			misc.JsTools.parseComponents(new J(cell.getElement()));
-		});
-		return jColor.get(0);
+		return editor.get(0);
 	}
 
 	function tileLayerFormatter(cell:CellComponent, formatterParams, onRendered) {

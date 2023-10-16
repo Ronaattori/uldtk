@@ -144,6 +144,20 @@ class CastleWrapper {
 		}
 		return s;
 	}
+    function waitForElementReady(element:JQuery, onReady: JQuery -> Void) {
+        var mutationObserver = new js.html.MutationObserver((mutations, observer) -> { 
+            var node = cast (element.get(0), js.html.Node);
+            if (js.Browser.document.contains(node)) {
+                onReady(new J(node.parentElement));
+                observer.disconnect();
+            }
+        });
+        mutationObserver.observe(js.Browser.document, {
+            childList: true,
+            subtree: true
+        });
+    }
+
     public function openDynamicEditor(content:String, name:String, onChange: String -> Void) {
 		var str = Json.stringify(content, null, "\t");
 		var te = new TextEditor(str, name, null, LangJson, (value) -> {
@@ -152,6 +166,15 @@ class CastleWrapper {
                onChange(val);
 	   });
 
+    }
+    public function createColorEditor(?currentColor:Int, onChange: Null<Int> -> Void) {
+		var jColor = new J("<input type='color'/>");
+		jColor.val(C.intToHex(currentColor));
+		jColor.change( ev->{
+            onChange(C.hexToInt(jColor.val()));
+		});
+        waitForElementReady(jColor, (parent) -> misc.JsTools.parseComponents(parent));
+		return jColor;
     }
 
 }
