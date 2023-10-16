@@ -195,6 +195,7 @@ class SheetDefsForm {
 			case TEnum(_), TRef(_):
 				return castle.createSelectEditor(Reflect.field(line, thisCol), column, (val) -> {
 					Reflect.setField(line, thisCol, val);
+					updateForm();
 				});
 			case TList:
 				return listEditor(column, line);
