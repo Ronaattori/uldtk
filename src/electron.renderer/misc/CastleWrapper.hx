@@ -305,12 +305,19 @@ class CastleWrapper {
 			var i = Std.parseInt(select.val());
 			var value = i != null ? options[i].value : null;
             Reflect.setField(line, column.name, value);
+
+            var advancedSelect = select.parent().find(".advancedSelect");
+            if (advancedSelect.length == 1) {
+                advancedSelect.children().removeClass("selected");
+                advancedSelect.find('[value=${i}]').addClass("selected");
+            }
+            
             if (onChange != null) onChange(value);
         });
         waitForElementReady(select, (parent) -> misc.JsTools.parseComponents(parent));
         return select;
     }
-    public function createListEditor(line: Dynamic, column: Column) {
+    public function createListEditor(line: Dynamic, column: Column, ?onChange: Void -> Void) {
 		var jInput = new J("<input type='text'>");
 		var sub = sheet.getSub(column);
 		var str = "[" + Std.string([for (x in sub.columns) x.name]) + "]";
@@ -363,7 +370,6 @@ class CastleWrapper {
             var tp = CastleWrapper.tilesetRectToTilePos(tilesetRect, td);
 			Reflect.setField(line, column.name, tp);
             if (onChange != null) onChange(tp);
-
 		});
 		return jPicker;
     }

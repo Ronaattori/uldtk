@@ -1,5 +1,6 @@
 package ui;
 
+import js.jquery.JQuery;
 import cdb.Data.ColumnType;
 import haxe.Json;
 import ui.modal.dialog.TextEditor;

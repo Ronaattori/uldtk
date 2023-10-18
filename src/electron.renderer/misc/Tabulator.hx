@@ -131,7 +131,7 @@ class Tabulator {
 		def.field = c.name;
 		def.hozAlign = "center";
 		var t = c.type;
-		function getFormatter(createEditor: (Dynamic, Column) -> JQuery) {
+		function getFormatter(createEditor: (Dynamic, Column, ?Dynamic) -> JQuery) {
 			return (cell:CellComponent, formatterParams, onRendered) -> {
 				var column:Column = formatterParams.column;
 				return createEditor(cell.getData(), column).get(0);
