@@ -1,22 +1,15 @@
 package misc;
 
-import haxe.Timer;
-import data.def.TilesetDef;
-import ldtk.Json.TilesetRect;
 import cdb.Types.TilePos;
 import cdb.Data.ColumnType;
 import cdb.Data.Column;
 import js.jquery.JQuery;
-import haxe.Json;
-import ui.modal.dialog.TextEditor;
 import ui.modal.ContextMenu;
 import cdb.Sheet;
 import misc.JsTools;
 import js.html.Element;
 import haxe.extern.EitherType;
-import haxe.DynamicAccess;
 import tabulator.Tabulator;
-import thx.csv.Csv;
 
 class Tabulator {
 	public var element:JQuery;
@@ -248,26 +241,9 @@ class Tabulator {
 	}
 
 	function tilePosFormatter(cell:CellComponent, formatterParams, onRendered) {
-		var tileRectPicker = new J("<span/>");
-		var tilesetSelect = new J("<span/>");
-		var values:TilePos = cell.getValue();
-		var select = JsTools.createTilesetSelect(Editor.ME.project, null, null, false, (uid) -> {
-			var td = Editor.ME.project.defs.getTilesetDef(uid);
-			var tp = CastleWrapper.createTilePos(td);
-			cell.setValue(tp);
-		});
-		select.appendTo(tilesetSelect);
-		if (values == null || (values != null && values.file == null))
-			return tilesetSelect.get(0);
-		var td = Editor.ME.project.defs.getTilesetDefFrom(values.file);
-		if (td == null)
-			return tilesetSelect.get(0);
-		var jPicker = JsTools.createTilePicker(td.uid, RectOnly, td.getTileIdsFromRect(CastleWrapper.tilePosToTilesetRect(values, td)), true, (tileIds) -> {
-			var tilesetRect = td.getTileRectFromTileIds(tileIds);
-			cell.setValue(CastleWrapper.tilesetRectToTilePos(tilesetRect, td));
-		});
-		jPicker.appendTo(tileRectPicker);
-		return tileRectPicker.get(0);
+		var column = getColumn(cell.getColumn());
+		var content = castle.createTilePosEditor(cell.getValue(), column);
+		return content.get(0);
 	}
 
 }

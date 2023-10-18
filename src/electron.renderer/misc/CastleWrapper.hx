@@ -339,4 +339,22 @@ class CastleWrapper {
 
         return jInput;
     }
+    public function createTilePosEditor(line: Dynamic, column: Column) {
+		var value =  Reflect.field(line, column.name);
+		var select = JsTools.createTilesetSelect(Editor.ME.project, null, null, false, (uid) -> {
+			var td = Editor.ME.project.defs.getTilesetDef(uid);
+			var tp = CastleWrapper.createTilePos(td);
+			Reflect.setField(line, column.name, tp);
+		});
+		if (value == null || (value != null && value.file == null))
+			return select;
+		var td = Editor.ME.project.defs.getTilesetDefFrom(value.file);
+		if (td == null)
+			return select;
+		var jPicker = JsTools.createTilePicker(td.uid, RectOnly, td.getTileIdsFromRect(CastleWrapper.tilePosToTilesetRect(value, td)), true, (tileIds) -> {
+			var tilesetRect = td.getTileRectFromTileIds(tileIds);
+			Reflect.setField(line, column.name, CastleWrapper.tilesetRectToTilePos(tilesetRect, td));
+		});
+		return jPicker;
+    }
 }

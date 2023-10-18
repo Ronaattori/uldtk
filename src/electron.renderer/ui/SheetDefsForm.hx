@@ -132,25 +132,6 @@ class SheetDefsForm {
 		return jInput;
 	}
 
-	function imageEditor(column:Column, line:Dynamic) {
-		var value =  Reflect.field(line, column.name);
-		var select = JsTools.createTilesetSelect(Editor.ME.project, null, null, false, (uid) -> {
-			var td = Editor.ME.project.defs.getTilesetDef(uid);
-			var tp = CastleWrapper.createTilePos(td);
-			Reflect.setField(line, column.name, tp);
-		});
-		if (value == null || (value != null && value.file == null))
-			return select;
-		var td = Editor.ME.project.defs.getTilesetDefFrom(value.file);
-		if (td == null)
-			return select;
-		var jPicker = JsTools.createTilePicker(td.uid, RectOnly, td.getTileIdsFromRect(CastleWrapper.tilePosToTilesetRect(value, td)), true, (tileIds) -> {
-			var tilesetRect = td.getTileRectFromTileIds(tileIds);
-			Reflect.setField(line, column.name, CastleWrapper.tilesetRectToTilePos(tilesetRect, td));
-		});
-		jPicker.css("flex", "unset");
-		return jPicker;
-	}
 	function listEditor(column:Column, line:Dynamic) {
 		var jContainer = new J("<div>");
 		var subSheet = sheet.getSub(column);
@@ -173,7 +154,9 @@ class SheetDefsForm {
 			case TString, TId:
 				return inputEditor(column, line);
 			case TTilePos:
-				return imageEditor(column, line);
+				var editor = castle.createTilePosEditor(line, column);
+				editor.css("flex", "unset");
+				return editor;
 			case TDynamic:
 				return castle.createDynamicEditor(value, column.name, (val) -> {
 					Reflect.setField(line, thisCol, val);
