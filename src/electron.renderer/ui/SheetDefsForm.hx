@@ -123,34 +123,18 @@ class SheetDefsForm {
 		JsTools.parseComponents(jForm);
 	}
 
-	function inputEditor(column:Column, line:Dynamic) {
-		var jInput = new J("<input type='text'>");
-		jInput.val(Reflect.field(line, column.name));
-		jInput.change(e -> {
-			Reflect.setField(line, column.name, jInput.val());
-		});
-		return jInput;
-	}
-
 	function getEditor(column:Column, line:Dynamic) {
-		var thisCol = column.name;
-		var value = Reflect.field(line, thisCol);
 		switch (column.type) {
 			case TString, TId:
-				return inputEditor(column, line);
+				return castle.createInputEditor(line, column);
 			case TTilePos:
 				var editor = castle.createTilePosEditor(line, column);
 				editor.css("flex", "unset");
 				return editor;
 			case TDynamic:
-				return castle.createDynamicEditor(value, column.name, (val) -> {
-					Reflect.setField(line, thisCol, val);
-				});
+				return castle.createDynamicEditor(line, column);
 			case TEnum(_), TRef(_):
-				return castle.createSelectEditor(value, column, (val) -> {
-					Reflect.setField(line, thisCol, val);
-					updateForm();
-				});
+				return castle.createSelectEditor(line, column);
 			case TList:
 				var jContainer = new J("<div>");
 				var subSheet = sheet.getSub(column);

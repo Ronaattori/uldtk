@@ -131,6 +131,13 @@ class Tabulator {
 		def.field = c.name;
 		def.hozAlign = "center";
 		var t = c.type;
+		function getFormatter(createEditor: (Dynamic, Column) -> JQuery) {
+			return (cell:CellComponent, formatterParams, onRendered) -> {
+				var column:Column = formatterParams.column;
+				return createEditor(cell.getData(), column).get(0);
+			}
+		}
+		def.formatterParams = {column: c};
 		switch t {
 			case TId, TString:
 				def.editor = "input";
@@ -141,20 +148,20 @@ class Tabulator {
 				def.editor = "input";
 				validators.push("float");
 			case TTilePos:
-				def.formatter = tilePosFormatter;
+				def.formatter = getFormatter(castle.createTilePosEditor);
 			case TBool:
-				def.formatter = boolFormatter;
+				def.formatter = getFormatter(castle.createCheckboxEditor);
 			case TList:
-				def.formatter = listFormatter;
+				def.formatter = getFormatter(castle.createListEditor);
 			case TDynamic:
-				def.formatter = dynamicFormatter;
+				def.formatter = getFormatter(castle.createDynamicEditor);
 			case TTileLayer:
 				def.formatter = tileLayerFormatter;
 			case TColor:
-				def.formatter = colorFormatter;
+				def.formatter = getFormatter(castle.createColorEditor);
 			case TRef(sheetName):
-				def.formatter = refFormatter;
-				def.formatterParams = {column: c}
+				def.formatter = getFormatter(castle.createSelectEditor);
+				// def.formatter = refFormatter;
 				// def.editor = "refEditor";
 				// var refSheet = sheet.base.getSheet(sheetName);
 				// var idCol = refSheet.idCol.name;
@@ -213,42 +220,7 @@ class Tabulator {
 		return def;
 	}
 
-	function dynamicFormatter(cell:CellComponent, formatterParams, onRendered) {
-		var content = castle.createDynamicEditor(cell.getValue(), cell.getField(), (val) -> cell.setValue(val));
-		return content.get(0);
-	}
-
-	function colorFormatter(cell:CellComponent, formatterParams, onRendered) {
-		var editor = castle.createColorEditor(Std.parseInt(cell.getValue()), (val) -> cell.setValue(val));
-		return editor.get(0);
-	}
-
 	function tileLayerFormatter(cell:CellComponent, formatterParams, onRendered) {
 		return "#DATA";
 	}
-
-	function refFormatter(cell:CellComponent, formatterParams, onRendered) {
-		var column: Column = formatterParams.column;
-		var content = castle.createSelectEditor(cell.getValue(), column, (ref) -> cell.setValue(ref));
-		return content.get(0);
-	}
-
-	function listFormatter(cell:CellComponent, formatterParams, onRendered) {
-		var column = getColumn(cell.getColumn());
-		var content = castle.createListEditor(cell.getValue(), column);
-		return content.get(0);
-	}
-
-	function tilePosFormatter(cell:CellComponent, formatterParams, onRendered) {
-		var column = getColumn(cell.getColumn());
-		var content = castle.createTilePosEditor(cell.getData(), column);
-		return content.get(0);
-	}
-
-	function boolFormatter(cell:CellComponent, formatterParams, onRendered) {
-		var column = getColumn(cell.getColumn());
-		var content = castle.createCheckboxEditor(cell.getData(), column);
-		return content.get(0);
-	}
-
 }
