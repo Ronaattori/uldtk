@@ -154,7 +154,7 @@ class SheetDefsForm {
 	function listEditor(column:Column, line:Dynamic) {
 		var jContainer = new J("<div>");
 		var subSheet = sheet.getSub(column);
-		var tabualtor = new misc.Tabulator(jContainer.get(0), subSheet, line);
+		var tabualtor = new misc.Tabulator(jContainer.get(0), subSheet);
 		return jContainer;
 	}
 	function checkboxEditor(column:Column, line:Dynamic) {

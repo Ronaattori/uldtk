@@ -26,19 +26,15 @@ class Tabulator {
 	public var lines:Array<Dynamic>;
 	public var tabulator:Null<tabulator.Tabulator>;
 
-	public var sub:Null<Tabulator>;
-	public var parent:EitherType<CellComponent, Dynamic>;
-	
 	public var castle:CastleWrapper;
 
-	public function new(element:EitherType<String, js.html.Element>, sheet:Sheet, ?parent:EitherType<CellComponent, Dynamic>) {
+	public function new(element:EitherType<String, js.html.Element>, sheet:Sheet) {
 		this.element = new J(element);
 		this.columns = sheet.columns;
 		this.columnTypes = [for (x in columns) x.name => x.type];
-		this.parent = parent;
 		this.sheet = sheet;
 		this.castle = new CastleWrapper(sheet);
-		this.lines = parent == null ? sheet.lines : getParentLines();
+		this.lines = sheet.getLines();
 		if (this.lines == null)
 			this.lines = [];
 		createTabulator();
@@ -126,20 +122,6 @@ class Tabulator {
 		return tabulator.getRow(row);
 	}
 
-	function getParentLines() {
-		// TODO NONONONO NOT LIKE THIS
-		// Please fix this this is a TEMP FIX to handle getting lines from a parent
-		// Forgive me
-		var lines:Array<Dynamic> = [];
-		try {
-			var p:CellComponent = parent;
-			lines =  p.getValue();
-		} catch (e) {
-			var p:Dynamic = parent;
-			lines = Reflect.field(p, sheet.getParent().c);
-		}
-		return lines;
-	}
 	function getColumn(column:ColumnComponent) {
 		for (col in sheet.columns) {
 			if (column.getField() == col.name) {
@@ -172,7 +154,6 @@ class Tabulator {
 				def.formatter = "tickCross";
 			case TList:
 				def.formatter = listFormatter;
-				def.cellClick = listClick;
 			case TDynamic:
 				def.formatter = dynamicFormatter;
 			case TTileLayer:
@@ -260,50 +241,10 @@ class Tabulator {
 		return content.get(0);
 	}
 
-	function listClick(e, cell:CellComponent) {
-		var cellElement = cell.getElement();
-		var subSheet = sheet.base.getSheet(sheet.name + "@" + cell.getField());
-
-		var holder = js.Browser.document.createElement("div");
-		holder.classList.add("subHolder");
-		var table = js.Browser.document.createElement("div");
-
-		// Close the old subTabulator if one exists and return if we're trying to open the same one
-		if (sub != null) {
-			if (sub.sheet.name == subSheet.name) {
-				removeSubTabulator();
-				return;
-			}
-			removeSubTabulator();
-		}
-
-		var subTabulator = new Tabulator(table, subSheet, cell);
-
-		holder.style.boxSizing = "border-box";
-		holder.style.padding = "10px 30px 10px 10px";
-		holder.style.borderTop = "1px solid #333";
-		holder.style.borderBottom = "1px solid #333";
-
-		table.style.border = "3px solid #333";
-		table.style.height = "fit-content";
-		table.style.width = "fit-content";
-
-		holder.appendChild(table);
-		cellElement.closest(".tabulator-row").append(holder);
-
-		sub = subTabulator;
-	}
-
 	function listFormatter(cell:CellComponent, formatterParams, onRendered) {
-		var sub = sheet.base.getSheet(sheet.name + "@" + cell.getField());
-		var str = "[" + Std.string([for (x in sub.columns) x.name]) + "]";
-		return str;
-	}
-
-	function removeSubTabulator() {
-		sub.tabulator.destroy();
-		sub.element.closest(".subHolder").remove();
-		sub = null;
+		var column = getColumn(cell.getColumn());
+		var content = castle.createListEditor(cell.getValue(), column);
+		return content.get(0);
 	}
 
 	function tilePosFormatter(cell:CellComponent, formatterParams, onRendered) {

@@ -304,4 +304,39 @@ class CastleWrapper {
         waitForElementReady(select, (parent) -> misc.JsTools.parseComponents(parent));
         return select;
     }
+    public function createListEditor(line: Dynamic, column: Column) {
+		var jInput = new J("<input type='text'>");
+		var sub = sheet.getSub(column);
+		var str = "[" + Std.string([for (x in sub.columns) x.name]) + "]";
+        jInput.val(str);
+
+        jInput.click((e:js.html.Event) -> {
+            var target = cast(e.target, js.html.Element);
+            var row = target.closest(".tabulator-row");
+            if (row.querySelector("#subTabulator") != null) {
+                row.querySelector("#subTabulator").remove();
+                return;
+            }
+
+            var holder = new J("<div id='subTabulator'>");
+            holder.addClass("subHolder");
+            var table = new J("<div>");
+
+            var subTabulator = new Tabulator(table.get(0), sub);
+
+            holder.css("boxSizing", "border-box");
+            holder.css("padding", "10px 30px 10px10px");
+            holder.css("borderTop", "1px solid #333");
+            holder.css("borderBottom", "1px solid #333");
+
+            table.css("border", "3px solid #333");
+            table.css("height", "fit-content");
+            table.css("width", "fit-content");
+
+            holder.append(table);
+            jInput.closest(".tabulator-row").append(holder);
+        });
+
+        return jInput;
+    }
 }
