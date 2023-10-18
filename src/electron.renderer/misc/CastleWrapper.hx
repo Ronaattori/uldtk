@@ -357,4 +357,12 @@ class CastleWrapper {
 		});
 		return jPicker;
     }
+	public function createCheckboxEditor(line: Dynamic, column:Column) {
+		var jInput = new J("<input type='checkbox'>");
+		jInput.prop("checked", Reflect.field(line, column.name));
+		jInput.change(d -> {
+			Reflect.setField(line, column.name, jInput.prop("checked"));
+		});
+		return jInput;
+	}
 }

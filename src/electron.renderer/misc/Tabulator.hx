@@ -143,8 +143,7 @@ class Tabulator {
 			case TTilePos:
 				def.formatter = tilePosFormatter;
 			case TBool:
-				def.editor = "tickCross";
-				def.formatter = "tickCross";
+				def.formatter = boolFormatter;
 			case TList:
 				def.formatter = listFormatter;
 			case TDynamic:
@@ -242,7 +241,13 @@ class Tabulator {
 
 	function tilePosFormatter(cell:CellComponent, formatterParams, onRendered) {
 		var column = getColumn(cell.getColumn());
-		var content = castle.createTilePosEditor(cell.getValue(), column);
+		var content = castle.createTilePosEditor(cell.getData(), column);
+		return content.get(0);
+	}
+
+	function boolFormatter(cell:CellComponent, formatterParams, onRendered) {
+		var column = getColumn(cell.getColumn());
+		var content = castle.createCheckboxEditor(cell.getData(), column);
 		return content.get(0);
 	}
 
