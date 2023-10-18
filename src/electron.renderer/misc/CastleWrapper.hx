@@ -227,34 +227,36 @@ class CastleWrapper {
 		return s;
 	}
 
-    public function createDynamicEditor(line:Dynamic, column: Column) {
+    public function createDynamicEditor(line:Dynamic, column: Column, ?onChange: String -> Void) {
 		var curValue =  Reflect.field(line, column.name);
 		var jInput = new J("<input type='text'>");
         jInput.val(sheet.base.valToString(TDynamic, curValue));
 		var json = Json.stringify(curValue, null, "\t");
         jInput.click((e) -> {
             var te = new TextEditor(json, column.name, null, LangJson, (value) -> {
-                   // TODO Handle JSON parsing errors
-                   var val = sheet.base.parseDynamic(value);
+                    // TODO Handle JSON parsing errors
+                    var val = sheet.base.parseDynamic(value);
                     jInput.val(sheet.base.valToString(TDynamic, val));
                     Reflect.setField(line, column.name, val);
+                    if (onChange != null) onChange(val);
            });
         });
         return jInput;
     }
 
-    public function createColorEditor(line:Dynamic, column: Column) {
+    public function createColorEditor(line:Dynamic, column: Column, ?onChange: Int -> Void) {
 		var curValue = Reflect.field(line, column.name);
 		var jColor = new J("<input type='color'/>");
 		jColor.val(C.intToHex(curValue));
 		jColor.change( ev->{
             var val = C.hexToInt(jColor.val());
             Reflect.setField(line, column.name, val);
+            if (onChange != null) onChange(val);
 		});
         waitForElementReady(jColor, (parent) -> misc.JsTools.parseComponents(parent));
 		return jColor;
     }
-    public function createSelectEditor(line:Dynamic, column: Column) {
+    public function createSelectEditor(line:Dynamic, column: Column, ?onChange: Dynamic -> Void) {
 		var curValue = Reflect.field(line, column.name);
         var select = new J("<select class='advanced'>");
 		var options:Array<{label:String, value:Dynamic, ?image:TilePos}> = switch (column.type) {
@@ -303,6 +305,7 @@ class CastleWrapper {
 			var i = Std.parseInt(select.val());
 			var value = i != null ? options[i].value : null;
             Reflect.setField(line, column.name, value);
+            if (onChange != null) onChange(value);
         });
         waitForElementReady(select, (parent) -> misc.JsTools.parseComponents(parent));
         return select;
@@ -342,12 +345,13 @@ class CastleWrapper {
 
         return jInput;
     }
-    public function createTilePosEditor(line: Dynamic, column: Column) {
+    public function createTilePosEditor(line: Dynamic, column: Column, ?onChange: TilePos -> Void) {
 		var curValue =  Reflect.field(line, column.name);
 		var select = JsTools.createTilesetSelect(Editor.ME.project, null, null, false, (uid) -> {
 			var td = Editor.ME.project.defs.getTilesetDef(uid);
 			var tp = CastleWrapper.createTilePos(td);
 			Reflect.setField(line, column.name, tp);
+            if (onChange != null) onChange(tp);
 		});
 		if (curValue == null || (curValue != null && curValue.file == null))
 			return select;
@@ -356,25 +360,32 @@ class CastleWrapper {
 			return select;
 		var jPicker = JsTools.createTilePicker(td.uid, RectOnly, td.getTileIdsFromRect(CastleWrapper.tilePosToTilesetRect(curValue, td)), true, (tileIds) -> {
 			var tilesetRect = td.getTileRectFromTileIds(tileIds);
-			Reflect.setField(line, column.name, CastleWrapper.tilesetRectToTilePos(tilesetRect, td));
+            var tp = CastleWrapper.tilesetRectToTilePos(tilesetRect, td);
+			Reflect.setField(line, column.name, tp);
+            if (onChange != null) onChange(tp);
+
 		});
 		return jPicker;
     }
-	public function createCheckboxEditor(line: Dynamic, column:Column) {
+	public function createCheckboxEditor(line: Dynamic, column:Column, ?onChange: Bool -> Void) {
 		var curValue = Reflect.field(line, column.name);
 		var jInput = new J("<input type='checkbox'>");
 		jInput.prop("checked", curValue);
 		jInput.change(d -> {
-			Reflect.setField(line, column.name, jInput.prop("checked"));
+            var checked: Bool = jInput.prop("checked");
+			Reflect.setField(line, column.name, checked);
+            if (onChange != null) onChange(checked);
 		});
 		return jInput;
 	}
-	public function createInputEditor(line:Dynamic, column: Column) {
+	public function createInputEditor(line:Dynamic, column: Column, ?onChange: String -> Void) {
 		var curValue = Reflect.field(line, column.name);
 		var jInput = new J("<input type='text'>");
 		jInput.val(curValue);
 		jInput.change(e -> {
-			Reflect.setField(line, column.name, jInput.val());
+            var val = jInput.val();
+			Reflect.setField(line, column.name, val);
+            if (onChange != null) onChange(val);
 		});
 		return jInput;
 	}
