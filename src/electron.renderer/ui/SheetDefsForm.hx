@@ -132,12 +132,6 @@ class SheetDefsForm {
 		return jInput;
 	}
 
-	function listEditor(column:Column, line:Dynamic) {
-		var jContainer = new J("<div>");
-		var subSheet = sheet.getSub(column);
-		var tabualtor = new misc.Tabulator(jContainer.get(0), subSheet);
-		return jContainer;
-	}
 	function checkboxEditor(column:Column, line:Dynamic) {
 		var jInput = new J("<input type='checkbox'>");
 		jInput.prop("checked", Reflect.field(line, column.name));
@@ -167,7 +161,10 @@ class SheetDefsForm {
 					updateForm();
 				});
 			case TList:
-				return listEditor(column, line);
+				var jContainer = new J("<div>");
+				var subSheet = sheet.getSub(column);
+				var tabualtor = new misc.Tabulator(jContainer.get(0), subSheet);
+				return jContainer;
 			case TBool:
 				return checkboxEditor(column, line);
 			case _:
