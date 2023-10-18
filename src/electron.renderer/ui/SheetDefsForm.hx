@@ -111,14 +111,8 @@ class SheetDefsForm {
 			editor.attr("id", 'editor_$name');
 			editor.appendTo(jDd);
 			
-			jLabel.on("contextmenu", (e) -> {
-				var ctx = new ui.modal.ContextMenu(jLabel);
-				ctx.add({
-					label: new LocaleString("Edit column"),
-					cb: () -> new ui.modal.dialog.CastleColumn(sheet, column, (c) -> {
-						// TODO refresh page
-					})
-				});
+			jLabel.on("contextmenu", (e:js.jquery.Event) -> {
+				castle.createHeaderContextMenu(e, column);
 			});
 		}
 		JsTools.parseComponents(jForm);
@@ -143,6 +137,8 @@ class SheetDefsForm {
 				return jContainer;
 			case TBool:
 				return castle.createCheckboxEditor(line, column);
+			case TColor:
+				return castle.createColorEditor(line, column);
 			case _:
 				var todo = new J("<span>");
 				todo[0].innerHTML = "TODO";
