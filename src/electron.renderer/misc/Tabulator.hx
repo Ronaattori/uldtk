@@ -160,56 +160,40 @@ class Tabulator {
 			case TColor:
 				def.formatter = getFormatter(castle.createColorEditor);
 			case TRef(sheetName):
-				def.formatter = getFormatter(castle.createSelectEditor);
-				// def.formatter = refFormatter;
-				// def.editor = "refEditor";
-				// var refSheet = sheet.base.getSheet(sheetName);
-				// var idCol = refSheet.idCol.name;
-				// var nameCol = refSheet.props.displayColumn ?? idCol;
-				// var iconCol = refSheet.props.displayIcon;
+				var refSheet = sheet.base.getSheet(sheetName);
+                var idCol = refSheet.idCol.name;
+				var nameCol = refSheet.props.displayColumn ?? idCol;
+				var iconCol = refSheet.props.displayIcon;
 
-				// var values = [];
-				// var images = {};
-				// for (line in refSheet.lines) {
-				// 	var id = Reflect.field(line, idCol);
-				// 	var image = iconCol != null ? tilePosToHtmlImg(Reflect.field(line, iconCol))[0].outerHTML : null;
-				// 	Reflect.setField(images, id, image);
-				// 	values.push({
-				// 		label: Reflect.field(line, nameCol),
-				// 		value: id,
-				// 		line: line,
-				// 		image: image
-				// 	});
-				// }
-				// def.formatter = refFormatter;
-				// def.formatterParams = {images: images}
-				// def.editor = "list";
-				// def.editorParams = {
-				// 	values: values,
-				// 	itemFormatter: (label, value, item, element) -> {
-				// 		var content = new J("<span>");
-				// 		if (item.image != null) {
-				// 			content.append(new J(item.image));
-				// 		}
-				// 		content.append(label);
-				// 		return content[0].outerHTML;
-				// 	},
-				// 	autocomplete: true,
-				// 	listOnEmpty: true,
-				// 	allowEmpty: c.opt
-				// }
+				def.editor = "list";
+				var values = [];
+				var icons = {};
+				for (line in refSheet.getLines()) {
+					var tp: Null<TilePos> = Reflect.field(line, iconCol);
+					var id = Reflect.field(line, idCol);
+					var obj = {
+						label: Reflect.field(line, nameCol),
+						value: id,
+						icon: tp
+					};
+					values.push(obj);
+					Reflect.setField(icons, id, tp);
+				}
+				def.editorParams = createListEditorParams(c, values);
+				def.formatter = (c:CellComponent) -> {
+					var id = c.getValue();
+					var icon: Null<TilePos> = Reflect.field(icons, id);
+					return listFormatter(id, icon);
+				}
 
 			case TEnum(options):
 				def.editor = "list";
-				def.editorParams = {
-					values: [for (i => v in options) {
+					var values = [for (i => v in options) {
 						label: v,
-						value: i
-					}],
-					autocomplete: true,
-					allowEmpty: c.opt,
-					listOnEmpty: true
-				};
+						value: i,
+						icon: null
+					}];
+				def.editorParams = createListEditorParams(c, values);
 				def.formatter = (c:CellComponent) -> return options[c.getValue()];
 
 			case _:
@@ -218,6 +202,25 @@ class Tabulator {
 		if (!c.opt) validators.push("required");
 		def.validator = validators;
 		return def;
+	}
+
+	function listFormatter(label: String, ?icon: TilePos) {
+		var content = new J("<span>");
+		if (icon != null) {
+			content.append(castle.tilePosToHtmlImg(icon));
+		}
+		content.append(label);
+		return content.get(0);
+	}
+
+	function createListEditorParams(column:Column, values: Array<{label: String, value: Dynamic, icon: Null<TilePos>}>) {
+		return {
+			autocomplete: true,
+			allowEmpty: column.opt,
+			listOnEmpty: true,
+			values: values,
+			itemFormatter: (label, value, item, element) -> listFormatter(label, item.icon),
+		};
 	}
 
 	function tileLayerFormatter(cell:CellComponent, formatterParams, onRendered) {

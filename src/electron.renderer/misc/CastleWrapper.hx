@@ -1,5 +1,6 @@
 package misc;
 
+import cdb.Data.ColumnType;
 import data.def.TilesetDef;
 import ldtk.Json.TilesetRect;
 import cdb.Types.TilePos;
