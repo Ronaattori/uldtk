@@ -8030,6 +8030,29 @@ dl.form.fieldInstanceEditor {
 		overflow: auto;
 		grid-column: 2;
 		grid-row: 2;
+		display: flex;
+		flex-direction: column;
+
+		.line {
+			display: flex;	
+			align-items: center;
+			margin-bottom: 2px;
+		}
+		label {
+			margin-right: 30px;
+			width: 30%;
+			display: flex;
+			align-items: baseline;
+			
+			button {
+				overflow: hidden;
+				text-overflow: ellipsis;
+				flex: 1
+			}
+		}
+		.editor {
+			flex: 1;
+		}
 
 		input.type {
 			font-family: 'Courier New', Courier, monospace;
@@ -8037,6 +8060,32 @@ dl.form.fieldInstanceEditor {
 
 		> dt {
 			max-width: unset;
+		}
+
+		.info {
+			width: 24px;
+			height: 16px;
+			margin-left: 8px;
+			font-size: 9pt;
+			border: none;
+			// border-width: 1px;
+			// border-color: $bgLight;
+			background-color: $bgLight;
+			color: $bgDark;
+			opacity: 0.45;
+
+			&::before {
+				content: "?";
+			}
+
+			&:hover {
+				opacity: 1;
+				border-color: $help;
+				box-shadow: 0px 0px 8px $helpMed;
+				color: white;
+				text-shadow: 0px 0px 2px $help;
+				background-color: $help;
+			}
 		}
 
 		dt>label {

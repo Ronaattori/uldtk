@@ -6954,12 +6954,54 @@ dl.form.fieldInstanceEditor div.array button.remove {
   overflow: auto;
   grid-column: 2;
   grid-row: 2;
+  display: flex;
+  flex-direction: column;
+}
+.sheetDefsForm dl.form .line {
+  display: flex;
+  align-items: center;
+  margin-bottom: 2px;
+}
+.sheetDefsForm dl.form label {
+  margin-right: 30px;
+  width: 30%;
+  display: flex;
+  align-items: baseline;
+}
+.sheetDefsForm dl.form label button {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
+}
+.sheetDefsForm dl.form .editor {
+  flex: 1;
 }
 .sheetDefsForm dl.form input.type {
   font-family: "Courier New", Courier, monospace;
 }
 .sheetDefsForm dl.form > dt {
   max-width: unset;
+}
+.sheetDefsForm dl.form .info {
+  width: 24px;
+  height: 16px;
+  margin-left: 8px;
+  font-size: 9pt;
+  border: none;
+  background-color: #545d73;
+  color: #1e2229;
+  opacity: 0.45;
+}
+.sheetDefsForm dl.form .info::before {
+  content: "?";
+}
+.sheetDefsForm dl.form .info:hover {
+  opacity: 1;
+  border-color: #79dd8a;
+  box-shadow: 0px 0px 8px #5eab6b;
+  color: white;
+  text-shadow: 0px 0px 2px #79dd8a;
+  background-color: #79dd8a;
 }
 .sheetDefsForm dl.form dt > label {
   flex: 0 0 100px;

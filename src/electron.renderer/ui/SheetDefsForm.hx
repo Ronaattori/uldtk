@@ -98,23 +98,28 @@ class SheetDefsForm {
 		jForm.empty();
 		for (column in sheet.columns) {
 			var name = column.name;
-			var jDt = new J("<dt>");
+			var jLine = new J("<div class='line'>");
 			var jLabel = new J('<label for=editor_$name><button class="gray">$name</button></label>');
 			var jInfo = new J('<div class="info">${getInfo(column.type)}</div>)');
-			var jDd = new J("<dd>");
-			jForm.append(jDt);
-			jDt.append(jLabel);
-			jDt.append(jInfo);
-			jForm.append(jDd);
 
+			// Add the info into the line
+			jInfo.appendTo(jLabel);
+			jLabel.appendTo(jLine);
+
+			// Get and add the editor into the line
 			var editor = getEditor(column, curLine);
 			editor.attr("id", 'editor_$name');
-			editor.appendTo(jDd);
+			editor.addClass("editor");
+			editor.appendTo(jLine);
 			
 			jLabel.on("contextmenu", (e:js.jquery.Event) -> {
 				castle.createHeaderContextMenu(e, column);
 			});
+
+			jForm.append(jLine);
 		}
+		JsTools.makeSortable(jForm, function(ev) {
+		});
 		JsTools.parseComponents(jForm);
 	}
 
