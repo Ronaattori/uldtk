@@ -87,7 +87,6 @@ class Tabulator {
 		tabulator.on("headerContext", (e, columnComponent:ColumnComponent) -> {
 			var column = getColumn(columnComponent);
 			castle.createHeaderContextMenu(e, column);
-
 		});
 		tabulator.on("rowMoved", (row:RowComponent) -> {
 			var data = row.getData();
@@ -103,7 +102,6 @@ class Tabulator {
 		});
 
 		tabulator.on("tableBuilt",(e) -> {
-			// tabulator.redraw(false);
 			tabulator.validate();
 		});
 
@@ -204,6 +202,7 @@ class Tabulator {
 		return def;
 	}
 
+	// Tabulators native list formatter/editor is much faster than LDtk's advanced selects
 	function listFormatter(label: String, ?icon: TilePos) {
 		var content = new J("<span>");
 		if (icon != null) {

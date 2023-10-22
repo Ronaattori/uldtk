@@ -33,9 +33,12 @@ class CastleWrapper {
 		this.sheet = sheet;
         this.callbacks = {};
     }
+
     //
     // Utility functions
     //
+
+    // Run onReady when element has been added and is visible in the DOM
     function waitForElementReady(element:JQuery, onReady: JQuery -> Void) {
         var mutationObserver = new js.html.MutationObserver((mutations, observer) -> { 
             var node = cast (element.get(0), js.html.Node);
@@ -49,8 +52,8 @@ class CastleWrapper {
             subtree: true
         });
     }
-    function findLineById(id: Dynamic, ?otherSheet: Sheet){
-        var s = otherSheet == null ? sheet : otherSheet;
+    function findLineById(id: Dynamic, ?fromSheet: Sheet){
+        var s = fromSheet == null ? sheet : fromSheet;
         var idCol = s.idCol.name;
         return s.lines.filter((line) -> Reflect.field(line, idCol) == id)[0];
     }
@@ -105,7 +108,6 @@ class CastleWrapper {
 		return tilePos;
 	}
     
-
 
 
     //

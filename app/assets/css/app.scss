@@ -8035,6 +8035,10 @@ dl.form.fieldInstanceEditor {
 			font-family: 'Courier New', Courier, monospace;
 		}
 
+		> dt {
+			max-width: unset;
+		}
+
 		dt>label {
 			flex: 0 0 100px;
 		}

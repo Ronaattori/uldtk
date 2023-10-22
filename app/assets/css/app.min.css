@@ -6958,6 +6958,9 @@ dl.form.fieldInstanceEditor div.array button.remove {
 .sheetDefsForm dl.form input.type {
   font-family: "Courier New", Courier, monospace;
 }
+.sheetDefsForm dl.form > dt {
+  max-width: unset;
+}
 .sheetDefsForm dl.form dt > label {
   flex: 0 0 100px;
 }
