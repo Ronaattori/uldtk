@@ -140,7 +140,7 @@ class SheetDefsForm {
 			case TList:
 				var jContainer = new J("<div>");
 				var subSheet = sheet.getSub(column);
-				var tabualtor = new misc.Tabulator(jContainer.get(0), subSheet);
+				var tabualtor = new misc.Tabulator(jContainer.get(0), subSheet, line);
 				return jContainer;
 			case TBool:
 				return castle.createCheckboxEditor(line, column);

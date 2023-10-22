@@ -21,13 +21,19 @@ class Tabulator {
 
 	public var castle:CastleWrapper;
 
-	public function new(element:EitherType<String, js.html.Element>, sheet:Sheet) {
+	public function new(element:EitherType<String, js.html.Element>, sheet:Sheet, ?parentLine: Dynamic) {
 		this.element = new J(element);
 		this.columns = sheet.columns;
 		this.columnTypes = [for (x in columns) x.name => x.type];
 		this.sheet = sheet;
 		this.castle = new CastleWrapper(sheet);
-		this.lines = sheet.getLines();
+		
+		// TList lines exist in the parent's line. We need some special treatment to get that out
+		if (parentLine) {
+			this.lines = Reflect.field(parentLine, sheet.getParent().c);
+		} else {
+			this.lines = sheet.getLines();
+		}
 		if (this.lines == null)
 			this.lines = [];
 		createTabulator();
