@@ -98,7 +98,7 @@ class Tabulator {
 			var c = getColumn(column);
 			var fromIndex = sheet.columns.indexOf(c);
 			var toIndex = tabulator.getColumns().indexOf(column) - 1; // The -1 is because of the "rownum" column
-			castle.moveColumn(c, fromIndex, toIndex);
+			castle.moveColumn(fromIndex, toIndex);
 		});
 
 		tabulator.on("tableBuilt",(e) -> {

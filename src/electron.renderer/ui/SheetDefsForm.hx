@@ -118,8 +118,10 @@ class SheetDefsForm {
 
 			jForm.append(jLine);
 		}
-		JsTools.makeSortable(jForm, function(ev) {
+		JsTools.makeSortable(jForm, function(ev:sortablejs.Sortable.SortableDragEvent) {
+			castle.moveColumn(ev.oldIndex, ev.newIndex);
 		});
+
 		JsTools.parseComponents(jForm);
 	}
 
