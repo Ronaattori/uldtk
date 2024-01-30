@@ -1,5 +1,8 @@
 package ui;
 
+import ldtk.Layer_IntGrid_AutoLayer;
+import misc.castle.Line;
+import misc.castle.SheetWrapper;
 import js.jquery.JQuery;
 import cdb.Data.ColumnType;
 import haxe.Json;
@@ -12,15 +15,13 @@ class SheetDefsForm {
 	public var jWrapper : js.jquery.JQuery;
 	var jList(get,never) : js.jquery.JQuery; inline function get_jList() return jWrapper.find("ul.rowList");
 	var jForm(get,never) : js.jquery.JQuery; inline function get_jForm() return jWrapper.find("dl.form");
-	var sheet : cdb.Sheet;
-	var curLine : Null<Dynamic>;
-	public var castle:CastleWrapper;
+	var sheet : SheetWrapper;
+	var curLine : Null<Line>;
 
 
 	public function new(sheet:cdb.Sheet) {
-		this.sheet = sheet;
+		this.sheet = new SheetWrapper(sheet);
 		this.curLine = sheet.lines[0];
-		this.castle = new CastleWrapper(sheet);
 
 		jWrapper = new J('<div class="sheetDefsForm"/>');
 		jWrapper.html( JsTools.getHtmlTemplate("sheetDefsForm"));
@@ -28,7 +29,7 @@ class SheetDefsForm {
 		
 		jWrapper.find(".createRow").click(e -> {
 			var l = sheet.newLine();
-			selectLine(l);
+			selectLine(new Line(l, this.sheet));
 		});
 		jWrapper.find(".createColumn").click(e -> {
 			// sheet.addColumn()
@@ -40,7 +41,7 @@ class SheetDefsForm {
 		updateList();
 		updateForm();
 	}
-	public function selectLine(line) {
+	public function selectLine(line: Line) {
 		curLine = line;
 		updateList();
 		updateForm();
@@ -54,28 +55,23 @@ class SheetDefsForm {
 		var jSubList = new J('<ul/>');
 		jSubList.appendTo(jLi);
 
-	// 	var pki = td.columns.indexOf(td.primaryKey);
-		var displayCol = sheet.props.displayColumn ?? sheet.idCol?.name;
-		for(line in sheet.lines) {
+		for (line in sheet.lines) {
 			var jLi = new J("<li/>");
 			jLi.appendTo(jSubList);
-			jLi.append('<span class="table">'+Reflect.field(line, displayCol)+'</span>');
-			// jLi.data("uid",td.uid);
+			jLi.text(line.display);
 
 			if( line==curLine )
 				jLi.addClass("active");
-			jLi.click( function(_) {
+			jLi.click((_) -> {
 				selectLine(line);
 			});
-			ui.modal.ContextMenu.addTo(jLi, [
-				{
-					label: L._Delete(),
-					cb: () -> {},
-				},
-			]);
+			ui.modal.ContextMenu.addTo(jLi, [{
+				label: L._Delete(),
+				cb: () -> {},
+			}]);	
 		}
 
-	// 	// Make list sortable
+		// Make list sortable
 		JsTools.makeSortable(jSubList, function(ev) {
 			// var jItem = new J(ev.item);
 			// var fromIdx = project.defs.getTableIndex( jItem.data("uid") );
@@ -96,62 +92,76 @@ class SheetDefsForm {
 		}
 		jForm.show();
 		jForm.empty();
+
 		for (column in sheet.columns) {
 			var name = column.name;
 			var jLine = new J("<div class='line'>");
 			var jLabel = new J('<label for=editor_$name><button class="gray">$name</button></label>');
 			var jInfo = new J('<div class="info">${getInfo(column.type)}</div>)');
 
-			// Add the info into the line
 			jInfo.appendTo(jLabel);
 			jLabel.appendTo(jLine);
-
-			// Get and add the editor into the line
-			var editor = getEditor(column, curLine);
-			editor.attr("id", 'editor_$name');
-			editor.addClass("editor");
-			editor.appendTo(jLine);
-			
-			jLabel.on("contextmenu", (e:js.jquery.Event) -> {
-				castle.createHeaderContextMenu(e, column);
-			});
-
 			jForm.append(jLine);
 		}
-		JsTools.makeSortable(jForm, function(ev:sortablejs.Sortable.SortableDragEvent) {
-			castle.moveColumn(ev.oldIndex, ev.newIndex);
-		});
+		
+		// for (column in sheet.columns) {
+		// 	var name = column.name;
+		// 	var jLine = new J("<div class='line'>");
+		// 	var jLabel = new J('<label for=editor_$name><button class="gray">$name</button></label>');
+		// 	var jInfo = new J('<div class="info">${getInfo(column.type)}</div>)');
+
+		// 	// Add the info into the line
+		// 	jInfo.appendTo(jLabel);
+		// 	jLabel.appendTo(jLine);
+
+		// 	// Get and add the editor into the line
+		// 	// var editor = getEditor(column, curLine);
+		// 	// editor.attr("id", 'editor_$name');
+		// 	// editor.addClass("editor");
+		// 	// editor.appendTo(jLine);
+			
+		// 	jLabel.on("contextmenu", (e:js.jquery.Event) -> {
+		// 		castle.createHeaderContextMenu(e, column);
+		// 	});
+
+		// 	jForm.append(jLine);
+		// }
+		// JsTools.makeSortable(jForm, function(ev:sortablejs.Sortable.SortableDragEvent) {
+		// 	castle.moveColumn(ev.oldIndex, ev.newIndex);
+		// });
 
 		JsTools.parseComponents(jForm);
 	}
 
-	function getEditor(column:Column, line:Dynamic) {
-		switch (column.type) {
-			case TString, TId:
-				return castle.createInputEditor(line, column);
-			case TTilePos:
-				var editor = castle.createTilePosEditor(line, column);
-				editor.css("flex", "unset");
-				return editor;
-			case TDynamic:
-				return castle.createDynamicEditor(line, column);
-			case TEnum(_), TRef(_):
-				return castle.createSelectEditor(line, column);
-			case TList:
-				var jContainer = new J("<div>");
-				var subSheet = sheet.getSub(column);
-				var tabualtor = new misc.Tabulator(jContainer.get(0), subSheet, line);
-				return jContainer;
-			case TBool:
-				return castle.createCheckboxEditor(line, column);
-			case TColor:
-				return castle.createColorEditor(line, column);
-			case _:
-				var todo = new J("<span>");
-				todo[0].innerHTML = "TODO";
-				return todo;
-		}
-	}
+	// function getEditor(column:Column, line:Dynamic) {
+	// 	switch (column.type) {
+	// 		case TString, TId:
+	// 			return castle.createInputEditor(line, column);
+	// 		case TTilePos:
+	// 			var editor = castle.createTilePosEditor(line, column, (tp) -> {
+	// 				trace();
+	// 			});
+	// 			editor.css("flex", "unset");
+	// 			return editor;
+	// 		case TDynamic:
+	// 			return castle.createDynamicEditor(line, column);
+	// 		case TEnum(_), TRef(_):
+	// 			return castle.createSelectEditor(line, column);
+	// 		case TList:
+	// 			var jContainer = new J("<div>");
+	// 			var subSheet = sheet.getSub(column);
+	// 			var tabualtor = new misc.Tabulator(jContainer.get(0), subSheet, line);
+	// 			return jContainer;
+	// 		case TBool:
+	// 			return castle.createCheckboxEditor(line, column);
+	// 		case TColor:
+	// 			return castle.createColorEditor(line, column);
+	// 		case _:
+	// 			var todo = new J("<span>");
+	// 			todo[0].innerHTML = "TODO";
+	// 			return todo;
+	// 	}
+	// }
 	function getInfo(type:ColumnType) {
 		return switch (type) {
 			case TId:
