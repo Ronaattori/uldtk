@@ -46,6 +46,17 @@ class SheetDefsForm {
 		updateForm();
 	}
 
+	public function refreshLine(column: Column) {
+		var editorId = 'editor_${column.name}';
+		var oldEditor = new J('#$editorId');
+		if (oldEditor.length > 0) {
+			var newEditor = getEditor(column, curLine);
+			newEditor.attr("id",editorId);
+			newEditor.addClass("editor");
+			oldEditor.replaceWith(newEditor);
+		}
+	}
+
 	public function updateList(){
 		jList.empty();
 
@@ -130,7 +141,7 @@ class SheetDefsForm {
 			case TString, TId:
 				return castle.createInputEditor(line, column);
 			case TTilePos:
-				var editor = castle.createTilePosEditor(line, column);
+				var editor = castle.createTilePosEditor(line, column, (_) -> refreshLine(column));
 				editor.css("flex", "unset");
 				return editor;
 			case TDynamic:
