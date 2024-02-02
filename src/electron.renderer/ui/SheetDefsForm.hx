@@ -116,6 +116,7 @@ class SheetDefsForm {
 			// Add the info into the line
 			jInfo.appendTo(jLabel);
 			jLabel.appendTo(jLine);
+			jLabel.addClass("sortHandle");
 
 			// Get and add the editor into the line
 			var editor = getEditor(column, curLine);
