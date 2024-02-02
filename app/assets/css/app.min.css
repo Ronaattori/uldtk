@@ -331,6 +331,16 @@ button.pending {
   background-image: url("../img/LDtk-shine-1024.png");
 }
 
+.appIcon {
+  width: 100px;
+  height: 100px;
+  background-image: url("../appIcon.png");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+  image-rendering: -webkit-optimize-contrast;
+}
+
 #miniNotif {
   position: absolute;
   z-index: 98;
@@ -661,10 +671,10 @@ span.key.shift,
 div.key.shift {
   color: transparent;
   text-shadow: none;
-  color: #c9dffe;
-  background-color: rgba(119, 176, 253, 0.55);
-  border-color: rgba(121, 177, 253, 0.55);
-  border-bottom-color: rgba(117, 175, 253, 0.55);
+  color: #feb9c2;
+  background-color: rgba(253, 79, 102, 0.55);
+  border-color: rgba(253, 81, 103, 0.55);
+  border-bottom-color: rgba(253, 77, 100, 0.55);
 }
 span.key.special,
 div.key.special {
@@ -676,6 +686,7 @@ div.key.special {
 span.key.meta,
 div.key.meta {
   color: transparent;
+  text-shadow: none;
   background-image: url("../icons/meta.png");
   background-repeat: no-repeat;
   background-position: center;
@@ -693,10 +704,10 @@ div.key.ctrl {
 }
 span.key.alt,
 div.key.alt {
-  color: #fee5a7;
-  background-color: rgba(253, 190, 34, 0.55);
-  border-color: rgba(253, 190, 36, 0.55);
-  border-bottom-color: rgba(253, 189, 32, 0.55);
+  color: #feb9c2;
+  background-color: rgba(253, 79, 102, 0.55);
+  border-color: rgba(253, 81, 103, 0.55);
+  border-bottom-color: rgba(253, 77, 100, 0.55);
 }
 
 .path {
@@ -789,11 +800,13 @@ ul.niceList {
   box-sizing: border-box;
   padding: 4px;
   margin-top: 4px;
+  background-color: #1e2229;
+  overflow-x: hidden;
+}
+ul.niceList:not(ul.niceList ul.niceList) {
   min-height: 200px;
   margin-bottom: 4px;
   border: 1px solid #545d73;
-  background-color: #1e2229;
-  overflow-x: hidden;
 }
 ul.niceList:first-child {
   margin-top: 0;
@@ -814,85 +827,86 @@ ul.niceList:empty::before {
 ul.niceList#layers:empty::before {
   content: "No layer";
 }
-ul.niceList li:not(.title, .subList) {
+ul.niceList.compact > li:not(.title, .subList) {
+  padding: 3px 4px;
+}
+ul.niceList > li:not(.title, .subList) {
   display: grid;
   justify-items: left;
   align-items: center;
   grid-template-columns: auto min-content;
   gap: 0px 8px;
-  padding: 8px;
+  padding: 6px 8px;
   margin-bottom: 1px;
   font-size: 12pt;
   background-color: #2e333f;
   cursor: pointer;
 }
-ul.niceList li:not(.title, .subList).subList {
+ul.niceList > li:not(.title, .subList).subList {
   display: grid;
   grid-template-columns: auto;
 }
-ul.niceList li:not(.title, .subList).subList ul {
+ul.niceList > li:not(.title, .subList).subList ul {
   width: 100%;
   overflow: hidden;
 }
-ul.niceList li:not(.title, .subList).subList ul > li {
+ul.niceList > li:not(.title, .subList).subList ul > li {
   overflow: hidden;
 }
-ul.niceList li:not(.title, .subList):not(.active):hover {
+ul.niceList > li:not(.title, .subList):not(.active):hover {
   outline: 2px solid rgba(255, 255, 255, 0.65);
   outline-offset: -2px;
 }
-ul.niceList li:not(.title, .subList) button.context {
+ul.niceList > li:not(.title, .subList) button.context {
   padding: 0;
   min-width: 16px;
   height: 100%;
 }
-ul.niceList li:not(.title, .subList) button.context .icon {
+ul.niceList > li:not(.title, .subList) button.context .icon {
   width: 1em;
 }
-ul.niceList li.title {
+ul.niceList > li.title {
   display: grid;
   grid-template-columns: auto min-content;
   align-items: center;
-  padding-top: 4px;
-  padding-bottom: 4px;
-  padding-right: 4px;
+  padding-top: 1px;
+  padding-bottom: 1px;
+  padding-right: 1px;
   margin-top: 2px;
   color: #ffcc00;
   font-size: 0.8em;
   font-family: Roboto;
   border-top: 1px solid #545d73;
 }
-ul.niceList li.title:not(.collapser) {
+ul.niceList > li.title:not(.collapser) {
   padding-left: 4px;
 }
-ul.niceList li.title .links {
+ul.niceList > li.title .links {
   display: flex;
+  gap: 1px;
 }
-ul.niceList li.title .links a + a {
-  margin-left: 1px;
-}
-ul.niceList li.title a {
+ul.niceList > li.title a {
   display: flex;
   justify-items: center;
   align-items: center;
-  font-size: 1.1em;
+  font-size: 1.3em;
   padding: 3px;
   background-color: #2e333f;
   border-radius: 2px;
   cursor: pointer;
   color: white;
 }
-ul.niceList li.title a:hover {
-  background-color: #ffcc00;
+ul.niceList > li.title a:hover {
+  background-color: black;
 }
-ul.niceList li.title a.red:not(:hover) {
+ul.niceList > li.title a.red:not(:hover) {
   background-color: #791105;
 }
-ul.niceList li.title a .icon {
+ul.niceList > li.title a .icon {
   width: 1em;
   height: 1em;
 }
-ul.niceList li div.error {
+ul.niceList > li div.error {
   grid-column: span 2;
   grid-row: 2;
   padding: 8px;
@@ -906,32 +920,32 @@ ul.niceList li div.error {
   outline: none;
   box-shadow: 0px 0px 16px #e34d00;
 }
-ul.niceList li.iconLeft {
+ul.niceList > li.iconLeft {
   grid-template-columns: min-content auto;
 }
-ul.niceList li.iconLeft .icon,
-ul.niceList li.iconLeft .entityPreview {
+ul.niceList > li.iconLeft .icon,
+ul.niceList > li.iconLeft .entityPreview {
   order: 0;
 }
-ul.niceList li.iconRight {
+ul.niceList > li.iconRight {
   grid-template-columns: auto min-content;
 }
-ul.niceList li.iconRight .icon,
-ul.niceList li.iconRight .entityPreview {
+ul.niceList > li.iconRight .icon,
+ul.niceList > li.iconRight .entityPreview {
   order: 1;
 }
-ul.niceList li.active {
+ul.niceList > li.active {
   background-color: #ffcc00;
   color: black;
 }
-ul.niceList li.active:not(.customColor) {
+ul.niceList > li.active:not(.customColor) {
   box-shadow: 0px 0px 2px #ffffcc inset, 0px 0px 4px #aa0000;
 }
-ul.niceList li.active.customColor {
+ul.niceList > li.active.customColor {
   outline: 1px solid white;
   outline-offset: -2px;
 }
-ul.niceList li.subList.searchMatched {
+ul.niceList > li.subList.searchMatched {
   display: block !important;
 }
 ul.niceList .searchDiscarded {
@@ -1076,7 +1090,7 @@ ul.log li.opChecksumUpdated {
 }
 
 .icon.autoLayer {
-  background-image: url("../icons/autoLayer.png");
+  background-image: url("../icons/autoLayer.svg");
 }
 
 .icon.bug {
@@ -1085,6 +1099,14 @@ ul.log li.opChecksumUpdated {
 
 .icon.checker {
   background-image: url("../icons/checker.svg");
+}
+
+.icon.checkboxOn {
+  background-image: url("../icons/checkboxOn.svg");
+}
+
+.icon.checkboxOff {
+  background-image: url("../icons/checkboxOff.svg");
 }
 
 .icon.clear {
@@ -1117,6 +1139,10 @@ ul.log li.opChecksumUpdated {
 
 .icon.copy {
   background-image: url("../icons/copy.svg");
+}
+
+.icon.cut {
+  background-image: url("../icons/cut.svg");
 }
 
 .icon.delete {
@@ -1391,6 +1417,14 @@ ul.log li.opChecksumUpdated {
   background-image: url("../icons/tile.png");
 }
 
+.icon.toggleOn {
+  background-image: url("../icons/toggleOn.svg");
+}
+
+.icon.toggleOff {
+  background-image: url("../icons/toggleOff.svg");
+}
+
 .icon.trust {
   background-image: url("../icons/trust.svg");
 }
@@ -1500,7 +1534,7 @@ ul.log li.opChecksumUpdated {
   background-repeat: no-repeat;
   background-position: left center;
 }
-.collapser > span {
+.collapser > span:not(.inlined) {
   text-transform: none;
   font-weight: bold;
   color: white;
@@ -1765,6 +1799,7 @@ dl.form > dt {
 dl.form > dt label {
   padding-top: 4px;
   color: #c1cfeb;
+  text-align: right;
 }
 dl.form > dt .info,
 dl.form > dt info {
@@ -1837,6 +1872,19 @@ dl.form > dd > select {
 }
 dl.form > dd > select:not(.full) {
   width: 0;
+}
+dl.form > dd.checkboxes {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 3px;
+}
+dl.form > dd.checkboxes label {
+  display: grid;
+  grid-template-columns: min-content auto;
+  width: 100%;
+  box-sizing: border-box;
+  font-size: 9pt;
+  color: #c1cfeb;
 }
 dl.form > dd button {
   margin-top: 0;
@@ -2082,7 +2130,7 @@ select:not(:disabled):hover {
   border-color: white;
   cursor: pointer;
 }
-select.gray {
+select.isNull, select.gray {
   border: 1px dashed #545d73;
   padding: 8px;
   color: white;
@@ -2535,7 +2583,6 @@ textarea:focus {
   font-weight: bold;
   font-size: 9pt;
   font-family: "Courier New", Courier, monospace;
-  text-transform: uppercase;
   border: 1px solid #737f9d;
   background-color: #545d73;
   border-left-color: #c1cfeb;
@@ -3100,7 +3147,7 @@ textarea:focus {
   flex-wrap: nowrap;
 }
 .window.editAppSettings .wrapper .content dl.form dd.log .logPath {
-  flex: 1 0 auto;
+  flex: 1 1 auto;
   padding: 4px;
   text-align: left;
   overflow: hidden;
@@ -3527,8 +3574,22 @@ textarea:focus {
   font-weight: bold;
   background-color: #2e333f;
 }
+.window.contextMenu .wrapper .content .separator {
+  background-color: #121418;
+  height: 8px;
+}
 .window.contextMenu .wrapper .content.noWrap button {
   white-space: nowrap;
+}
+.window.contextMenu .wrapper .content .group {
+  display: flex;
+  flex-wrap: nowrap;
+}
+.window.contextMenu .wrapper .content .group button {
+  text-align: center;
+  border: none;
+  padding-left: 10px;
+  padding-right: 10px;
 }
 .window.contextMenu .wrapper .content button {
   display: block;
@@ -3538,23 +3599,62 @@ textarea:focus {
   color: #ffcc00;
   text-align: left;
   background-color: #1e2229;
+  border-radius: 0;
 }
-.window.contextMenu .wrapper .content button:hover {
+.window.contextMenu .wrapper .content button.duplicate {
+  font-weight: bold;
+  color: #c1cfeb;
+  font-size: 12pt;
+  text-transform: none;
+}
+.window.contextMenu .wrapper .content button:hover:not(:disabled) {
   background-color: #ffcc00;
   color: black;
   text-shadow: none;
 }
-.window.contextMenu .wrapper .content button:hover strong {
+.window.contextMenu .wrapper .content button:hover:not(:disabled) strong {
   color: black;
+}
+.window.contextMenu .wrapper .content button.contextMenuOpen {
+  background-color: #d56932;
+  color: white;
+}
+.window.contextMenu .wrapper .content button.contextMenuOpen * {
+  color: white;
 }
 .window.contextMenu .wrapper .content button strong {
   color: #ffff44;
 }
-.window.contextMenu .wrapper .content button .icon {
+.window.contextMenu .wrapper .content button .icon:not(.selectionTick) {
   opacity: 0.7;
-  width: 18px;
-  height: 18px;
-  margin-right: 3px;
+  width: 22px;
+  height: 22px;
+  margin-right: 8px;
+}
+.window.contextMenu .wrapper .content button img {
+  width: 22px !important;
+  height: auto !important;
+  max-height: 22px;
+  margin-right: 8px;
+  background-image: url("../img/stripesLight.png");
+  outline: 1px solid rgba(0, 0, 0, 0.6);
+}
+.window.contextMenu .wrapper .content button .icon.selectionTick {
+  width: 24px;
+  height: 24px;
+  margin-right: 4px;
+}
+.window.contextMenu .wrapper .content button .icon.selectionTick.checkboxOn {
+  filter: brightness(1) sepia(1) hue-rotate(0.15rad) saturate(10);
+}
+.window.contextMenu .wrapper .content button .icon.selectionTick.checkboxOff {
+  opacity: 0.35;
+}
+.window.contextMenu .wrapper .content button.selected {
+  color: white;
+}
+.window.contextMenu .wrapper .content button.selected * {
+  color: white;
 }
 .window.contextMenu .wrapper .content button .sub {
   display: block;
@@ -3569,6 +3669,10 @@ textarea:focus {
   font-style: italic;
   background-repeat: repeat;
   background-image: url("../img/stripesLight.png");
+}
+.window.contextMenu .wrapper .content button:disabled .icon,
+.window.contextMenu .wrapper .content button:disabled img {
+  opacity: 0.25;
 }
 .window.contextMenu .wrapper .content button.crash:not(:hover) {
   background-color: #3c6148;
@@ -3592,6 +3696,15 @@ textarea:focus {
 }
 .window.contextMenu .wrapper .content button + button {
   border-top: 1px solid #2e333f;
+}
+.window.contextMenu.subMenuOpen .wrapper {
+  box-shadow: none;
+}
+.window.contextMenu.subMenuOpen button:not(.contextMenuOpen) {
+  opacity: 0.2;
+}
+.window.contextMenu.subMenuOpen button.contextMenuOpen {
+  opacity: 0.5;
 }
 
 .window.dialog {
@@ -3901,6 +4014,9 @@ textarea:focus {
   grid-template-columns: repeat(2, 420px);
   gap: 16px;
 }
+.window.panel.helpPanel .key + .icon {
+  margin-left: 4px;
+}
 .window.panel.helpPanel dl {
   display: grid;
   grid-template-columns: 0.5fr 1fr;
@@ -4195,8 +4311,8 @@ textarea:focus {
 ul.sortable:not(.customHandle):not(.onlyDraggables) > li, ul.sortable:not(.customHandle).onlyDraggables > li.draggable {
   background-image: url("../icons/dragAlpha.svg");
   background-repeat: no-repeat;
-  background-position: left center;
-  padding-left: 32px !important;
+  background-position: 4px center;
+  padding-left: 28px !important;
 }
 ul.sortable:not(.customHandle):not(.onlyDraggables) > li.dragging, ul.sortable:not(.customHandle).onlyDraggables > li.draggable.dragging {
   cursor: ns-resize;
@@ -4207,6 +4323,7 @@ ul.sortable:not(.customHandle).onlyDraggables > li:not(.draggable) {
 
 body.panning #worldDepths,
 body.panning #editingOptions,
+body.panning #pendingActions,
 body.panning #mainPanel,
 body.panning #permanentNotifications,
 body.panning .entityInstanceEditor {
@@ -4252,6 +4369,8 @@ div.sortHandle:hover {
   text-shadow: 0px 1px 3px black;
   background-color: rgba(0, 0, 0, 0.4);
   max-width: 40vw;
+  max-height: 100vh;
+  overflow-y: hidden;
   pointer-events: none;
 }
 #debug p,
@@ -4538,26 +4657,73 @@ body.noGlCtx #page.editor canvas {
   padding: 32px;
   border: 1px solid #2e333f;
 }
-#page.editor #mainPanel ul#layers li {
+#page.editor #mainPanel ul#layers li.filter {
+  display: block;
+  padding: 0;
+  cursor: initial;
+}
+#page.editor #mainPanel ul#layers li.filter select {
+  width: 100%;
+  background-color: #1e2229;
+  font-size: 9pt;
+  color: #545d73;
+}
+#page.editor #mainPanel ul#layers li.filter select option {
+  color: white;
+  font-size: 11pt;
+  padding: 8px;
+  background-color: #545d73;
+}
+#page.editor #mainPanel ul#layers li.filter select option:selected {
+  background-color: #ffcc00;
+  color: black;
+}
+#page.editor #mainPanel ul#layers li.filter ul {
+  padding: 1px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1px;
+}
+#page.editor #mainPanel ul#layers li.filter ul li {
+  flex: 0 0 2em;
+  text-align: center;
+  font-size: 8pt;
+  padding: 4px 6px;
+  cursor: pointer;
+  border-radius: 3px;
+  border: 1px solid #545d73;
+}
+#page.editor #mainPanel ul#layers li.filter ul li.active {
+  color: black;
+  background-color: #ffcc00;
+  border-color: #ffcc00;
+}
+#page.editor #mainPanel ul#layers li.filter ul li:not(.active):hover {
+  outline: 1px solid #ffcc00;
+}
+#page.editor #mainPanel ul#layers li.filter:hover {
+  outline: none;
+}
+#page.editor #mainPanel ul#layers li.layer {
   grid-template-columns: min-content min-content auto min-content;
   padding: 0;
   padding-left: 8px;
   align-items: stretch;
 }
-#page.editor #mainPanel ul#layers li.hidden {
+#page.editor #mainPanel ul#layers li.layer.hidden {
   opacity: 0.4;
 }
-#page.editor #mainPanel ul#layers li.hidden .actions .vis {
+#page.editor #mainPanel ul#layers li.layer.hidden .actions .vis {
   cursor: zoom-in;
 }
-#page.editor #mainPanel ul#layers li.hidden .actions .vis .icon {
+#page.editor #mainPanel ul#layers li.layer.hidden .actions .vis .icon {
   background-image: url("../icons/hidden.png");
 }
-#page.editor #mainPanel ul#layers li.hiddenFromList .name {
+#page.editor #mainPanel ul#layers li.layer.hiddenFromList .name {
   font-style: italic;
   color: #e34d00;
 }
-#page.editor #mainPanel ul#layers li .shortcut {
+#page.editor #mainPanel ul#layers li.layer .shortcut {
   display: flex;
   align-items: center;
   min-width: 1.2em;
@@ -4566,11 +4732,11 @@ body.noGlCtx #page.editor canvas {
   font-weight: bold;
   font-size: 8pt;
 }
-#page.editor #mainPanel ul#layers li .layerIcon {
+#page.editor #mainPanel ul#layers li.layer .layerIcon {
   display: flex;
   align-items: center;
 }
-#page.editor #mainPanel ul#layers li .name {
+#page.editor #mainPanel ul#layers li.layer .name {
   display: flex;
   align-items: center;
   overflow-x: hidden;
@@ -4578,10 +4744,10 @@ body.noGlCtx #page.editor canvas {
   padding-bottom: 8px;
   font-size: 10pt;
 }
-#page.editor #mainPanel ul#layers li .actions {
+#page.editor #mainPanel ul#layers li.layer .actions {
   display: flex;
 }
-#page.editor #mainPanel ul#layers li .actions .vis {
+#page.editor #mainPanel ul#layers li.layer .actions .vis {
   display: flex;
   align-items: center;
   padding: 0px 4px;
@@ -4591,13 +4757,13 @@ body.noGlCtx #page.editor canvas {
   border-radius: 3px;
   cursor: zoom-out;
 }
-#page.editor #mainPanel ul#layers li .actions .vis .icon {
+#page.editor #mainPanel ul#layers li.layer .actions .vis .icon {
   background-image: url("../icons/visible.png");
 }
-#page.editor #mainPanel ul#layers li .actions .vis:hover {
+#page.editor #mainPanel ul#layers li.layer .actions .vis:hover {
   background-color: white;
 }
-#page.editor #mainPanel ul#layers li .actions a {
+#page.editor #mainPanel ul#layers li.layer .actions a {
   display: flex;
   align-items: center;
   padding: 4px;
@@ -4612,7 +4778,7 @@ body.noGlCtx #page.editor canvas {
   border-radius: 3px;
   cursor: pointer;
 }
-#page.editor #mainPanel ul#layers li .actions a:hover {
+#page.editor #mainPanel ul#layers li.layer .actions a:hover {
   color: black;
   background-color: white;
 }
@@ -4698,9 +4864,55 @@ body.noGlCtx #page.editor canvas {
   border-top: 1px solid #2e333f;
   background-image: url("../img/stripes.png");
 }
-#page.editor #mainPanel #mainPaletteWrapper ul.niceList {
+#page.editor #mainPanel #mainPaletteWrapper > ul.niceList {
   height: 100%;
   box-sizing: border-box;
+}
+#page.editor #pendingActions {
+  position: absolute;
+  z-index: 90;
+  top: 0;
+  left: 40vw;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: min-content;
+  padding: 2px;
+  padding-top: 4px;
+  border-bottom-left-radius: 3px;
+  border-bottom-right-radius: 3px;
+  background-color: #1e2229;
+}
+#page.editor #pendingActions:empty {
+  display: none;
+}
+#page.editor #pendingActions:hover {
+  padding-top: 5px;
+}
+#page.editor #pendingActions button {
+  margin: 0;
+  padding: 4px 8px;
+  font-size: 9pt;
+  white-space: nowrap;
+  box-shadow: 0px 0px 8px #e34d00, 0px 4px 64px #e34d00;
+  animation: blink-animation 0.5s infinite;
+}
+#page.editor #pendingActions button .icon {
+  margin-right: 4px;
+}
+#page.hasModal #pendingActions button {
+  animation: none;
+}
+
+@keyframes blink-animation {
+  from {
+    filter: brightness(1);
+  }
+  30% {
+    filter: brightness(2);
+  }
+  to {
+    filter: brightness(1);
+  }
 }
 #page.editor #editingOptions {
   position: absolute;
@@ -4929,6 +5141,99 @@ body.noGlCtx #page.editor canvas {
 #page.editor #worldDepths > ul li:not(.active):hover .label {
   color: #c1cfeb;
 }
+#page.editor #commandPalette {
+  position: absolute;
+  z-index: 99;
+  top: 0;
+  left: 0;
+  display: grid;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 8px;
+  width: 100vw;
+  height: 100vh;
+  box-sizing: border-box;
+}
+#page.editor #commandPalette .mask {
+  position: absolute;
+  z-index: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.7);
+}
+#page.editor #commandPalette .wrapper {
+  z-index: 1;
+}
+#page.editor #commandPalette .wrapper .content {
+  width: 35em;
+}
+#page.editor #commandPalette .wrapper .content input[type=text] {
+  width: 100%;
+}
+#page.editor #commandPalette .wrapper .content .results {
+  box-sizing: border-box;
+  margin-top: 8px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  background-color: #1e2229;
+  border-radius: 3px;
+}
+#page.editor #commandPalette .wrapper .content .results .element {
+  display: grid;
+  padding: 3px 16px;
+  cursor: pointer;
+  gap: 8px;
+  font-size: 10pt;
+  align-items: center;
+  grid-template-columns: min-content auto min-content;
+}
+#page.editor #commandPalette .wrapper .content .results .element .context {
+  font-size: 9pt;
+  opacity: 0.5;
+}
+#page.editor #commandPalette .wrapper .content .results .element:not(.active).SE_Definition {
+  color: #ffcc00;
+  background-color: rgba(255, 204, 0, 0.15);
+}
+#page.editor #commandPalette .wrapper .content .results .element:not(.active).SE_World {
+  color: #94483b;
+  background-color: rgba(148, 72, 59, 0.15);
+}
+#page.editor #commandPalette .wrapper .content .results .element:not(.active).SE_Level {
+  color: #70a9ff;
+  background-color: rgba(112, 169, 255, 0.15);
+}
+#page.editor #commandPalette .wrapper .content .results .element:not(.active).SE_Entity {
+  color: #20e2a5;
+  background-color: rgba(32, 226, 165, 0.15);
+}
+#page.editor #commandPalette .wrapper .content .results .element.active {
+  color: black !important;
+}
+#page.editor #commandPalette .wrapper .content .results .element.active.context {
+  font-weight: bold;
+}
+#page.editor #commandPalette .wrapper .content .results .element.active.SE_Definition {
+  background-color: #ffcc00;
+}
+#page.editor #commandPalette .wrapper .content .results .element.active.SE_World {
+  background-color: #94483b;
+}
+#page.editor #commandPalette .wrapper .content .results .element.active.SE_Level {
+  background-color: #70a9ff;
+}
+#page.editor #commandPalette .wrapper .content .results .element.active.SE_Entity {
+  background-color: #20e2a5;
+}
+#page.editor #commandPalette .wrapper .content .results .more {
+  position: absolute;
+  pointer-events: none;
+  width: 100%;
+  left: 0;
+  bottom: 8px;
+  height: 2em;
+  background: linear-gradient(0deg, rgb(30, 34, 41) 0%, rgba(30, 34, 41, 0) 100%);
+}
 #page.editor:not(.zenMode) #zenModeRevealer {
   display: none;
 }
@@ -5097,13 +5402,22 @@ body.noGlCtx #page.editor canvas {
 }
 #page.home > .wrapper header {
   display: grid;
+  grid-template-columns: min-content min-content auto min-content;
+  gap: 16px;
   align-self: stretch;
   align-items: center;
-  grid-template-columns: min-content min-content;
   background-image: url("../img/homeBg_header.png");
   background-size: contain;
   background-repeat: no-repeat;
   background-position: bottom center;
+}
+#page.home > .wrapper header .appIcon {
+  width: 140px;
+  height: 140px;
+}
+#page.home > .wrapper header .appLogo {
+  min-height: 128px;
+  background-position: left center;
 }
 #page.home > .wrapper header .version {
   display: grid;
@@ -5114,20 +5428,17 @@ body.noGlCtx #page.editor canvas {
   text-align: center;
   margin-top: 8px;
   white-space: nowrap;
-  color: #1e2229;
-  font-size: 128px;
+  color: #545d73;
+  font-size: 140px;
   font-family: Roboto;
   letter-spacing: -0.06em;
-  background-color: #ffcc00;
   border-radius: 4px;
 }
 #page.home > .wrapper header .version * {
   display: inline-block;
 }
 #page.home > .wrapper header .version strong {
-  color: #1e2229;
   font-weight: bold;
-  text-shadow: 0px 0px 32px rgba(255, 204, 0, 0.3);
 }
 #page.home > .wrapper header .version em {
   display: none;
@@ -5136,9 +5447,6 @@ body.noGlCtx #page.editor canvas {
   display: block;
   padding-left: 10px;
   font-style: normal;
-}
-#page.home > .wrapper header .appLogo {
-  min-height: 160px;
 }
 #page.home > .wrapper header .disclaimer {
   margin-top: 8px;
@@ -5724,18 +6032,18 @@ body.fullscreen #page.home .buttons .exit {
 .palette.entities, .palette.intGrid {
   grid-template-rows: min-content auto fit-content(24px);
 }
-.palette.entities .bar, .palette.intGrid .bar {
+.palette.entities > .bar, .palette.intGrid > .bar {
   display: grid;
   gap: 4px;
   grid-template-columns: auto min-content;
 }
-.palette.entities .bar button, .palette.intGrid .bar button {
+.palette.entities > .bar button, .palette.intGrid > .bar button {
   padding: 2px 6px;
 }
-.palette.entities ul.niceList:not(.col-1) .subList ul, .palette.intGrid ul.niceList:not(.col-1) .subList ul {
+.palette.entities > ul.niceList:not(.col-1) .subList ul, .palette.intGrid > ul.niceList:not(.col-1) .subList ul {
   display: grid;
 }
-.palette.entities ul.niceList:not(.col-1) .subList ul li, .palette.intGrid ul.niceList:not(.col-1) .subList ul li {
+.palette.entities > ul.niceList:not(.col-1) .subList ul li, .palette.intGrid > ul.niceList:not(.col-1) .subList ul li {
   display: grid;
   grid-template: none;
   grid-template-rows: auto min-content;
@@ -5745,46 +6053,78 @@ body.fullscreen #page.home .buttons .exit {
   line-height: 1.2em;
   border: none;
 }
-.palette.entities ul.niceList:not(.col-1) .subList ul li .name, .palette.intGrid ul.niceList:not(.col-1) .subList ul li .name {
+.palette.entities > ul.niceList:not(.col-1) .subList ul li .name, .palette.intGrid > ul.niceList:not(.col-1) .subList ul li .name {
   overflow: hidden;
 }
-.palette.entities ul.niceList.col-2 .sublist ul, .palette.intGrid ul.niceList.col-2 .sublist ul {
+.palette.entities > ul.niceList.col-2 .sublist ul, .palette.intGrid > ul.niceList.col-2 .sublist ul {
   grid-template-columns: repeat(2, 1fr);
 }
-.palette.entities ul.niceList.col-3 .sublist ul, .palette.intGrid ul.niceList.col-3 .sublist ul {
+.palette.entities > ul.niceList.col-3 .sublist ul, .palette.intGrid > ul.niceList.col-3 .sublist ul {
   grid-template-columns: repeat(3, 1fr);
 }
-.palette.entities ul.niceList.col-4 .sublist ul, .palette.intGrid ul.niceList.col-4 .sublist ul {
+.palette.entities > ul.niceList.col-4 .sublist ul, .palette.intGrid > ul.niceList.col-4 .sublist ul {
   grid-template-columns: repeat(4, 1fr);
 }
-.palette.entities ul.niceList.col-5 .sublist ul, .palette.intGrid ul.niceList.col-5 .sublist ul {
+.palette.entities > ul.niceList.col-5 .sublist ul, .palette.intGrid > ul.niceList.col-5 .sublist ul {
   grid-template-columns: repeat(5, 1fr);
 }
-.palette.intGrid ul.niceList:not(.col-1) .subList ul li .intGridValue {
+.palette.entities > ul.niceList.col-6 .sublist ul, .palette.intGrid > ul.niceList.col-6 .sublist ul {
+  grid-template-columns: repeat(6, 1fr);
+}
+.palette.entities > ul.niceList.col-7 .sublist ul, .palette.intGrid > ul.niceList.col-7 .sublist ul {
+  grid-template-columns: repeat(7, 1fr);
+}
+.palette.entities > ul.niceList.col-8 .sublist ul, .palette.intGrid > ul.niceList.col-8 .sublist ul {
+  grid-template-columns: repeat(8, 1fr);
+}
+.palette.entities > ul.niceList.col-9 .sublist ul, .palette.intGrid > ul.niceList.col-9 .sublist ul {
+  grid-template-columns: repeat(9, 1fr);
+}
+.palette.entities > ul.niceList.col-10 .sublist ul, .palette.intGrid > ul.niceList.col-10 .sublist ul {
+  grid-template-columns: repeat(10, 1fr);
+}
+.palette.intGrid > ul.niceList:not(.col-1) .subList ul li .intGridValue {
   width: 100%;
+  height: auto;
   min-height: 64px;
   border: none;
 }
-.palette.intGrid ul.niceList:not(.col-1) .subList ul li .intGridValue img {
+.palette.intGrid > ul.niceList:not(.col-1) .subList ul li .intGridValue img {
   object-fit: contain;
 }
-.palette.intGrid ul.niceList.col-2 .sublist ul li .intGridValue {
+.palette.intGrid > ul.niceList.col-2 .sublist ul li .intGridValue {
   min-height: 128px;
 }
-.palette.intGrid ul.niceList.col-3 .sublist ul li .intGridValue {
+.palette.intGrid > ul.niceList.col-3 .sublist ul li .intGridValue {
   min-height: 96px;
 }
-.palette.intGrid ul.niceList.col-5 .sublist ul li .intGridValue {
-  min-height: 28px;
+.palette.intGrid > ul.niceList.col-5 .sublist ul li .intGridValue {
+  min-height: 50px;
 }
-.palette.entities ul.niceList:not(.col-1) .subList ul li .entityPreview {
+.palette.intGrid > ul.niceList.col-6 .sublist ul li .intGridValue {
+  min-height: 40px;
+}
+.palette.intGrid > ul.niceList.col-7 .sublist ul li .intGridValue {
+  min-height: 40px;
+}
+.palette.intGrid > ul.niceList.col-8 .sublist ul li .intGridValue {
+  min-height: 30px;
+}
+.palette.intGrid > ul.niceList.col-9 .sublist ul li .intGridValue {
+  min-height: 30px;
+}
+.palette.intGrid > ul.niceList.col-10 .sublist ul li .intGridValue {
+  min-height: 30px;
+}
+.palette.entities > ul.niceList:not(.col-1) .subList ul li .entityPreview {
   margin: 0;
-  zoom: 2;
+  width: 100% !important;
+  height: auto !important;
 }
-.palette.entities ul.niceList.col-2 .subList ul li .entityPreview {
+.palette.entities > ul.niceList.col-2 .subList ul li .entityPreview {
   zoom: 4;
 }
-.palette.entities ul.niceList.col-3 .subList ul li .entityPreview {
+.palette.entities > ul.niceList.col-3 .subList ul li .entityPreview {
   zoom: 3;
 }
 .palette.invalid {
@@ -5824,14 +6164,14 @@ body.fullscreen #page.home .buttons .exit {
   padding-bottom: 4px;
   margin-bottom: 3px;
 }
-.palette ul.niceList {
+.palette > ul.niceList {
   margin: 0;
   padding: 4px;
   width: 100%;
   height: 100%;
   border: 0px;
 }
-.palette ul.niceList li:not(.title):not(.subList) {
+.palette > ul.niceList li:not(.title):not(.subList) {
   display: flex;
   min-height: 16px;
   cursor: pointer;
@@ -5839,25 +6179,25 @@ body.fullscreen #page.home .buttons .exit {
   border: 0;
   border-left: 6px solid white;
 }
-.palette ul.niceList li:not(.title):not(.subList):not(.active):hover {
+.palette > ul.niceList li:not(.title):not(.subList):not(.active):hover {
   outline: 1px solid white !important;
   outline-offset: -1px;
 }
-.palette ul.niceList li.subList {
+.palette > ul.niceList li.subList {
   padding: 0;
 }
-.palette ul.niceList li.entity {
+.palette > ul.niceList li.entity {
   overflow: hidden;
 }
-.palette ul.niceList li.entity .entityPreview {
+.palette > ul.niceList li.entity .entityPreview {
   margin-right: 8px;
 }
-.palette ul.niceList li.color {
+.palette > ul.niceList li.color {
   padding-left: 10px;
   overflow: hidden;
   line-height: 32px;
 }
-.palette ul.niceList li.active {
+.palette > ul.niceList li.active {
   outline: 1px solid white !important;
   outline-offset: -1px;
 }
@@ -6296,12 +6636,12 @@ body.fullscreen #page.home .buttons .exit {
 .fieldDefsForm dl.form select#allowedRefs {
   flex: 1 0 100%;
 }
-.fieldDefsForm dl.form *[class*=F_],
+.fieldDefsForm dl.form *[class*=F_], .fieldDefsForm dl.form.type-level .onlyEntity, .fieldDefsForm dl.form.type-entity .onlyLevel,
 .fieldDefsForm dl.form *[class=NotArray],
 .fieldDefsForm dl.form *[class=Array] {
   display: none;
 }
-.fieldDefsForm dl.form *[class*=F_] + dd,
+.fieldDefsForm dl.form *[class*=F_] + dd, .fieldDefsForm dl.form.type-level .onlyEntity + dd, .fieldDefsForm dl.form.type-entity .onlyLevel + dd,
 .fieldDefsForm dl.form *[class=NotArray] + dd,
 .fieldDefsForm dl.form *[class=Array] + dd {
   display: none;
@@ -6775,6 +7115,7 @@ dl.form.fieldInstanceEditor div.array button.remove {
   margin: 0;
   text-transform: none;
   font-weight: bold;
+  text-align: left;
   color: white;
   cursor: pointer;
 }
@@ -7304,11 +7645,11 @@ dl.form.fieldInstanceEditor div.array button.remove {
 .window.panel.editLayerDefs .content dl.form.type-Tiles .Tiles {
   display: grid;
 }
-.window.panel.editLayerDefs .content dl.form.type-IntGrid .IntGrid:not(dt),
-.window.panel.editLayerDefs .content dl.form.type-IntGridAutoLayer .IntGridAutoLayer:not(dt),
-.window.panel.editLayerDefs .content dl.form.type-AutoLayer .AutoLayer:not(dt),
-.window.panel.editLayerDefs .content dl.form.type-Entities .Entities:not(dt),
-.window.panel.editLayerDefs .content dl.form.type-Tiles .Tiles:not(dt) {
+.window.panel.editLayerDefs .content dl.form.type-IntGrid .IntGrid:not(dt, label),
+.window.panel.editLayerDefs .content dl.form.type-IntGridAutoLayer .IntGridAutoLayer:not(dt, label),
+.window.panel.editLayerDefs .content dl.form.type-AutoLayer .AutoLayer:not(dt, label),
+.window.panel.editLayerDefs .content dl.form.type-Entities .Entities:not(dt, label),
+.window.panel.editLayerDefs .content dl.form.type-Tiles .Tiles:not(dt, label) {
   display: flex;
 }
 
@@ -7410,7 +7751,7 @@ body.sorting ul.collapsedSortTarget {
   display: grid;
   grid-template-rows: repeat(4, min-content) auto;
   gap: 8px;
-  width: 650px;
+  width: 450px;
   height: 100%;
 }
 .window.panel.levelInstancePanel .content dl#levelForm {
@@ -7667,41 +8008,46 @@ body.sorting ul.collapsedSortTarget {
 .window.panel.editAllAutoLayerRules .content ul.ruleGroups > li > .sortHandle:hover {
   background-color: #ffcc00 !important;
 }
-.window.panel.editAllAutoLayerRules .content ul.ruleGroups > li.optional {
-  border-color: #1a7bc3;
-}
-.window.panel.editAllAutoLayerRules .content ul.ruleGroups > li.optional header {
-  background-color: #1a7bc3;
-}
 .window.panel.editAllAutoLayerRules .content ul.ruleGroups > li.highlight header {
   outline: 1px solid #ff00ff;
   background-color: #770077;
 }
-.window.panel.editAllAutoLayerRules .content ul.ruleGroups > li.inactive header {
-  opacity: 0.5;
+.window.panel.editAllAutoLayerRules .content ul.ruleGroups > li.disabled {
+  opacity: 0.35;
+  background-image: url("../img/stripes.png");
+  background-color: rgba(68, 0, 0, 0.7) !important;
 }
-.window.panel.editAllAutoLayerRules .content ul.ruleGroups > li.inactive header .name:hover .text {
+.window.panel.editAllAutoLayerRules .content ul.ruleGroups > li.disabled > .sortHandle {
+  opacity: 0.35;
+  background-color: transparent !important;
+}
+.window.panel.editAllAutoLayerRules .content ul.ruleGroups > li.disabled > .sortHandle:hover {
+  background-color: #ffcc00 !important;
+}
+.window.panel.editAllAutoLayerRules .content ul.ruleGroups > li.disabled header,
+.window.panel.editAllAutoLayerRules .content ul.ruleGroups > li.disabled ul.ruleGroup {
+  background: transparent !important;
+}
+.window.panel.editAllAutoLayerRules .content ul.ruleGroups > li.disabled header .name {
+  color: #e34d00;
+  font-weight: normal;
+  font-style: italic;
+}
+.window.panel.editAllAutoLayerRules .content ul.ruleGroups > li.disabled header .name:hover .text {
   color: #c1cfeb;
 }
-.window.panel.editAllAutoLayerRules .content ul.ruleGroups > li.inactive:not(.optional) header {
-  background-color: #1e2229;
-  background-image: url("../img/stripes.png");
-}
-.window.panel.editAllAutoLayerRules .content ul.ruleGroups > li.inactive:not(.optional) header .name {
+.window.panel.editAllAutoLayerRules .content ul.ruleGroups > li.notApplied:not(.disabled) header .name:not(input) {
+  font-style: italic;
+  text-decoration: line-through;
+  font-weight: normal;
   color: #737f9d;
 }
-.window.panel.editAllAutoLayerRules .content ul.ruleGroups > li.inactive.optional header {
-  background-color: #0f4973;
-  background-image: url("../img/stripes.png");
+.window.panel.editAllAutoLayerRules .content ul.ruleGroups > li.notApplied:not(.disabled) header .name:not(input):hover {
+  color: white;
 }
-.window.panel.editAllAutoLayerRules .content ul.ruleGroups > li.inactive ul.ruleGroup {
-  opacity: 0.66;
-}
-.window.panel.editAllAutoLayerRules .content ul.ruleGroups > li.inactive > .sortHandle {
-  background-color: #1e2229;
-}
-.window.panel.editAllAutoLayerRules .content ul.ruleGroups > li.inactive > .sortHandle:hover {
-  background-color: #ffcc00 !important;
+.window.panel.editAllAutoLayerRules .content ul.ruleGroups > li.notApplied:not(.disabled) header .biome {
+  filter: blur(2px);
+  opacity: 0.8;
 }
 .window.panel.editAllAutoLayerRules .content ul.ruleGroups > li.collapsed {
   margin-top: 0;
@@ -7734,8 +8080,8 @@ body.sorting ul.collapsedSortTarget {
 }
 .window.panel.editAllAutoLayerRules .content ul.ruleGroups > li header {
   display: grid;
-  grid-template-columns: auto;
   grid-auto-flow: column;
+  grid-template-columns: min-content auto;
   grid-auto-columns: min-content;
   align-items: stretch;
   width: 100%;
@@ -7744,7 +8090,7 @@ body.sorting ul.collapsedSortTarget {
 }
 .window.panel.editAllAutoLayerRules .content ul.ruleGroups > li header div.name {
   display: grid;
-  grid-template-columns: 20px min-content auto;
+  grid-template-columns: min-content auto;
   align-content: center;
   align-items: center;
   gap: 6px;
@@ -7778,10 +8124,38 @@ body.sorting ul.collapsedSortTarget {
   font-size: 8pt;
   height: 1.3em;
   border-radius: 3px;
-  border: 1px solid #00f1ff;
-  background-color: #1e94c5;
-  box-shadow: 0px 0px 16px #00f1ff;
   cursor: help;
+}
+.window.panel.editAllAutoLayerRules .content ul.ruleGroups > li header .biome {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  min-width: 24px;
+}
+.window.panel.editAllAutoLayerRules .content ul.ruleGroups > li header .biome:hover {
+  background-color: rgba(255, 255, 255, 0.4);
+}
+.window.panel.editAllAutoLayerRules .content ul.ruleGroups > li header .biome.multiples img {
+  width: 16px !important;
+  height: auto !important;
+  max-height: 16px;
+}
+.window.panel.editAllAutoLayerRules .content ul.ruleGroups > li header .biome:not(.multiples) img {
+  width: 24px !important;
+  height: auto !important;
+  max-height: 24px;
+}
+.window.panel.editAllAutoLayerRules .content ul.ruleGroups > li header .biome .op {
+  color: white;
+  text-shadow: 1px 1px 1px black, -1px -1px 1px black;
+}
+.window.panel.editAllAutoLayerRules .content ul.ruleGroups > li header .biome .empty {
+  width: 8px;
+  height: 8px;
+  border-radius: 8px;
+  border: 1px solid black;
+  opacity: 0.4;
 }
 .window.panel.editAllAutoLayerRules .content ul.ruleGroups > li header button {
   padding: 3px;
@@ -7792,25 +8166,28 @@ body.sorting ul.collapsedSortTarget {
   font-weight: bold;
   font-size: 12pt;
 }
-.window.panel.editAllAutoLayerRules .content ul.ruleGroups > li header button.groupActive:hover {
+.window.panel.editAllAutoLayerRules .content ul.ruleGroups > li header button.groupToggler:hover {
   background-color: rgba(255, 255, 255, 0.34) !important;
 }
 .window.panel.editAllAutoLayerRules .content ul.ruleGroups > li header button.off {
   opacity: 0.3;
   background-color: #e34d00;
 }
-.window.panel.editAllAutoLayerRules .content ul.ruleGroups > li header button.groupActive .icon {
-  width: 100%;
+.window.panel.editAllAutoLayerRules .content ul.ruleGroups > li header button.groupToggler .icon {
+  width: 30px;
+}
+.window.panel.editAllAutoLayerRules .content ul.ruleGroups > li header button.groupToggler .icon.toggleOn {
+  filter: brightness(0.6) sepia(1) hue-rotate(0.8rad) saturate(2);
+}
+.window.panel.editAllAutoLayerRules .content ul.ruleGroups > li header button.groupToggler .icon.toggleOff {
+  filter: brightness(0.6) sepia(1) hue-rotate(-0.8rad) saturate(10);
 }
 .window.panel.editAllAutoLayerRules .content ul.ruleGroups > li header .context {
   border-radius: 0;
   border-width: 0;
 }
-.window.panel.editAllAutoLayerRules .content ul.ruleGroups > li:not(.optional) header .name:hover {
+.window.panel.editAllAutoLayerRules .content ul.ruleGroups > li:not(.optional) header div.name:hover {
   background-color: rgba(255, 255, 255, 0.2) !important;
-}
-.window.panel.editAllAutoLayerRules .content ul.ruleGroups > li.optional header .name:hover {
-  background-color: #219df9;
 }
 .window.panel.editAllAutoLayerRules .content ul.ruleGroups > li ul.ruleGroup {
   position: relative;
@@ -7850,7 +8227,7 @@ body.sorting ul.collapsedSortTarget {
   display: grid;
   box-sizing: border-box;
   gap: 2px;
-  grid-template-columns: min-content 80px auto repeat(2, min-content);
+  grid-template-columns: min-content min-content 80px auto repeat(2, min-content);
   align-items: center;
   padding: 2px;
   background-color: #1e2229;
@@ -7866,8 +8243,29 @@ body.sorting ul.collapsedSortTarget {
   background-color: #770077;
 }
 .window.panel.editAllAutoLayerRules .content ul.ruleGroups > li ul.ruleGroup li.rule.inactive {
-  background-image: url("../img/stripes.png");
-  background-color: #791105;
+  background-image: url("../img/stripesLight.png");
+  background-color: rgba(121, 17, 5, 0.5);
+  opacity: 0.6;
+}
+.window.panel.editAllAutoLayerRules .content ul.ruleGroups > li ul.ruleGroup li.rule .ruleToggler {
+  display: flex;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+}
+.window.panel.editAllAutoLayerRules .content ul.ruleGroups > li ul.ruleGroup li.rule .ruleToggler:hover {
+  cursor: pointer;
+  background-color: #2e333f;
+}
+.window.panel.editAllAutoLayerRules .content ul.ruleGroups > li ul.ruleGroup li.rule .ruleToggler .icon {
+  width: 21px;
+  height: 21px;
+}
+.window.panel.editAllAutoLayerRules .content ul.ruleGroups > li ul.ruleGroup li.rule .ruleToggler .icon.toggleOn {
+  filter: brightness(0.6) sepia(1) hue-rotate(0.8rad) saturate(2);
+}
+.window.panel.editAllAutoLayerRules .content ul.ruleGroups > li ul.ruleGroup li.rule .ruleToggler .icon.toggleOff {
+  filter: brightness(0.3) sepia(1) hue-rotate(-0.8rad) saturate(3);
 }
 .window.panel.editAllAutoLayerRules .content ul.ruleGroups > li ul.ruleGroup li.rule button.insert {
   position: absolute;
@@ -7940,6 +8338,9 @@ body.sorting ul.collapsedSortTarget {
   grid-column: span 3;
   background-image: url("../icons/alpha.svg");
 }
+.window.panel.editAllAutoLayerRules .content ul.ruleGroups > li ul.ruleGroup li.rule .options .randomOffset {
+  grid-column: span 2;
+}
 .window.panel.editAllAutoLayerRules .content ul.ruleGroups > li ul.ruleGroup li.rule .options .modulo {
   display: grid;
   grid-column: span 2;
@@ -7997,9 +8398,6 @@ body.sorting ul.collapsedSortTarget {
   color: #009dff;
   border-color: #009dff;
   text-shadow: 0px 0px 4px #009dff;
-}
-.window.panel.editAllAutoLayerRules .content ul.ruleGroups > li ul.ruleGroup li.rule .options a.active.on {
-  border-color: #ffcc00;
 }
 .window.panel.editAllAutoLayerRules .content ul.ruleGroups > li ul.ruleGroup li.rule button {
   padding: 4px;
@@ -8469,12 +8867,57 @@ body.sorting ul.collapsedSortTarget {
 .window.dialog.ruleEditor > .wrapper .content .tileSettings {
   display: grid;
   justify-items: stretch;
-  grid-template-columns: auto min-content min-content;
+  grid-template-columns: 8em auto min-content;
 }
-.window.dialog.ruleEditor > .wrapper .content .tileSettings .picker {
+.window.dialog.ruleEditor > .wrapper .content .tileSettings .tileRects {
+  display: grid;
   margin-left: 8px;
 }
-.window.dialog.ruleEditor > .wrapper .content .tileSettings .picker canvas {
+.window.dialog.ruleEditor > .wrapper .content .tileSettings .tileRects .allTiles {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 3px 2px;
+  border-radius: 3px;
+  min-height: 32px;
+  max-width: 350px;
+  box-shadow: 0 0 8px black inset;
+}
+.window.dialog.ruleEditor > .wrapper .content .tileSettings .tileRects .allTiles img {
+  border: 1px solid #737f9d;
+  border-radius: 2px;
+  width: auto;
+  min-height: 48px;
+  image-rendering: pixelated;
+}
+.window.dialog.ruleEditor > .wrapper .content .tileSettings .tileRects .allTiles img.clickable {
+  cursor: pointer;
+}
+.window.dialog.ruleEditor > .wrapper .content .tileSettings .tileRects .allTiles img.clickable:hover {
+  border-color: #ffcc00;
+}
+.window.dialog.ruleEditor > .wrapper .content .tileSettings .tileRects .allTiles button {
+  width: fit-content;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+.window.dialog.ruleEditor > .wrapper .content .tileSettings .tileRects .allTiles button .icon {
+  width: 1.3em;
+  height: 1.3em;
+}
+.window.dialog.ruleEditor > .wrapper .content .tileSettings .tileRects .allTiles.clickable {
+  cursor: pointer;
+}
+.window.dialog.ruleEditor > .wrapper .content .tileSettings .tileRects .allTiles.clickable:empty {
+  background-image: url("../img/stripes.png");
+  outline: 1px solid #d56932;
+}
+.window.dialog.ruleEditor > .wrapper .content .tileSettings .tileRects .allTiles.clickable:hover {
+  outline: 1px solid #ffcc00;
+}
+.window.dialog.ruleEditor > .wrapper .content .tileSettings .tileRects .allTiles.clickable:hover img {
+  border-color: white;
+}
+.window.dialog.ruleEditor > .wrapper .content .tileSettings .tileRects canvas {
   image-rendering: pixelated;
   zoom: 2;
   border: 1px solid #ffcc00;
@@ -8484,10 +8927,10 @@ body.sorting ul.collapsedSortTarget {
   background-color: gray;
   background-image: url("../img/stripes.png");
 }
-.window.dialog.ruleEditor > .wrapper .content .tileSettings .picker canvas:hover {
+.window.dialog.ruleEditor > .wrapper .content .tileSettings .tileRects canvas:hover {
   border-color: white;
 }
-.window.dialog.ruleEditor > .wrapper .content .tileSettings .picker canvas.empty {
+.window.dialog.ruleEditor > .wrapper .content .tileSettings .tileRects canvas.empty {
   border-color: #e34d00;
   box-shadow: 0px 0px 32px #e34d00;
 }
@@ -8517,7 +8960,6 @@ body.sorting ul.collapsedSortTarget {
   position: relative;
   max-height: 400px;
   overflow-y: auto;
-  padding-right: 32px;
 }
 .window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette button.displayMode {
   position: absolute;
@@ -8525,14 +8967,23 @@ body.sorting ul.collapsedSortTarget {
   right: 0;
   width: auto;
   padding: 3px 1px;
+  background-color: #1e2229;
+}
+.window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette button.displayMode:hover {
+  background-color: #ffcc00;
 }
 .window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups li.title {
+  display: flex;
+  align-items: center;
   padding: 3px 4px;
   border-top-left-radius: 2px;
   border-top-right-radius: 2px;
   cursor: pointer;
+  font-size: 9pt;
   white-space: nowrap;
   overflow: hidden;
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
 }
 .window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups li.title:not(.active) {
   color: #737f9d;
@@ -8543,11 +8994,15 @@ body.sorting ul.collapsedSortTarget {
 .window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups li.title .icon {
   margin-right: 3px;
 }
+.window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups li.title:not(.active):hover {
+  outline: 1px solid white;
+}
 .window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups li.title:not(.active):hover + li.subList {
   outline: 1px dashed white;
 }
 .window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups li.title.active {
-  color: white;
+  color: black;
+  background-color: white !important;
   font-weight: bold;
 }
 .window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups li.title.active + li.subList {
@@ -8568,18 +9023,21 @@ body.sorting ul.collapsedSortTarget {
 .window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups.col-1 li.value + li {
   margin-top: 1px;
 }
-.window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups.col-2 ul.groupValues > li, .window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups.col-3 ul.groupValues > li, .window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups.col-4 ul.groupValues > li, .window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups.col-5 ul.groupValues > li {
+.window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups[class*=col-] ul.groupValues {
+  display: grid;
+}
+.window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups[class*=col-] ul.groupValues > li {
   padding: 0;
   grid-template-columns: auto;
   justify-items: center;
   overflow: hidden;
   border: none;
 }
-.window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups.col-2 ul.groupValues > li .intGridValue, .window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups.col-3 ul.groupValues > li .intGridValue, .window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups.col-4 ul.groupValues > li .intGridValue, .window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups.col-5 ul.groupValues > li .intGridValue {
+.window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups[class*=col-] ul.groupValues > li .intGridValue {
   width: 100%;
   border: none;
 }
-.window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups.col-2 ul.groupValues > li .name, .window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups.col-3 ul.groupValues > li .name, .window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups.col-4 ul.groupValues > li .name, .window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups.col-5 ul.groupValues > li .name {
+.window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups[class*=col-] ul.groupValues > li .name {
   display: block;
   padding: 3px 0;
   font-size: 8.5pt;
@@ -8587,39 +9045,71 @@ body.sorting ul.collapsedSortTarget {
   text-align: center;
   overflow: hidden;
 }
-.window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups.col-2 ul.groupValues > li.any, .window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups.col-3 ul.groupValues > li.any, .window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups.col-4 ul.groupValues > li.any, .window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups.col-5 ul.groupValues > li.any {
+.window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups[class*=col-] ul.groupValues > li.any {
   align-items: center;
 }
-.window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups.col-2 ul.groupValues > li.any .value, .window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups.col-3 ul.groupValues > li.any .value, .window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups.col-4 ul.groupValues > li.any .value, .window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups.col-5 ul.groupValues > li.any .value {
+.window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups[class*=col-] ul.groupValues > li.any .value {
   display: none;
 }
-.window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups.col-2 ul.groupValues {
-  display: grid;
+.window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups[class*=col-].col-5 > li.title, .window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups[class*=col-].col-6 > li.title, .window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups[class*=col-].col-7 > li.title, .window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups[class*=col-].col-8 > li.title, .window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups[class*=col-].col-9 > li.title, .window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups[class*=col-].col-10 > li.title {
+  padding: 2px;
+}
+.window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups[class*=col-].col-5 > li.subList, .window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups[class*=col-].col-6 > li.subList, .window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups[class*=col-].col-7 > li.subList, .window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups[class*=col-].col-8 > li.subList, .window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups[class*=col-].col-9 > li.subList, .window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups[class*=col-].col-10 > li.subList {
+  padding: 4px;
+}
+.window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups[class*=col-].col-2 ul.groupValues {
   grid-template-columns: repeat(2, 1fr);
 }
-.window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups.col-2 ul.groupValues li .intGridValue {
+.window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups[class*=col-].col-2 ul.groupValues li .intGridValue {
   height: 80px;
 }
-.window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups.col-3 ul.groupValues {
-  display: grid;
+.window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups[class*=col-].col-3 ul.groupValues {
   grid-template-columns: repeat(3, 1fr);
 }
-.window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups.col-3 ul.groupValues li .intGridValue {
+.window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups[class*=col-].col-3 ul.groupValues li .intGridValue {
   height: 60px;
 }
-.window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups.col-4 ul.groupValues {
-  display: grid;
+.window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups[class*=col-].col-4 ul.groupValues {
   grid-template-columns: repeat(4, 1fr);
 }
-.window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups.col-4 ul.groupValues li .intGridValue {
+.window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups[class*=col-].col-4 ul.groupValues li .intGridValue {
   height: 50px;
 }
-.window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups.col-5 ul.groupValues {
-  display: grid;
+.window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups[class*=col-].col-5 ul.groupValues {
   grid-template-columns: repeat(5, 1fr);
 }
-.window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups.col-5 ul.groupValues li .intGridValue {
+.window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups[class*=col-].col-5 ul.groupValues li .intGridValue {
   height: 50px;
+}
+.window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups[class*=col-].col-6 ul.groupValues {
+  grid-template-columns: repeat(6, 1fr);
+}
+.window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups[class*=col-].col-6 ul.groupValues li .intGridValue {
+  height: 40px;
+}
+.window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups[class*=col-].col-7 ul.groupValues {
+  grid-template-columns: repeat(7, 1fr);
+}
+.window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups[class*=col-].col-7 ul.groupValues li .intGridValue {
+  height: 35px;
+}
+.window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups[class*=col-].col-8 ul.groupValues {
+  grid-template-columns: repeat(8, 1fr);
+}
+.window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups[class*=col-].col-8 ul.groupValues li .intGridValue {
+  height: 30px;
+}
+.window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups[class*=col-].col-9 ul.groupValues {
+  grid-template-columns: repeat(9, 1fr);
+}
+.window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups[class*=col-].col-9 ul.groupValues li .intGridValue {
+  height: 30px;
+}
+.window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups[class*=col-].col-10 ul.groupValues {
+  grid-template-columns: repeat(10, 1fr);
+}
+.window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups[class*=col-].col-10 ul.groupValues li .intGridValue {
+  height: 25px;
 }
 .window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups li.subList {
   margin-bottom: 8px;
@@ -8630,6 +9120,7 @@ body.sorting ul.collapsedSortTarget {
 }
 .window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups li.subList li.value {
   cursor: pointer;
+  padding: 1px;
 }
 .window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups li.subList li.value:hover {
   outline: 1px dashed white;
@@ -8644,7 +9135,7 @@ body.sorting ul.collapsedSortTarget {
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.4);
 }
 .window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups li.subList li.value:not(.active) {
-  filter: brightness(0.5);
+  filter: brightness(0.8);
 }
 .window.dialog.ruleEditor > .wrapper .content .pattern .valuePalette ul.groups li.any {
   padding: 8px;

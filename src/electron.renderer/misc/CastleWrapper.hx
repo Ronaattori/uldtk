@@ -116,13 +116,13 @@ class CastleWrapper {
 	public function createHeaderContextMenu(?jNear:js.jquery.JQuery, ?openEvent:js.jquery.Event, column:Column) {
         var jEventTarget = jNear!=null ? jNear : new J(openEvent.target);
         var ctx = new ContextMenu(jEventTarget);
-        ctx.add({
+        ctx.addAction({
             label: new LocaleString("Add column"),
             cb: () -> new ui.modal.dialog.CastleColumn(sheet, (c) -> {
                 if (this.callbacks.onColumnAdd != null ) this.callbacks.onColumnAdd(c);
             })
         });
-        ctx.add({
+        ctx.addAction({
             label: new LocaleString("Add line"),
             cb: () -> addLine()
         });
@@ -132,7 +132,7 @@ class CastleWrapper {
             return ctx;
         }
 
-        ctx.add({
+        ctx.addAction({
             label: new LocaleString("Edit column"),
             cb: () -> new ui.modal.dialog.CastleColumn(sheet, column, (c) -> {
                 if (this.callbacks.onColumnUpdate != null) this.callbacks.onColumnUpdate(c);
@@ -141,9 +141,9 @@ class CastleWrapper {
         switch column.type {
             case TString:
                 var displayCol = sheet.props.displayColumn;
-                ctx.add({
+                ctx.addAction({
                     label: new LocaleString("Set as display name"),
-                    sub: new LocaleString(displayCol == column.name ? "Enabled" : "Disabled"),
+                    subText: new LocaleString(displayCol == column.name ? "Enabled" : "Disabled"),
                     cb: () -> {
                         sheet.props.displayColumn = displayCol == column.name ? null : column.name;
                         if (this.callbacks.onDisplayColumnUpdate != null) this.callbacks.onDisplayColumnUpdate(sheet.props.displayColumn);
@@ -151,9 +151,9 @@ class CastleWrapper {
                 });
             case TTileLayer, TTilePos, TImage:
                 var displayIcon = sheet.props.displayIcon;
-                ctx.add({
+                ctx.addAction({
                     label: new LocaleString("Set as display icon"),
-                    sub: new LocaleString(displayIcon == column.name ? "Enabled" : "Disabled"),
+                    subText: new LocaleString(displayIcon == column.name ? "Enabled" : "Disabled"),
                     cb: () -> {
                         sheet.props.displayIcon = displayIcon == column.name ? null : column.name;
                         if (this.callbacks.onDisplayIconUpdate != null) this.callbacks.onDisplayIconUpdate(sheet.props.displayIcon);
@@ -161,7 +161,7 @@ class CastleWrapper {
                 });
             case _:
         }
-        ctx.add({
+        ctx.addAction({
             label: L._Delete(),
             cb: () -> {
                 sheet.deleteColumn(column.name);
@@ -368,7 +368,7 @@ class CastleWrapper {
 		var td = Editor.ME.project.defs.getTilesetDefFrom(curValue.file);
 		if (td == null)
 			return select;
-		var jPicker = JsTools.createTilePicker(td.uid, RectOnly, td.getTileIdsFromRect(CastleWrapper.tilePosToTilesetRect(curValue, td)), true, (tileIds) -> {
+		var jPicker = JsTools.createTilePicker(td.uid, TileRect, td.getTileIdsFromRect(CastleWrapper.tilePosToTilesetRect(curValue, td)), true, (tileIds) -> {
 			var tilesetRect = td.getTileRectFromTileIds(tileIds);
             var tp = CastleWrapper.tilesetRectToTilePos(tilesetRect, td);
 			Reflect.setField(line, column.name, tp);

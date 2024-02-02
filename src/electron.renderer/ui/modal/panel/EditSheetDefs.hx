@@ -50,9 +50,9 @@ class EditSheetDefs extends ui.modal.Panel {
 		// Import
 		jContent.find("button.import").click(ev -> {
 			var ctx = new ContextMenu(ev);
-			ctx.add({
+			ctx.addAction({
 				label: L.t._("CDB - Import a CastleDB database"),
-				sub: L.t._('WARNING!!! Will rewrite current database'),
+				subText: L.t._('WARNING!!! Will rewrite current database'),
 				cb: () -> {
 					dn.js.ElectronDialogs.openFile([".cdb"], project.getProjectDir(), function(absPath:String) {
 						absPath = StringTools.replace(absPath, "\\", "/");
@@ -67,9 +67,9 @@ class EditSheetDefs extends ui.modal.Panel {
 					});
 				},
 			});
-			ctx.add({
+			ctx.addAction({
 				label: L.t._("CSV - Import Sheet"),
-				sub: L.t._('Expected format:\n - One entry per line\n - Fields separated by commas'),
+				subText: L.t._('Expected format:\n - One entry per line\n - Fields separated by commas'),
 				cb: () -> {
 					dn.js.ElectronDialogs.openFile([".csv"], project.getProjectDir(), function(absPath:String) {
 						absPath = StringTools.replace(absPath, "\\", "/");
@@ -173,11 +173,11 @@ class EditSheetDefs extends ui.modal.Panel {
 
 		var jLi = new J('<li class="subList"/>');
 		jLi.appendTo(jList);
-		var jSubList = new J('<ul/>');
+		var jSubList = new J('<ul class="niceList compact"/>');
 		jSubList.appendTo(jLi);
 
 		for (sheet in project.database.sheets.filter((x) -> !x.props.hide)) {
-			var jLi = new J("<li/>");
+			var jLi = new J("<li class='draggable'/>");
 			jLi.appendTo(jSubList);
 			jLi.append('<span class="table">' + sheet.name + '</span>');
 			// jLi.data("uid",td.uid);
@@ -188,7 +188,7 @@ class EditSheetDefs extends ui.modal.Panel {
 				selectSheet(sheet);
 			});
 
-			ContextMenu.addTo(jLi, [
+			ContextMenu.attachTo(jLi, [
 				// {
 				// 	label: L._Copy(),
 				// 	cb: ()->App.ME.clipboard.copyData(CTilesetDef, td.toJson()),

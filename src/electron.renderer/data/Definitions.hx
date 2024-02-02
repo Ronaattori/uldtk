@@ -12,9 +12,59 @@ class Definitions {
 	public var externalEnums: Array<data.def.EnumDef> = [];
 	public var levelFields: Array<data.def.FieldDef> = [];
 
+	var fastLayerAccessInt : Map<Int, data.def.LayerDef> = new Map();
+	var fastLayerAccessStr : Map<String, data.def.LayerDef> = new Map();
+
+	var fastTilesetAccessInt : Map<Int, data.def.TilesetDef> = new Map();
+	var fastTilesetAccessStr : Map<String, data.def.TilesetDef> = new Map();
+
+	var fastEntityAccessInt : Map<Int, data.def.EntityDef> = new Map();
+	var fastEntityAccessStr : Map<String, data.def.EntityDef> = new Map();
+
+	var fastEnumAccessInt : Map<Int, data.def.EnumDef> = new Map();
+	var fastEnumAccessStr : Map<String, data.def.EnumDef> = new Map();
+
 
 	public function new(project:Project) {
 		this._project = project;
+	}
+
+	public function initFastAccesses() {
+		// Layers
+		fastLayerAccessInt = new Map();
+		fastLayerAccessStr = new Map();
+		for(ld in layers) {
+			fastLayerAccessInt.set(ld.uid, ld);
+			fastLayerAccessStr.set(ld.identifier, ld);
+		}
+
+		// Tilesets
+		fastTilesetAccessInt = new Map();
+		fastTilesetAccessStr = new Map();
+		for(td in tilesets) {
+			fastTilesetAccessInt.set(td.uid, td);
+			fastTilesetAccessStr.set(td.identifier, td);
+		}
+
+		// Entities
+		fastEntityAccessInt = new Map();
+		fastEntityAccessStr = new Map();
+		for(ed in entities) {
+			fastEntityAccessInt.set(ed.uid, ed);
+			fastEntityAccessStr.set(ed.identifier, ed);
+		}
+
+		// Enums
+		fastEnumAccessInt = new Map();
+		fastEnumAccessStr = new Map();
+		for(ed in enums) {
+			fastEnumAccessInt.set(ed.uid, ed);
+			fastEnumAccessStr.set(ed.identifier, ed);
+		}
+		for(ed in externalEnums) {
+			fastEnumAccessInt.set(ed.uid, ed);
+			fastEnumAccessStr.set(ed.identifier, ed);
+		}
 	}
 
 	public function toJson(p:Project) : ldtk.Json.DefinitionsJson {
@@ -33,23 +83,51 @@ class Definitions {
 
 		for( layerJson in JsonTools.readArray(json.layers) )
 			p.defs.layers.push( data.def.LayerDef.fromJson(p, p.jsonVersion, layerJson) );
+		p.defs.initFastAccesses();
 
 		for( entityJson in JsonTools.readArray(json.entities) )
 			p.defs.entities.push( data.def.EntityDef.fromJson(p, entityJson) );
+		p.defs.initFastAccesses();
 
 		for( tilesetJson in JsonTools.readArray(json.tilesets) )
 			p.defs.tilesets.push( data.def.TilesetDef.fromJson(p, tilesetJson) );
+		p.defs.initFastAccesses();
 
 		for( enumJson in JsonTools.readArray(json.enums) )
 			p.defs.enums.push( data.def.EnumDef.fromJson(p, p.jsonVersion, enumJson) );
+		p.defs.initFastAccesses();
 
 		if( json.externalEnums!=null )
 			for( enumJson in JsonTools.readArray(json.externalEnums) )
 				p.defs.externalEnums.push( data.def.EnumDef.fromJson(p, p.jsonVersion, enumJson) );
+		p.defs.initFastAccesses();
 
 		if( json.levelFields!=null )
 			for(fieldJson in JsonTools.readArray(json.levelFields))
 				p.defs.levelFields.push( data.def.FieldDef.fromJson(p, fieldJson) );
+	}
+
+	public static function tidyFieldDefsArray(p:Project, fieldDefs:Array<data.def.FieldDef>, ctx:String) {
+		// Remove Enum-based field defs whose EnumDef is lost
+		var i = 0;
+		while( i<fieldDefs.length ) {
+			var fd = fieldDefs[i];
+			switch fd.type {
+				case F_Enum(enumDefUid):
+					if( p.defs.getEnumDef(enumDefUid)==null ) {
+						App.LOG.add("tidy", 'Removed lost enum field of $fd in $ctx');
+						fieldDefs.splice(i,1);
+						continue;
+					}
+
+				case _:
+			}
+			i++;
+		}
+
+		// Call field defs tidy()
+		for(fd in fieldDefs)
+			fd.tidy(p);
 	}
 
 	public function tidy(p:Project) {
@@ -70,8 +148,8 @@ class Definitions {
 		for(td in tilesets)
 			td.tidy(p);
 
-		for(fd in levelFields)
-			fd.tidy(p);
+		tidyFieldDefsArray(p, levelFields, "ProjectDefinitions");
+		initFastAccesses();
 	}
 
 	/**  LAYER DEFS  *****************************************/
@@ -90,11 +168,10 @@ class Definitions {
 		return false;
 	}
 
-	public function getLayerDef(id:haxe.extern.EitherType<String,Int>) : Null<data.def.LayerDef> {
-		for(ld in layers)
-			if( ld.uid==id || ld.identifier==id )
-				return ld;
-		return null;
+	public inline function getLayerDef(?id:String, ?uid:Int) : Null<data.def.LayerDef> {
+		return uid!=null ? fastLayerAccessInt.get(uid)
+			: id!=null ? fastLayerAccessStr.get(id)
+			: null;
 	}
 
 	public function createLayerDef(type:ldtk.Json.LayerType, ?id:String) : data.def.LayerDef {
@@ -217,7 +294,7 @@ class Definitions {
 	}
 
 
-	public function sortLayerAutoGroup(ld:data.def.LayerDef, fromGroupIdx:Int, toGroupIdx:Int) : Null<AutoLayerRuleGroup> {
+	public function sortLayerAutoGroup(ld:data.def.LayerDef, fromGroupIdx:Int, toGroupIdx:Int) : Null<data.def.AutoLayerRuleGroupDef> {
 		if( fromGroupIdx<0 || fromGroupIdx>=ld.autoRuleGroups.length )
 			return null;
 
@@ -258,11 +335,10 @@ class Definitions {
 
 	/**  ENTITY DEFS  *****************************************/
 
-	public function getEntityDef(id:haxe.extern.EitherType<String,Int>) : Null<data.def.EntityDef> {
-		for(ed in entities)
-			if( ed.uid==id || ed.identifier==id )
-				return ed;
-		return null;
+	public inline function getEntityDef(?uid:Int, ?id:String) : Null<data.def.EntityDef> {
+		return uid!=null ? fastEntityAccessInt.get(uid)
+			: id!=null ? fastEntityAccessStr.get(id)
+			: null;
 	}
 
 	public function createEntityDef() : data.def.EntityDef {
@@ -276,6 +352,8 @@ class Definitions {
 		while( !isEntityIdentifierUnique(id) )
 			id = "Entity"+(idx++);
 		ed.identifier = id;
+
+		_project.tidy();
 
 		return ed;
 	}
@@ -349,7 +427,7 @@ class Definitions {
 	/**
 		Extract and sort all tags being used in the provided array of T
 	**/
-	public function getAllTagsFrom<T>(all:Array<T>, getTags:T->Tags, ?filter:T->Bool) : Array<String> {
+	public function getAllTagsFrom<T>(all:Array<T>, includeNull=true, getTags:T->Tags, ?filter:T->Bool) : Array<String> {
 		if( filter==null )
 			filter = (_)->return true;
 
@@ -374,8 +452,10 @@ class Definitions {
 		for(t in tagMap)
 			sortedTags.push(t);
 		sortedTags.sort( (a,b)->Reflect.compare( a.toLowerCase(), b.toLowerCase() ) );
-		if( anyUntagged )
-			sortedTags.insert(0, null); // untagged category
+
+		// Add untagged "null" value
+		if( includeNull && anyUntagged )
+			sortedTags.insert(0, null);
 
 		return sortedTags;
 	}
@@ -499,7 +579,7 @@ class Definitions {
 			case LdtkIcons: td.tileGridSize = 16;
 		}
 		td.importAtlasImage(td.embedAtlas);
-		td.buildPixelData(()->{}, true);
+		td.buildPixelData(true);
 
 		_project.tidy();
 		return td;
@@ -566,11 +646,10 @@ class Definitions {
 		return null;
 	}
 
-	public function getTilesetDef(id:haxe.extern.EitherType<String,Int>) : Null<data.def.TilesetDef> {
-		for(td in tilesets)
-			if( td.uid==id || td.identifier==id )
-				return td;
-		return null;
+	public inline function getTilesetDef(?uid:Int, ?id:String) : Null<data.def.TilesetDef> {
+		return uid!=null ? fastTilesetAccessInt.get(uid)
+			: id!=null ? fastTilesetAccessStr.get(id)
+			: null;
 	}
 
 	public function isTilesetIdentifierUnique(id:String, ?exclude:data.def.TilesetDef) {
@@ -685,16 +764,10 @@ class Definitions {
 		return true;
 	}
 
-	public function getEnumDef(id:haxe.extern.EitherType<String,Int>) : Null<data.def.EnumDef> {
-		for(ed in enums)
-			if( ed.uid==id || ed.identifier==id )
-				return ed;
-
-		for(ed in externalEnums)
-			if( ed.uid==id || ed.identifier==id )
-				return ed;
-
-		return null;
+	public function getEnumDef(?uid:Int, ?id:String) : Null<data.def.EnumDef> {
+		return uid!=null ? fastEnumAccessInt.get(uid)
+			: id!=null ? fastEnumAccessStr.get(id)
+			: null;
 	}
 
 	public function getInternalEnumIndex(uid:Int) {

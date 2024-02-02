@@ -66,21 +66,21 @@ class Tabulator {
 			var ctx = new ContextMenu(e);
 			var row = cell.getRow();
 			var column = getColumn(cell.getColumn());
-			ctx.add({
+			ctx.addAction({
 				label: new LocaleString("Add row before"),
 				cb: () -> castle.addLine(row.getPosition() - 2)
 			});
-			ctx.add({
+			ctx.addAction({
 				label: new LocaleString("Add row after"),
 				cb: () -> castle.addLine(row.getPosition() - 1)
 			});
-			ctx.add({
+			ctx.addAction({
 				label: new LocaleString("Delete row"),
 				cb: () -> castle.deleteLine(row.getPosition() - 1)
 			});
 			switch column.type {
 				case TTileLayer, TTilePos, TImage:
-					ctx.add({
+					ctx.addAction({
 						label: new LocaleString("Change tileset"),
 						cb: () -> {
 							cell.setValue(null);

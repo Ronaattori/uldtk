@@ -62,7 +62,7 @@ class SheetDefsForm {
 
 		var jLi = new J('<li class="subList"/>');
 		jLi.appendTo(jList);
-		var jSubList = new J('<ul/>');
+		var jSubList = new J('<ul class="niceList compact"/>');
 		jSubList.appendTo(jLi);
 
 	// 	var pki = td.columns.indexOf(td.primaryKey);
@@ -78,7 +78,7 @@ class SheetDefsForm {
 			jLi.click( function(_) {
 				selectLine(line);
 			});
-			ui.modal.ContextMenu.addTo(jLi, [
+			ui.modal.ContextMenu.attachTo(jLi, [
 				{
 					label: L._Delete(),
 					cb: () -> {},
