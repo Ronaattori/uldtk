@@ -1,5 +1,6 @@
 package ui;
 
+import sortablejs.Sortable.SortableDragEvent;
 import js.jquery.JQuery;
 import cdb.Data.ColumnType;
 import haxe.Json;
@@ -65,13 +66,11 @@ class SheetDefsForm {
 		var jSubList = new J('<ul class="niceList compact"/>');
 		jSubList.appendTo(jLi);
 
-	// 	var pki = td.columns.indexOf(td.primaryKey);
 		var displayCol = sheet.props.displayColumn ?? sheet.idCol?.name;
 		for(line in sheet.lines) {
 			var jLi = new J("<li/>");
 			jLi.appendTo(jSubList);
 			jLi.append('<span class="table">'+Reflect.field(line, displayCol)+'</span>');
-			// jLi.data("uid",td.uid);
 
 			if( line==curLine )
 				jLi.addClass("active");
@@ -87,16 +86,8 @@ class SheetDefsForm {
 		}
 
 	// 	// Make list sortable
-		JsTools.makeSortable(jSubList, function(ev) {
-			// var jItem = new J(ev.item);
-			// var fromIdx = project.defs.getTableIndex( jItem.data("uid") );
-			// var toIdx = ev.newIndex>ev.oldIndex
-			// 	? jItem.prev().length==0 ? 0 : project.defs.getTableIndex( jItem.prev().data("uid") )
-			// 	: jItem.next().length==0 ? project.defs.tables.length-1 : project.defs.getTableIndex( jItem.next().data("uid") );
-
-			// var moved = project.defs.sortTableDef(fromIdx, toIdx);
-			// selectTable(moved);
-			// editor.ge.emit(TilesetDefSorted);
+		JsTools.makeSortable(jSubList, function(ev: SortableDragEvent) {
+			castle.moveLine(ev.oldIndex, ev.newIndex);
 		});
 	}
 		

@@ -98,7 +98,7 @@ class Tabulator {
 			var data = row.getData();
 			var fromIndex = lines.indexOf(data);
 			var toIndex = row.getPosition() - 1; // getPosition index starts at 1
-			castle.moveLine(data, fromIndex, toIndex);
+			castle.moveLine(fromIndex, toIndex);
 		});
 		tabulator.on("columnMoved", (column:ColumnComponent) -> {
 			var c = getColumn(column);
