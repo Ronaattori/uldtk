@@ -130,7 +130,7 @@ class EditSheetDefs extends ui.modal.Panel {
 		// i.linkEvent(TableDefChanged(curTable));
 	}
 
-	function selectSheet(sheet:cdb.Sheet) {
+	public function selectSheet(sheet:cdb.Sheet) {
 		curSheet = sheet;
 		updateSheetList();
 		updateSheetForm();

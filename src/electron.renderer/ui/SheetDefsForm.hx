@@ -85,7 +85,7 @@ class SheetDefsForm {
 			]);
 		}
 
-	// 	// Make list sortable
+		// Make list sortable
 		JsTools.makeSortable(jSubList, function(ev: SortableDragEvent) {
 			castle.moveLine(ev.oldIndex, ev.newIndex);
 		});

@@ -144,6 +144,20 @@ class CommandPalette {
 				},
 			});
 
+		// Sheet defs
+		for(sheet in project.database.sheets.filter((x) -> !x.props.hide))
+			allElements.push({
+				id: "sheet_"+sheet.name,
+				cat: SE_Definition,
+				desc: sheet.name,
+				ctxDesc: "Sheet",
+				keywords: ["sheet", sheet.name],
+				onPick: ()->{
+					var p = new ui.modal.panel.EditSheetDefs();
+					p.selectSheet(sheet);
+				},
+			});
+
 		// List all instances
 		for(w in project.worlds) {
 			// Worlds
