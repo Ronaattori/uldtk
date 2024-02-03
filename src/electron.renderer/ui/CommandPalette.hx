@@ -145,7 +145,7 @@ class CommandPalette {
 			});
 
 		// Sheet defs
-		for(sheet in project.database.sheets.filter((x) -> !x.props.hide))
+		for(sheet in project.database.sheets.filter((x) -> !x.props.hide)) {
 			allElements.push({
 				id: "sheet_"+sheet.name,
 				cat: SE_Definition,
@@ -157,6 +157,26 @@ class CommandPalette {
 					p.selectSheet(sheet);
 				},
 			});
+			
+			if (sheet.idCol == null)
+				continue;
+			for (line in sheet.getLines()) {
+				var id = Reflect.field(line, sheet.idCol.name);
+				allElements.push({
+					id: StringTools.replace(id, " ", "_"),
+					cat: SE_Entity,
+					desc: id,
+					ctxDesc: 'Sheet@${sheet.name}',
+					keywords: [id],
+					onPick: ()-> {
+						var p = new ui.modal.panel.EditSheetDefs();
+						p.selectSheet(sheet);
+						p?.sheetDefsForm.selectLine(line);
+					}
+				});
+				
+			}
+		}
 
 		// List all instances
 		for(w in project.worlds) {

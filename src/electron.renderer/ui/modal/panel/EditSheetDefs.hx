@@ -1,11 +1,9 @@
 package ui.modal.panel;
 
-import cdb.Data.ColumnType;
-import haxe.DynamicAccess;
-
 class EditSheetDefs extends ui.modal.Panel {
 	var curSheet:Null<cdb.Sheet>;
-	var tabulator:Null<Tabulator>;
+	public var tabulator:Null<Tabulator>;
+	public var sheetDefsForm:Null<SheetDefsForm>;
 	var inspectionView = true;
 
 	public function new() {
@@ -150,7 +148,7 @@ class EditSheetDefs extends ui.modal.Panel {
 		jTabEditor.empty();
 
 		if (inspectionView) {
-			var sheetDefsForm = new ui.SheetDefsForm(curSheet);
+			sheetDefsForm = new ui.SheetDefsForm(curSheet);
 			jTabEditor.append(sheetDefsForm.jWrapper);
 		} else {
 			tabulator = new Tabulator("#sheetEditor", curSheet);
