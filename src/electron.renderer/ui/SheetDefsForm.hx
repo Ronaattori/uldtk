@@ -37,6 +37,7 @@ class SheetDefsForm {
 				updateForm();
 			});
 		});
+		castle.callbacks.onColumnDelete = (c: Column) -> new J('#${getEditorId(c)}').closest(".line").remove();
 
 		updateList();
 		updateForm();
@@ -46,9 +47,12 @@ class SheetDefsForm {
 		updateList();
 		updateForm();
 	}
+	function getEditorId(column: Column) {
+		return 'editor_${column.name}';
+	}
 
 	public function refreshLine(column: Column) {
-		var editorId = 'editor_${column.name}';
+		var editorId = getEditorId(column);
 		var oldEditor = new J('#$editorId');
 		if (oldEditor.length > 0) {
 			var newEditor = getEditor(column, curLine);
@@ -99,8 +103,9 @@ class SheetDefsForm {
 		jForm.empty();
 		for (column in sheet.columns) {
 			var name = column.name;
+			var editorId = getEditorId(column);
 			var jLine = new J("<div class='line'>");
-			var jLabel = new J('<label for=editor_$name><button class="gray">$name</button></label>');
+			var jLabel = new J('<label for=$editorId><button class="gray">$name</button></label>');
 			var jInfo = new J('<div class="info">${getInfo(column.type)}</div>)');
 
 			// Add the info into the line
@@ -110,7 +115,7 @@ class SheetDefsForm {
 
 			// Get and add the editor into the line
 			var editor = getEditor(column, curLine);
-			editor.attr("id", 'editor_$name');
+			editor.attr("id", editorId);
 			editor.addClass("editor");
 			editor.appendTo(jLine);
 			
