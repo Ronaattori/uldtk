@@ -195,7 +195,7 @@ class CastleWrapper {
 
     public function deleteLine(index:Int) {
         // TODO maybe use the sheet. builtin functions
-        sheet.deleteLine(index);
+        this.lines.splice(index, 1);
         if (this.callbacks.onLineDelete != null) this.callbacks.onLineDelete(index);
     }
     public function moveLine(fromIndex:Int, toIndex:Int) {
