@@ -30,10 +30,16 @@ class CastleWrapper {
 	public var lines:Array<Dynamic>;
     public var callbacks: CastleCallbacks;
     
-	public function new(sheet: Sheet, ?lines: Array<Dynamic>) {
+	public function new(sheet: Sheet, ?parentLine: Dynamic) {
 		this.sheet = sheet;
-        this.lines = lines ?? sheet.lines;
         this.callbacks = {};
+		if (parentLine) {
+			this.lines = Reflect.field(parentLine, sheet.getParent().c);
+		} else {
+			this.lines = sheet.getLines();
+		}
+		if (this.lines == null)
+			this.lines = [];
     }
 
     //
@@ -176,7 +182,14 @@ class CastleWrapper {
 	// Add a row before or after specified RowComponent
     public function addLine(?index:Int) {
         var line = sheet.newLine(index);
-        if (this.callbacks.onLineAdd != null) this.callbacks.onLineAdd(line, index);
+        // // If this sheet is a sub, add it to the parent line instead
+        // // sheet.newLine adds it to the sheet, so we need to remove it
+        var i = index ?? 0;
+        if (sheet.getParent() != null) {
+            sheet.deleteLine(sheet.lines.indexOf(line));
+            this.lines.insert(i, line);
+        }
+        if (this.callbacks.onLineAdd != null) this.callbacks.onLineAdd(line, i);
         return line;
 	}
 
@@ -340,7 +353,7 @@ class CastleWrapper {
             holder.addClass("subHolder");
             var table = new J("<div>");
 
-            var subTabulator = new Tabulator(table.get(0), sub);
+            var subTabulator = new Tabulator(table.get(0), sub, line);
 
             holder.css("boxSizing", "border-box");
             holder.css("padding", "10px 30px 10px10px");

@@ -35,7 +35,7 @@ class Tabulator {
 		}
 		if (this.lines == null)
 			this.lines = [];
-		this.castle = new CastleWrapper(sheet, this.lines);
+		this.castle = new CastleWrapper(sheet, parentLine);
 		createTabulator();
 	}
 
@@ -58,7 +58,7 @@ class Tabulator {
 		castle.callbacks.onColumnAdd = (c) -> tabulator.addColumn(createColumnDef(c));
 		castle.callbacks.onColumnDelete = (c) -> tabulator.deleteColumn(c.name);
 		castle.callbacks.onColumnUpdate = (c) -> tabulator.updateColumnDefinition(c.name, createColumnDef(c));
-		castle.callbacks.onLineAdd = (line, lineIndex) -> tabulator.addRow(line, lineIndex < 0, getRowComponent(Std.int(Math.max(0, lineIndex))));
+		castle.callbacks.onLineAdd = (line, lineIndex) -> tabulator.addRow(line, lineIndex == 0, getRowComponent(Std.int(Math.max(0, lineIndex-1))));
 		castle.callbacks.onLineDelete = (lineIndex) -> getRowComponent(lineIndex).delete();
 
 		(js.Browser.window : Dynamic).tabulator = tabulator; // TODO remove this when debugging isnt needed
@@ -68,11 +68,11 @@ class Tabulator {
 			var column = getColumn(cell.getColumn());
 			ctx.addAction({
 				label: new LocaleString("Add row before"),
-				cb: () -> castle.addLine(row.getPosition() - 2)
+				cb: () -> castle.addLine(row.getPosition() - 1)
 			});
 			ctx.addAction({
 				label: new LocaleString("Add row after"),
-				cb: () -> castle.addLine(row.getPosition() - 1)
+				cb: () -> castle.addLine(row.getPosition())
 			});
 			ctx.addAction({
 				label: new LocaleString("Delete row"),
