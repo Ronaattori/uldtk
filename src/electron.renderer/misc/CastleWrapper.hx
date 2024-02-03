@@ -27,10 +27,12 @@ typedef CastleCallbacks = {
 class CastleWrapper {
 
 	public var sheet:Sheet;
+	public var lines:Array<Dynamic>;
     public var callbacks: CastleCallbacks;
     
-	public function new(sheet: Sheet) {
+	public function new(sheet: Sheet, ?lines: Array<Dynamic>) {
 		this.sheet = sheet;
+        this.lines = lines ?? sheet.lines;
         this.callbacks = {};
     }
 
@@ -185,8 +187,8 @@ class CastleWrapper {
     }
     public function moveLine(fromIndex:Int, toIndex:Int) {
         // TODO maybe use the sheet. builtin functions
-		var line = sheet.lines.splice(fromIndex, 1)[0]; // Remove the original item
-		sheet.lines.insert(toIndex, line); // Add the same data to the new position
+		var line = this.lines.splice(fromIndex, 1)[0]; // Remove the original item
+		this.lines.insert(toIndex, line); // Add the same data to the new position
 	}
 	public function moveColumn(fromIndex:Int, toIndex:Int) {
 		var c:Null<Column> = sheet.columns.splice(fromIndex, 1)[0]; // Remove the original item

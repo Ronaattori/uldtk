@@ -26,7 +26,6 @@ class Tabulator {
 		this.columns = sheet.columns;
 		this.columnTypes = [for (x in columns) x.name => x.type];
 		this.sheet = sheet;
-		this.castle = new CastleWrapper(sheet);
 		
 		// TList lines exist in the parent's line. We need some special treatment to get that out
 		if (parentLine) {
@@ -36,6 +35,7 @@ class Tabulator {
 		}
 		if (this.lines == null)
 			this.lines = [];
+		this.castle = new CastleWrapper(sheet, this.lines);
 		createTabulator();
 	}
 
