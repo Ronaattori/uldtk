@@ -103,6 +103,10 @@ class CastleWrapper {
 			return null;
 		return Editor.ME.project.defs.getTilesetDefFrom(tilePos.file);
     }
+    public function getDisplayColumn() {
+		var displayCol = sheet.props.displayColumn ?? sheet.idCol?.name;
+        return displayCol;
+    }
 
 	public static function createTilePos(td:TilesetDef) {
 		var tilePos:TilePos = {

@@ -66,11 +66,10 @@ class SheetDefsForm {
 		var jSubList = new J('<ul class="niceList compact"/>');
 		jSubList.appendTo(jLi);
 
-		var displayCol = sheet.props.displayColumn ?? sheet.idCol?.name;
 		for(line in sheet.lines) {
 			var jLi = new J("<li/>");
 			jLi.appendTo(jSubList);
-			jLi.append('<span class="table">'+Reflect.field(line, displayCol)+'</span>');
+			jLi.append('<span class="table">'+Reflect.field(line, castle.getDisplayColumn())+'</span>');
 
 			if( line==curLine )
 				jLi.addClass("active");

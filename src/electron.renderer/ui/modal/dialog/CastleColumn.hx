@@ -47,6 +47,7 @@ class CastleColumn extends ui.modal.Dialog {
 			jConfirm.click( _-> {
 				var c = getColumn();
 				var result = sheet.addColumn(c);
+				sheet.sync();
 				if (result != null) {
 					Notification.error(result);
 				}  else {
