@@ -78,6 +78,9 @@ class Tabulator {
 				label: new LocaleString("Delete row"),
 				cb: () -> castle.deleteLine(row.getPosition() - 1)
 			});
+			if (column == null) {
+				return;
+			}
 			switch column.type {
 				case TTileLayer, TTilePos, TImage:
 					ctx.addAction({
