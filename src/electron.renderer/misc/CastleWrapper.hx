@@ -1,5 +1,6 @@
 package misc;
 
+import ui.Notification;
 import cdb.Data.ColumnType;
 import data.def.TilesetDef;
 import ldtk.Json.TilesetRect;
@@ -253,14 +254,21 @@ class CastleWrapper {
 		var curValue =  Reflect.field(line, column.name);
 		var jInput = new J("<input type='text'>");
         jInput.val(sheet.base.valToString(TDynamic, curValue));
-		var json = Json.stringify(curValue, null, "\t");
         jInput.click((e) -> {
-            var te = new TextEditor(json, column.name, null, LangJson, (value) -> {
-                    // TODO Handle JSON parsing errors
-                    var val = sheet.base.parseDynamic(value);
-                    jInput.val(sheet.base.valToString(TDynamic, val));
-                    Reflect.setField(line, column.name, val);
-                    if (onChange != null) onChange(val);
+            var te = new TextEditor(Reflect.field(line, column.name), column.name, null, LangJson, (value) -> {
+                    try {
+                        var parsed = value == "" ? null : sheet.base.parseDynamic(value);
+                        var parsedAsString = sheet.base.valToString(TDynamic, parsed);
+                        jInput.val(parsedAsString);
+                        if (parsed != null) {
+                            Reflect.setField(line, column.name, parsedAsString);
+                        } else {
+                            Reflect.deleteField(line, column.name);
+                        }
+                        if (onChange != null) onChange(parsed);
+                    } catch (e) {
+                        Notification.warning("Invalid JSON not saved");
+                    }
            });
         });
         return jInput;
