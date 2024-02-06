@@ -1,5 +1,6 @@
 package ui;
 
+import haxe.DynamicAccess;
 import h3d.anim.Skin.Joint;
 import data.def.FieldDef;
 import data.inst.FieldInstance;
@@ -661,6 +662,7 @@ class FieldInstancesForm {
 					}
 				}
 
+				var lineLookup: DynamicAccess<Dynamic> = {};
 				for (line in sheet.lines) {
 					var value = Reflect.field(line, displayCol);
 
@@ -673,15 +675,21 @@ class FieldInstancesForm {
 							jOpt.setAttribute("tile", haxe.Json.stringify(CastleWrapper.tilePosToTilesetRect(tp, td)));
 						}
 					}
+					lineLookup.set(Reflect.field(line, sheet.idCol.name), line);
 					jSelect.append(jOpt);
 				}
 
 				jSelect.change( function(ev) {
 					var v = jSelect.val()=="" ? null : jSelect.val();
-					if( v=="_default" )
+					if( v=="_default" ) {
 						fi.parseValue(arrayIdx, null);
-					else
-						fi.parseValue(arrayIdx, v);
+					}
+					else {
+						var line = lineLookup.get(v);
+						if (line == null)
+							throw 'Line with ID $v not found!';
+						fi.parseValue(arrayIdx, haxe.Json.stringify(line));
+					}
 					onFieldChange(fi);
 				});
 				hideInputIfDefault(arrayIdx, jSelect, fi);

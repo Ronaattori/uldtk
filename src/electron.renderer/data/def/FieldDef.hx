@@ -342,6 +342,7 @@ class FieldDef {
 			case V_Float(v): v;
 			case V_Bool(v): v;
 			case V_String(v): v;
+			case V_Sheet(id, v): v;
 		}
 	}
 
@@ -455,7 +456,7 @@ class FieldDef {
 		require(F_Sheet(null));
 
 		switch defaultOverride {
-			case V_String(v):
+			case V_Sheet(id, v):
 				return _project.database.sheets.length > 0 ? _project.database.sheets[0].name : null;
 			case _:
 				return null;

@@ -43,6 +43,8 @@ class FieldInstance {
 						case V_String(v):
 							v = JsonTools.unescapeString(v);
 							val = V_String(v);
+						case V_Sheet(id, v):
+							val = V_Sheet(id, v);
 						case _:
 					}
 
@@ -79,6 +81,8 @@ class FieldInstance {
 
 					case V_String(v):
 						JsonTools.writeEnum( V_String( JsonTools.escapeString(v) ), true);
+					case V_Sheet(id, v):
+						JsonTools.writeEnum(V_Sheet(id, v), true);
 				}
 			}),
 
@@ -163,7 +167,6 @@ class FieldInstance {
 			}
 		}
 	}
-
 
 	public function parseValue(arrayIdx:Int, raw:Null<String>) {
 		if( raw==null )
@@ -263,8 +266,12 @@ class FieldInstance {
 			
 			case F_Sheet(sheetName):
 				raw = StringTools.trim(raw);
-				if (_project.database.getSheet(sheetName) != null) {
-					setInternal(arrayIdx, V_String(raw));
+				var sheet = _project.database.getSheet(sheetName);
+				var idCol = sheet.idCol.name;
+				var line = haxe.Json.parse(raw);
+				var id = Reflect.field(line, idCol);
+				if (sheet != null) {
+					setInternal(arrayIdx, V_Sheet(id, line));
 				} else {
 					setInternal(arrayIdx, null);
 				}
@@ -770,7 +777,7 @@ class FieldInstance {
 	public function getSheetValue(arrayIdx:Int) : Null<String> {
 		require( F_Sheet(null) );
 		return isUsingDefault(arrayIdx) ? def.getSheetDefault() : switch internalValues[arrayIdx] {
-			case V_String(v): v;
+			case V_Sheet(id, v): id;
 			case _: throw "unexpected";
 		}
 	}
