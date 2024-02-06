@@ -401,6 +401,8 @@ class CastleWrapper {
 			Reflect.setField(line, column.name, tp);
             if (onChange != null) onChange(tp);
 		});
+        jPicker.css("width", "auto");
+        jPicker.css("height", "35px");
 		return jPicker;
     }
 	public function createCheckboxEditor(line: Dynamic, column:Column, ?onChange: Bool -> Void) {
