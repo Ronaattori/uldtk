@@ -642,7 +642,8 @@ class FieldInstancesForm {
 			case F_Sheet(sheetName):
 				var sheet = project.database.getSheet(sheetName);
 				var jSelect = new J('<select class="advanced"/>');
-				var displayCol = sheet.props.displayColumn ?? sheet.idCol.name;
+				var idCol = sheet.idCol.name;
+				var displayCol = sheet.props.displayColumn ?? idCol;
 				jSelect.appendTo(jTarget);
 
 				var firstOpt:js.html.Option;
@@ -663,11 +664,13 @@ class FieldInstancesForm {
 				}
 
 				var lineLookup: DynamicAccess<Dynamic> = {};
+				var selectedId = fi.getSheetValue(arrayIdx)?.id;
 				for (line in sheet.lines) {
-					var value = Reflect.field(line, displayCol);
+					var display = Reflect.field(line, displayCol);
+					var id = Reflect.field(line, idCol);
+					var selected = selectedId == id;
 
-					var selected = fi.getSheetValue(arrayIdx) == value;
-					var jOpt = new js.html.Option(value, value, false, selected);
+					var jOpt = new js.html.Option(display, id, false, selected);
 					if (sheet.props.displayIcon != null) {
 						var tp:cdb.Types.TilePos = Reflect.field(line, sheet.props.displayIcon);
 						if (tp != null && tp.file != null) {
@@ -675,9 +678,19 @@ class FieldInstancesForm {
 							jOpt.setAttribute("tile", haxe.Json.stringify(CastleWrapper.tilePosToTilesetRect(tp, td)));
 						}
 					}
-					lineLookup.set(Reflect.field(line, sheet.idCol.name), line);
+					lineLookup.set(Reflect.field(line, idCol), line);
 					jSelect.append(jOpt);
 				}
+
+				var jEdit = new J('<button class="edit gray" title="Edit sheet values"> <span class="icon edit"></span> </button>');
+				jEdit.appendTo(jTarget);
+				jEdit.click( (_)->{
+					var v = fi.getSheetValue(arrayIdx);
+					new ui.modal.dialog.SheetOverride(sheet, v.value, lineLookup.get(v.id), (newLine) -> {
+						fi.setSheetValue(arrayIdx, newLine);
+						onFieldChange(fi);
+					});
+				});
 
 				jSelect.change( function(ev) {
 					var v = jSelect.val()=="" ? null : jSelect.val();
@@ -688,7 +701,7 @@ class FieldInstancesForm {
 						var line = lineLookup.get(v);
 						if (line == null)
 							throw 'Line with ID $v not found!';
-						fi.parseValue(arrayIdx, haxe.Json.stringify(line));
+						fi.setSheetId(arrayIdx, v);
 					}
 					onFieldChange(fi);
 				});

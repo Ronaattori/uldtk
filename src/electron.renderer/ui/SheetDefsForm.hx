@@ -15,17 +15,25 @@ class SheetDefsForm {
 	var jForm(get,never) : js.jquery.JQuery; inline function get_jForm() return jWrapper.find("dl.form");
 	var sheet : cdb.Sheet;
 	var curLine : Null<Dynamic>;
+	var singleLine : Bool;
 	public var castle:CastleWrapper;
 
 
-	public function new(sheet:cdb.Sheet) {
+	public function new(sheet:cdb.Sheet, ?singleLine: Dynamic) {
 		this.sheet = sheet;
-		this.curLine = sheet.lines[0];
+		this.curLine = singleLine == null ? sheet.lines[0] : singleLine;
 		this.castle = new CastleWrapper(sheet);
+		this.singleLine = singleLine != null;
 
 		jWrapper = new J('<div class="sheetDefsForm"/>');
 		jWrapper.html( JsTools.getHtmlTemplate("sheetDefsForm"));
 		jWrapper.width("750px");
+
+		// Only show the editors in single line mode
+		if (singleLine) {
+			jList.remove();
+			jWrapper.find(".buttons").remove();
+		}
 		
 		jWrapper.find(".createRow").click(e -> {
 			var l = sheet.newLine();
@@ -63,6 +71,10 @@ class SheetDefsForm {
 	}
 
 	public function updateList(){
+		if (singleLine) {
+			return;
+		}
+
 		jList.empty();
 
 		var jLi = new J('<li class="subList"/>');

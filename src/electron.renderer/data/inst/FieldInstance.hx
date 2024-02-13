@@ -76,13 +76,11 @@ class FieldInstance {
 			defUid: defUid,
 			realEditorValues: internalValues.map( (e)->{
 				return cast switch e {
-					case null, V_Int(_), V_Float(_), V_Bool(_):
+					case null, V_Int(_), V_Float(_), V_Bool(_), V_Sheet(_):
 						JsonTools.writeEnum(e,true);
 
 					case V_String(v):
 						JsonTools.writeEnum( V_String( JsonTools.escapeString(v) ), true);
-					case V_Sheet(id, v):
-						JsonTools.writeEnum(V_Sheet(id, v), true);
 				}
 			}),
 
@@ -265,18 +263,7 @@ class FieldInstance {
 				}
 			
 			case F_Sheet(sheetName):
-				raw = StringTools.trim(raw);
-				var sheet = _project.database.getSheet(sheetName);
-				var idCol = sheet.idCol.name;
-				var line = haxe.Json.parse(raw);
-				var id = Reflect.field(line, idCol);
-				if (sheet != null) {
-					setInternal(arrayIdx, V_Sheet(id, line));
-				} else {
-					setInternal(arrayIdx, null);
-				}
-
-
+				throw "Set V_Sheet value with setSheetId and setSheetValue";
 		}
 	}
 
@@ -774,12 +761,25 @@ class FieldInstance {
 	}
 
 
-	public function getSheetValue(arrayIdx:Int) : Null<String> {
+	public function getSheetValue(arrayIdx:Int) : Null<{id: String, value: Dynamic}> {
 		require( F_Sheet(null) );
 		return isUsingDefault(arrayIdx) ? def.getSheetDefault() : switch internalValues[arrayIdx] {
-			case V_Sheet(id, v): id;
+			case V_Sheet(id, v): return {id: id, value: v};
 			case _: throw "unexpected";
 		}
+	}
+	public function setSheetId(arrayIdx:Int, id: String) {
+		require( F_Sheet(null) );
+		var v = getSheetValue(arrayIdx);
+		setInternal(arrayIdx, V_Sheet(id, v?.value));
+	}
+	public function setSheetValue(arrayIdx:Int, value: Dynamic) {
+		require( F_Sheet(null) );
+		var v = getSheetValue(arrayIdx);
+		if (v == null || v.id == null) {
+			throw "The V_Sheet must have an ID set before the value";
+		}
+		setInternal(arrayIdx, V_Sheet(v.id, value));
 	}
 
 	public function getEnumValue(arrayIdx:Int) : Null<String> {

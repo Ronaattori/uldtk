@@ -452,12 +452,12 @@ class FieldDef {
 				return null;
 		}
 	}
-	public function getSheetDefault() : Null<String> {
+	public function getSheetDefault() : Null<{id: String, value: Dynamic}> {
 		require(F_Sheet(null));
 
 		switch defaultOverride {
 			case V_Sheet(id, v):
-				return _project.database.sheets.length > 0 ? _project.database.sheets[0].name : null;
+				return {id: id, value: v};
 			case _:
 				return null;
 		}

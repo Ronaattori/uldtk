@@ -6646,16 +6646,16 @@ body.fullscreen #page.home .buttons .exit {
 .fieldDefsForm dl.form *[class=Array] + dd {
   display: none;
 }
-.fieldDefsForm dl.form.type-Array .Array, .fieldDefsForm dl.form.type-NotArray .NotArray, .fieldDefsForm dl.form.type-F_Int .F_int, .fieldDefsForm dl.form.type-F_Float .F_Float, .fieldDefsForm dl.form.type-F_Bool .F_Bool, .fieldDefsForm dl.form.type-F_Color .F_Color, .fieldDefsForm dl.form.type-F_Enum .F_Enum, .fieldDefsForm dl.form.type-F_Point .F_Point, .fieldDefsForm dl.form.type-F_Text .F_Text, .fieldDefsForm dl.form.type-F_String .F_String, .fieldDefsForm dl.form.type-F_EntityRef .F_EntityRef, .fieldDefsForm dl.form.type-F_Tile .F_Tile, .fieldDefsForm dl.form.type-F_Path .F_Path {
+.fieldDefsForm dl.form.type-Array .Array, .fieldDefsForm dl.form.type-NotArray .NotArray, .fieldDefsForm dl.form.type-F_Int .F_int, .fieldDefsForm dl.form.type-F_Float .F_Float, .fieldDefsForm dl.form.type-F_Bool .F_Bool, .fieldDefsForm dl.form.type-F_Color .F_Color, .fieldDefsForm dl.form.type-F_Enum .F_Enum, .fieldDefsForm dl.form.type-F_Point .F_Point, .fieldDefsForm dl.form.type-F_Text .F_Text, .fieldDefsForm dl.form.type-F_String .F_String, .fieldDefsForm dl.form.type-F_EntityRef .F_EntityRef, .fieldDefsForm dl.form.type-F_Tile .F_Tile, .fieldDefsForm dl.form.type-F_Sheet .F_Sheet, .fieldDefsForm dl.form.type-F_Path .F_Path {
   display: flex;
 }
-.fieldDefsForm dl.form.type-Array .Array:not(li), .fieldDefsForm dl.form.type-NotArray .NotArray:not(li), .fieldDefsForm dl.form.type-F_Int .F_int:not(li), .fieldDefsForm dl.form.type-F_Float .F_Float:not(li), .fieldDefsForm dl.form.type-F_Bool .F_Bool:not(li), .fieldDefsForm dl.form.type-F_Color .F_Color:not(li), .fieldDefsForm dl.form.type-F_Enum .F_Enum:not(li), .fieldDefsForm dl.form.type-F_Point .F_Point:not(li), .fieldDefsForm dl.form.type-F_Text .F_Text:not(li), .fieldDefsForm dl.form.type-F_String .F_String:not(li), .fieldDefsForm dl.form.type-F_EntityRef .F_EntityRef:not(li), .fieldDefsForm dl.form.type-F_Tile .F_Tile:not(li), .fieldDefsForm dl.form.type-F_Path .F_Path:not(li) {
+.fieldDefsForm dl.form.type-Array .Array:not(li), .fieldDefsForm dl.form.type-NotArray .NotArray:not(li), .fieldDefsForm dl.form.type-F_Int .F_int:not(li), .fieldDefsForm dl.form.type-F_Float .F_Float:not(li), .fieldDefsForm dl.form.type-F_Bool .F_Bool:not(li), .fieldDefsForm dl.form.type-F_Color .F_Color:not(li), .fieldDefsForm dl.form.type-F_Enum .F_Enum:not(li), .fieldDefsForm dl.form.type-F_Point .F_Point:not(li), .fieldDefsForm dl.form.type-F_Text .F_Text:not(li), .fieldDefsForm dl.form.type-F_String .F_String:not(li), .fieldDefsForm dl.form.type-F_EntityRef .F_EntityRef:not(li), .fieldDefsForm dl.form.type-F_Tile .F_Tile:not(li), .fieldDefsForm dl.form.type-F_Sheet .F_Sheet:not(li), .fieldDefsForm dl.form.type-F_Path .F_Path:not(li) {
   display: inherit;
 }
-.fieldDefsForm dl.form.type-Array .Array.info, .fieldDefsForm dl.form.type-NotArray .NotArray.info, .fieldDefsForm dl.form.type-F_Int .F_int.info, .fieldDefsForm dl.form.type-F_Float .F_Float.info, .fieldDefsForm dl.form.type-F_Bool .F_Bool.info, .fieldDefsForm dl.form.type-F_Color .F_Color.info, .fieldDefsForm dl.form.type-F_Enum .F_Enum.info, .fieldDefsForm dl.form.type-F_Point .F_Point.info, .fieldDefsForm dl.form.type-F_Text .F_Text.info, .fieldDefsForm dl.form.type-F_String .F_String.info, .fieldDefsForm dl.form.type-F_EntityRef .F_EntityRef.info, .fieldDefsForm dl.form.type-F_Tile .F_Tile.info, .fieldDefsForm dl.form.type-F_Path .F_Path.info {
+.fieldDefsForm dl.form.type-Array .Array.info, .fieldDefsForm dl.form.type-NotArray .NotArray.info, .fieldDefsForm dl.form.type-F_Int .F_int.info, .fieldDefsForm dl.form.type-F_Float .F_Float.info, .fieldDefsForm dl.form.type-F_Bool .F_Bool.info, .fieldDefsForm dl.form.type-F_Color .F_Color.info, .fieldDefsForm dl.form.type-F_Enum .F_Enum.info, .fieldDefsForm dl.form.type-F_Point .F_Point.info, .fieldDefsForm dl.form.type-F_Text .F_Text.info, .fieldDefsForm dl.form.type-F_String .F_String.info, .fieldDefsForm dl.form.type-F_EntityRef .F_EntityRef.info, .fieldDefsForm dl.form.type-F_Tile .F_Tile.info, .fieldDefsForm dl.form.type-F_Sheet .F_Sheet.info, .fieldDefsForm dl.form.type-F_Path .F_Path.info {
   display: grid;
 }
-.fieldDefsForm dl.form.type-Array .Array + dd, .fieldDefsForm dl.form.type-NotArray .NotArray + dd, .fieldDefsForm dl.form.type-F_Int .F_int + dd, .fieldDefsForm dl.form.type-F_Float .F_Float + dd, .fieldDefsForm dl.form.type-F_Bool .F_Bool + dd, .fieldDefsForm dl.form.type-F_Color .F_Color + dd, .fieldDefsForm dl.form.type-F_Enum .F_Enum + dd, .fieldDefsForm dl.form.type-F_Point .F_Point + dd, .fieldDefsForm dl.form.type-F_Text .F_Text + dd, .fieldDefsForm dl.form.type-F_String .F_String + dd, .fieldDefsForm dl.form.type-F_EntityRef .F_EntityRef + dd, .fieldDefsForm dl.form.type-F_Tile .F_Tile + dd, .fieldDefsForm dl.form.type-F_Path .F_Path + dd {
+.fieldDefsForm dl.form.type-Array .Array + dd, .fieldDefsForm dl.form.type-NotArray .NotArray + dd, .fieldDefsForm dl.form.type-F_Int .F_int + dd, .fieldDefsForm dl.form.type-F_Float .F_Float + dd, .fieldDefsForm dl.form.type-F_Bool .F_Bool + dd, .fieldDefsForm dl.form.type-F_Color .F_Color + dd, .fieldDefsForm dl.form.type-F_Enum .F_Enum + dd, .fieldDefsForm dl.form.type-F_Point .F_Point + dd, .fieldDefsForm dl.form.type-F_Text .F_Text + dd, .fieldDefsForm dl.form.type-F_String .F_String + dd, .fieldDefsForm dl.form.type-F_EntityRef .F_EntityRef + dd, .fieldDefsForm dl.form.type-F_Tile .F_Tile + dd, .fieldDefsForm dl.form.type-F_Sheet .F_Sheet + dd, .fieldDefsForm dl.form.type-F_Path .F_Path + dd {
   display: flex;
 }
 .fieldDefsForm dl.form.type-F_Path .F_Path.file-select {
@@ -6910,6 +6910,14 @@ dl.form.fieldInstanceEditor span.point {
   font-size: 10pt;
   border-radius: 6px;
   background-color: #2e333f;
+}
+dl.form.fieldInstanceEditor .F_Sheet button {
+  flex: 0 1 0px;
+  padding: 0 4px;
+  align-self: stretch;
+}
+dl.form.fieldInstanceEditor .F_Sheet button .icon {
+  width: 1.3em;
 }
 dl.form.fieldInstanceEditor .F_Path input {
   cursor: pointer;
@@ -7217,6 +7225,12 @@ dl.form.fieldInstanceEditor div.array button.remove {
   margin-bottom: 10px;
 }
 
+.window.panel.editSheetDefs .sheetDefsForm {
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 200px auto;
+  grid-template-rows: 40px auto;
+}
 .window.panel.editSheetDefs .content {
   display: grid;
   grid-template-rows: min-content auto;
@@ -7268,11 +7282,7 @@ dl.form.fieldInstanceEditor div.array button.remove {
 .sheetDefsForm {
   width: 100%;
   height: 100%;
-  overflow: hidden;
-  display: grid;
   gap: 8px;
-  grid-template-columns: 200px auto;
-  grid-template-rows: 40px auto;
 }
 .sheetDefsForm .buttons {
   flex-wrap: nowrap;
