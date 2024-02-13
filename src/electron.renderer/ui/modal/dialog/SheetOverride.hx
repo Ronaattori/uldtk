@@ -22,12 +22,11 @@ class SheetOverride extends ui.modal.Dialog {
 		
 		addConfirm(() -> if (onConfirm != null) onConfirm(getDiff()));
     }
-	function merge(base: Dynamic, ?ext: Dynamic) {
+	function merge(base: Dynamic, ext: Dynamic) {
         var res = Reflect.copy(base);
-		if (ext == null) {
-			return res;
+        for(f in Reflect.fields(ext)) {
+			Reflect.setField(res, f, Reflect.field(ext, f));
 		}
-        for(f in Reflect.fields(ext)) Reflect.setField(res,f,Reflect.field(res,f));
         return res;
   }
 	function getDiff() {
