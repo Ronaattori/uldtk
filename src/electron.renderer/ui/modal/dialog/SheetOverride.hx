@@ -11,7 +11,7 @@ class SheetOverride extends ui.modal.Dialog {
 	var originalLine : Dynamic;
 
 	public function new(sheet: Sheet, line:Dynamic, originalLine:Dynamic, ?onConfirm:Dynamic->Void) {
-        super();
+        super("sheetOverride");
 		this.onConfirm = onConfirm;
 		this.sheet = sheet;
 		this.originalLine = originalLine;

@@ -3181,6 +3181,11 @@ textarea:focus {
   text-align: center;
 }
 
+.window.sheetOverride .wrapper .content {
+  height: 70vh;
+  overflow: auto;
+}
+
 .window.textEditor .wrapper .content {
   display: grid;
   grid-template-rows: min-content min-content auto;
@@ -7230,6 +7235,7 @@ dl.form.fieldInstanceEditor div.array button.remove {
   display: grid;
   grid-template-columns: 200px auto;
   grid-template-rows: 40px auto;
+  height: 100%;
 }
 .window.panel.editSheetDefs .content {
   display: grid;
@@ -7281,7 +7287,6 @@ dl.form.fieldInstanceEditor div.array button.remove {
 
 .sheetDefsForm {
   width: 100%;
-  height: 100%;
   gap: 8px;
 }
 .sheetDefsForm .buttons {

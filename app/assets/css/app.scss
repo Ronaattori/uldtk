@@ -3419,6 +3419,12 @@ textarea {
 	}
 }
 
+.window.sheetOverride {
+	.wrapper .content {
+		height: 70vh;
+		overflow: auto;
+	}
+}
 .window.textEditor {
 	.wrapper .content {
 		display: grid;
@@ -8284,6 +8290,7 @@ dl.form.fieldInstanceEditor {
 		display: grid;
 		grid-template-columns: 200px auto;
 		grid-template-rows: 40px auto;
+		height: 100%;
 	}
 	.content {
 		display: grid;
@@ -8344,7 +8351,6 @@ dl.form.fieldInstanceEditor {
 
 .sheetDefsForm {
 	width: 100%;
-	height: 100%;
 	gap: 8px;
 
 	.buttons {
