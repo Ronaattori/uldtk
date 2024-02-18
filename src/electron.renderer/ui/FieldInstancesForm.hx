@@ -646,14 +646,13 @@ class FieldInstancesForm {
 				var displayCol = sheet.props.displayColumn ?? idCol;
 				jSelect.appendTo(jTarget);
 
-				var firstOpt:js.html.Option;
 				if( fi.def.canBeNull || fi.getSheetValue(arrayIdx)==null ) {
 					if (fi.def.canBeNull) {
-						firstOpt = new js.html.Option("-- null --", "", true);
+						var firstOpt = new js.html.Option("-- null --", "_default", true);
 						jSelect.append(firstOpt);
 					} else {
 						// SELECT shouldn't be null
-						firstOpt = new js.html.Option("[ Value required ]", "", true);
+						var firstOpt = new js.html.Option("[ Value required ]", "", true);
 						jSelect.append(firstOpt);
 						markError(jSelect);
 						jSelect.click( function(ev) {
@@ -678,7 +677,7 @@ class FieldInstancesForm {
 							jOpt.setAttribute("tile", haxe.Json.stringify(CastleWrapper.tilePosToTilesetRect(tp, td)));
 						}
 					}
-					lineLookup.set(Reflect.field(line, idCol), line);
+					lineLookup.set(id, line);
 					jSelect.append(jOpt);
 				}
 
@@ -686,6 +685,7 @@ class FieldInstancesForm {
 				jEdit.appendTo(jTarget);
 				jEdit.click( (_)->{
 					var v = fi.getSheetValue(arrayIdx);
+					if (v == null || v.id == null) return;
 					new ui.modal.dialog.SheetOverride(sheet, v.value, lineLookup.get(v.id), (newLine) -> {
 						fi.setSheetValue(arrayIdx, newLine);
 						onFieldChange(fi);
